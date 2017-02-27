@@ -1,0 +1,45 @@
+body {
+    padding: 20px;
+    background: #5CD;
+    word-break: break-all;
+}
+
+.bold {
+    font-weight: bold;
+}
+
+.tree-wrap {
+    display: inline-block;
+    padding: 5px;
+    border: 1px solid #02B;
+    vertical-align: bottom;
+    background: #fff;
+}
+
+.x-tree-item {
+    font-size: 14px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    cursor: pointer;
+}
+
+.x-tree-item-children {
+    padding-left: 1.5em;
+    line-height: 1.5em;
+}
+
+.x-tree-item-editor {
+    font-size: 14px;
+}
+
+.fa {
+    width: 14px;
+}
+
+.icon-blank {
+    display: inline-block;
+    font-size: 14px;
+    width: 1em;
+}

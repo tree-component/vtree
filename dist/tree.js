@@ -460,6 +460,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         };
     },
     computed: {
+        isROOT: function () {
+            return this.model.name === 'ROOT';
+        },
         hasChildren: function () {
             return this.model.is_node && this.model.children && this.model.children.length;
         },
@@ -710,6 +713,12 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
   return _c('div', {
     staticClass: "x-tree-item"
   }, [_c('div', {
+    directives: [{
+      name: "show",
+      rawName: "v-show",
+      value: (!_vm.isROOT),
+      expression: "!isROOT"
+    }],
     staticClass: "x-tree-item-item"
   }, [(_vm.hasChildren) ? _c('i', {
     staticClass: "fa",

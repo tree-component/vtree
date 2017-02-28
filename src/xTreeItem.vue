@@ -1,6 +1,6 @@
 <template>
     <div class="x-tree-item">
-        <div class="x-tree-item-item">
+        <div class="x-tree-item-item" v-show="!isROOT">
             <i v-if="hasChildren" class="fa" :class="model.expand ? 'fa-minus' : 'fa-plus'" @click="expandFn"></i>
             <span v-else class="icon-blank"></span>
             <i class="fa" :class="model.is_check ? 'fa-check-square-o' : 'fa-square-o'" @click="checkFn"></i>
@@ -42,6 +42,9 @@
             };
         },
         computed: {
+            isROOT: function(){
+                return this.model.name === 'ROOT';
+            },
             hasChildren: function () {
                 return this.model.is_node && this.model.children &&
                     this.model.children.length

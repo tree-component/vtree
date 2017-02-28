@@ -5,17 +5,28 @@
 </template>
 
 <script>
-    import _ from 'lodash';
     import xTreeItem from './xTreeItem.vue';
 
     export default {
+        name: "x-tree",
         components: {
             xTreeItem
         },
-        name: "tree-view",
         props: {
             model: Object
         },
+        data: function () {
+            var treeDataTemp = this._arrayToTree(this.model.data);
+
+            var treeDataChecked = this._checkTreeByIds(treeDataTemp, this.model.sel_ids);
+
+            console.log("treeDataComputed", treeDataChecked);
+
+            return {
+                treeData: treeDataChecked
+            };
+        },
+        computed: {},
         methods: {
             _arrayToTree: function (arrayIn) {
                 var rootId = this._getTreeRoot(arrayIn);
@@ -36,7 +47,8 @@
 
             _getTreeRoot: function (arrayIn) {
                 var rootId = [];
-                var clone = _.clone(arrayIn,true);
+                var clone = this._cloneArray(arrayIn);
+//                var clone = JSON.parse(JSON.stringify(arrayIn));
                 for (var i = 0, len = arrayIn.length; i < len; i++) {
                     for (var j = i; j < len; j++) {
                         if (arrayIn[i].id === arrayIn[j].nodeId) {
@@ -47,6 +59,8 @@
                         }
                     }
                 }
+                console.log(clone);
+                console.log("arrayIn",arrayIn);
 
                 for (var k = 0; k < clone.length; k++) {
                     if (clone[k]) {
@@ -92,6 +106,22 @@
                 }
 
                 return rootId[0];
+            },
+
+            _cloneArray: function (arrayIn) {
+                var clone = [];
+
+                for (var i = 0; i < arrayIn.length; i++) {
+                    var temp = {
+                        id: arrayIn[i].id,
+                        name: arrayIn[i].name,
+                        nodeId: arrayIn[i].nodeId,
+                        is_node: arrayIn[i].is_node,
+                        is_check: arrayIn[i].is_check
+                    };
+                    clone.push(temp);
+                }
+                return clone;
             },
 
             _getSubTree: function (arrayIn, parent) {
@@ -165,7 +195,6 @@
                 return _continue.brother;
             },
 
-
             _changeItem: function (item, change) {
                 if (!item) {
                     return false;
@@ -212,18 +241,6 @@
                 return true;
             },
         },
-        computed: {
-            treeData: function () {
-
-                var treeDataTemp = this._arrayToTree(this.model.data);
-
-                var treeData = this._checkTreeByIds(treeDataTemp, this.model.sel_ids);
-
-                console.log("treeDataComputed", treeData);
-
-                return treeData;
-            }
-        }
     };
 </script>
 

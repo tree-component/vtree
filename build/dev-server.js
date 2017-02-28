@@ -1,8 +1,3 @@
-/**
- * Created by fizz on 2017/1/22.
- * @author fizzstack@gmail.com
- * @module develop server
- */
 
 var path = require('path');
 var opn  = require('opn');
@@ -24,7 +19,7 @@ app.engine('.html', require('ejs').__express);
 app.set('view engine', 'html');
 
 // Set the folder where the pages are kept
-app.set('views', __dirname + '/test');
+app.set('views', __dirname + '../docs');
 
 var devMiddleware = webpackDevMiddleware(compiler, {
 	publicPath: webpackConfig.output.publicPath,
@@ -62,9 +57,8 @@ docsRouter.get('/:doc(/:html)', function(req, res){
 
 app.use('/docs/', docsRouter);
 
-
 app.get('/', function(req, res){
-	res.redirect('./docs/index.html');
+	res.redirect('../docs/index.html');
 });
 
 // var staticPath = path.posix.join(config.dev.assetsPublicPath, config.dev.assetsSubDirectory)

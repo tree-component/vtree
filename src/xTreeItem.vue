@@ -5,7 +5,12 @@
             <span v-else class="icon-blank"></span>
             <i class="fa" :class="model.is_check ? 'fa-check-square-o' : 'fa-square-o'" @click="checkFn"></i>
             <span>{{model.name}}</span>
-            <i class="fa fa-edit" @click="editFn"></i>
+            <i class="fa" :class="!showEditor ? 'fa-caret-down' : 'fa-caret-up' " @click="editFn"></i>
+            <div class="x-tree-item-editor" v-show="showEditor">
+                <div class="x-tree-item-editor-item" @click="">修改部门</div>
+                <div class="x-tree-item-editor-item" @click="deleteFn">删除部门</div>
+                <div class="x-tree-item-editor-item" @click="">添加子部门</div>
+            </div>
         </div>
 
         <div class='x-tree-item-children' v-if="hasChildren" v-show="model.expand">
@@ -24,7 +29,6 @@
         data: function () {
             return {
                 showEditor: false,
-                editOrAdd: false,
                 newChild: {
                     id: '',
                     name: '',
@@ -58,23 +62,63 @@
             }
         },
         methods: {
+            _changeItem: function (item, change) {
+                if (!item) {
+                    return false;
+                }
+                item.is_check = change;
+                if (item.children) {
+                    this._changeChildren(item.children, change);
+                }
+                if (item.parent) {
+                    this._changeParent(item.parent, change);
+                }
+            },
+
+            _changeChildren: function (children, change) {
+                if (!children) {
+                    return false;
+                }
+                for (var i = 0; i < children.length; i++) {
+                    if (children[i].is_check != change) {
+                        children[i].is_check = change;
+                        if (children[i].children) {
+                            this._changeChildren(children[i].children, change);
+                        }
+                    }
+                }
+                return true;
+            },
+
+            _changeParent: function (parent, change) {
+                if (!parent || parent.is_check == change) {
+                    return false;
+                }
+                if (change) {
+                    for (var i = 0; i < parent.children.length; i++) {
+                        if (!parent.children[i].is_check) {
+                            return false;
+                        }
+                    }
+                }
+                parent.is_check = change;
+                if (parent.parent) {
+                    this._changeParent(parent.parent, change);
+                }
+                return true;
+            },
+
             expandFn: function () {
                 if (this.hasChildren) {
                     this.model.expand = !this.model.expand;
                 }
             },
             checkFn: function () {
+                console.log("this",this);
                 this._changeItem(this.model, !this.model.is_check);
             },
 
             editFn: function () {
-                this.editOrAdd = true;
-                this.newChild = {
-                    id: this.model.id,
-                    name: this.model.name,
-                    is_node: this.model.is_node,
-                    is_check: this.model.is_check,
-                };
                 this.showEditor = !this.showEditor;
             },
 
@@ -90,6 +134,7 @@
             deleteFn: function () {
                 var index = this.model.parent.children.indexOf(this.model);
                 this.model.parent.children.splice(index ,1);
+                this.showEditor = !this.showEditor;
             },
 
             newChildFn: function () {

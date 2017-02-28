@@ -17,6 +17,7 @@ body {
 }
 
 .x-tree-item {
+    position: relative;
     font-size: 14px;
     -webkit-user-select: none;
     -moz-user-select: none;
@@ -31,7 +32,16 @@ body {
 }
 
 .x-tree-item-editor {
+    position: absolute;
+    z-index: 99;
     font-size: 14px;
+    padding: 5px 10px;
+    border: 1px solid #666;
+    background: #f2f2f2;
+}
+
+.x-tree-item-editor-item {
+
 }
 
 .fa {

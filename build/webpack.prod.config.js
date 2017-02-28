@@ -4,6 +4,7 @@ const path = require('path');
 const webpack = require("webpack");
 
 const config = {
+    watch: true,
     context: path.resolve(__dirname, '../'),
     entry: {
         app: "./src/index.js",

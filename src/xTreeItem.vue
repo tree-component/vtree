@@ -1,16 +1,14 @@
 <template>
     <div class="x-tree-item">
-        <div class="x-tree-item-item" draggable='true'>
+        <div class="x-tree-item-item">
             <i v-if="hasChildren" class="fa" :class="model.expand ? 'fa-minus' : 'fa-plus'" @click="expandFn"></i>
             <span v-else class="icon-blank"></span>
             <i class="fa" :class="model.is_check ? 'fa-check-square-o' : 'fa-square-o'" @click="checkFn"></i>
             <span>{{model.name}}</span>
             <i class="fa fa-edit" @click="editFn"></i>
-            <i class="fa fa-edit" @click="deleteFn"></i>
-            <span class="bold" @click="newChildFn">[+]</span>
         </div>
 
-        <div class='x-tree-item-children' v-show="model.expand" v-if="hasChildren">
+        <div class='x-tree-item-children' v-if="hasChildren" v-show="model.expand">
             <x-tree-item class="x-tree-item" v-for="model in model.children" :model="model">
             </x-tree-item>
         </div>
@@ -19,8 +17,10 @@
 
 <script>
     export default {
-        name: 'xTree',
-
+        name : 'x-tree-item',
+        props: {
+            model: Object
+        },
         data: function () {
             return {
                 showEditor: false,
@@ -37,9 +37,6 @@
                 checkRE: /^(\w+|[\u4e00-\u9fa5]+)$/,
             };
         },
-        props: {
-            model: Object
-        },
         computed: {
             hasChildren: function () {
                 return this.model.is_node && this.model.children &&
@@ -54,7 +51,7 @@
                 }
             },
             isValid: function () {
-                var validation = this.validation
+                var validation = this.validation;
                 return Object.keys(validation).every(function (key) {
                     return validation[key]
                 })
@@ -67,7 +64,7 @@
                 }
             },
             checkFn: function () {
-                _changeItem(this.model, !this.model.is_check);
+                this._changeItem(this.model, !this.model.is_check);
             },
 
             editFn: function () {
@@ -92,7 +89,7 @@
 
             deleteFn: function () {
                 var index = this.model.parent.children.indexOf(this.model);
-                this.model.parent.children.splice(index, 1);
+                this.model.parent.children.splice(index ,1);
             },
 
             newChildFn: function () {

@@ -3,10 +3,9 @@
 <head>
     <meta charset="utf-8">
     <title>tree-title</title>
-    <link rel="stylesheet" href="../dist/css/x-tree-vue.css">
     <link rel="stylesheet" href="../dist/font-awesome-4.7.0/css/font-awesome.css">
+    <link rel="stylesheet" href="../dist/css/x-tree-vue.css">
     <script src="../dist/lib/vue.js"></script>
-    <script src="../dist/lib/jquery-3.1.1.js"></script>
     <script src="../dist/tree.js"></script>
 </head>
 <body>
@@ -16,7 +15,6 @@
 
 <script>
     var treeOption = {
-        dom: $('#tree1'),
         only_child: false,
         is_multi: true,
         is_trigger: false,
@@ -64,11 +62,12 @@
         onCheck: function () {
 
         },
+        onCancel: function () {
+        },
         onChange: function () {
             this.dom.find('.tree_input_tip').text(this.getName());
         },
-        onCancel: function () {
-        }
+
     };
 
     new Vue({

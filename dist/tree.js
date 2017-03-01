@@ -1,4 +1,3 @@
-var xTree =
 /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
@@ -182,17 +181,17 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         xTreeItem: __WEBPACK_IMPORTED_MODULE_0__xTreeItem_vue___default.a
     },
     props: {
-        model: Object
+        data: Array,
+        options: Object
     },
     data: function () {
-        var treeDataTemp = this._arrayToTree(this.model.data);
+        var treeModelTemp = this._arrayToTree(this.data);
 
-        var treeDataChecked = this._checkTreeByIds(treeDataTemp, this.model.sel_ids);
-
-        console.log("treeDataComputed", treeDataChecked);
+        var treeModelChecked = this._checkTreeByIds(treeModelTemp, this.options.sel_ids);
 
         return {
-            treeData: treeDataChecked
+            treeModel: treeModelChecked,
+            treeOptions: this.options
         };
     },
     computed: {},
@@ -216,8 +215,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
         _getTreeRoot: function (arrayIn) {
             var rootId = [];
-            var clone = this._cloneArray(arrayIn);
-            //                var clone = JSON.parse(JSON.stringify(arrayIn));
+            var clone = JSON.parse(JSON.stringify(arrayIn));
             for (var i = 0, len = arrayIn.length; i < len; i++) {
                 for (var j = i; j < len; j++) {
                     if (arrayIn[i].id === arrayIn[j].nodeId) {
@@ -228,8 +226,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                     }
                 }
             }
-            console.log(clone);
-            console.log("arrayIn", arrayIn);
 
             for (var k = 0; k < clone.length; k++) {
                 if (clone[k]) {
@@ -237,59 +233,25 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 }
             }
 
-            // 去除数组重复值
-            // 方法一
-            // function unique(array) {
-            //     var n = [];
-            //     for (var i = 0; i < array.length; i++) {
-            //         if (n.indexOf(array[i]) == -1) {
-            //             n.push(array[i]);
-            //         }
-            //     }
-            //     return n;
-            // }
-
-            // 方法二
-            function unique(array) {
-                var r = [];
-                for (var i = 0, len = array.length; i < len; i++) {
-                    for (var j = i + 1; j < len; j++) {
-                        if (array[i] === array[j]) {
-                            j = ++i;
-                        }
-                    }
-                    r.push(array[i]);
-                }
-                return r;
-            }
-
-            rootId = unique(rootId);
+            rootId = this._unique(rootId);
 
             if (rootId.length > 1) {
                 console.log('warning: rootId不唯一', rootId);
-            } else {
-                if (rootId.length <= 0) {
-                    console.log('warning: 没有rootId', rootId);
-                }
+            } else if (rootId.length <= 0) {
+                console.log('warning: 没有rootId', rootId);
             }
 
             return rootId[0];
         },
 
-        _cloneArray: function (arrayIn) {
-            var clone = [];
-
+        _unique: function (arrayIn) {
+            var uq = [];
             for (var i = 0; i < arrayIn.length; i++) {
-                var temp = {
-                    id: arrayIn[i].id,
-                    name: arrayIn[i].name,
-                    nodeId: arrayIn[i].nodeId,
-                    is_node: arrayIn[i].is_node,
-                    is_check: arrayIn[i].is_check
-                };
-                clone.push(temp);
+                if (uq.indexOf(arrayIn[i]) == -1) {
+                    uq.push(arrayIn[i]);
+                }
             }
-            return clone;
+            return uq;
         },
 
         _getSubTree: function (arrayIn, parent) {
@@ -442,10 +404,12 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony default export */ __webpack_exports__["default"] = {
     name: 'x-tree-item',
     props: {
-        model: Object
+        model: Object,
+        options: Object
     },
     data: function () {
         return {
+            treeOptions: this.options,
             showEditor: false,
             newChild: {
                 id: '',
@@ -460,9 +424,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         };
     },
     computed: {
-        isROOT: function () {
-            return this.model.name === 'ROOT';
-        },
         hasChildren: function () {
             return this.model.is_node && this.model.children && this.model.children.length;
         },
@@ -538,6 +499,11 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             this._changeItem(this.model, !this.model.is_check);
         },
 
+        onNameFn: function () {
+            console.log("this.options", this.options);
+            this.options.onName(this.model);
+        },
+
         editFn: function () {
             this.showEditor = !this.showEditor;
         },
@@ -588,7 +554,7 @@ exports = module.exports = __webpack_require__(5)();
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
 
 // exports
 
@@ -693,7 +659,8 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
   }, [_c('x-tree-item', {
     staticClass: "x-tree-root",
     attrs: {
-      "model": _vm.treeData
+      "model": _vm.treeModel,
+      "options": _vm.treeOptions
     }
   })], 1)
 },staticRenderFns: []}
@@ -716,11 +683,11 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     directives: [{
       name: "show",
       rawName: "v-show",
-      value: (!_vm.isROOT),
-      expression: "!isROOT"
+      value: (_vm.model.level),
+      expression: "model.level"
     }],
     staticClass: "x-tree-item-item"
-  }, [(_vm.hasChildren) ? _c('i', {
+  }, [(_vm.model.is_node) ? _c('i', {
     staticClass: "fa",
     class: _vm.model.expand ? 'fa-minus' : 'fa-plus',
     on: {
@@ -734,7 +701,11 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     on: {
       "click": _vm.checkFn
     }
-  }), _vm._v(" "), _c('span', [_vm._v(_vm._s(_vm.model.name))]), _vm._v(" "), _c('i', {
+  }), _vm._v(" "), _c('span', {
+    on: {
+      "click": _vm.onNameFn
+    }
+  }, [_vm._v(_vm._s(_vm.model.name))]), _vm._v(" "), _c('i', {
     staticClass: "fa",
     class: !_vm.showEditor ? 'fa-caret-down' : 'fa-caret-up',
     on: {
@@ -775,7 +746,8 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     return _c('x-tree-item', {
       staticClass: "x-tree-item",
       attrs: {
-        "model": model
+        "model": model,
+        "options": _vm.treeOptions
       }
     })
   })) : _vm._e()])

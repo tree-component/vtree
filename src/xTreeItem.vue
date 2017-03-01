@@ -1,10 +1,10 @@
 <template>
     <div class="x-tree-item">
-        <div class="x-tree-item-item" v-show="!isROOT">
-            <i v-if="hasChildren" class="fa" :class="model.expand ? 'fa-minus' : 'fa-plus'" @click="expandFn"></i>
+        <div class="x-tree-item-item" v-show="model.level">
+            <i v-if="model.is_node" class="fa" :class="model.expand ? 'fa-minus' : 'fa-plus'" @click="expandFn"></i>
             <span v-else class="icon-blank"></span>
             <i class="fa" :class="model.is_check ? 'fa-check-square-o' : 'fa-square-o'" @click="checkFn"></i>
-            <span>{{model.name}}</span>
+            <span @click="onNameFn">{{model.name}}</span>
             <i class="fa" :class="!showEditor ? 'fa-caret-down' : 'fa-caret-up' " @click="editFn"></i>
             <div class="x-tree-item-editor" v-show="showEditor">
                 <div class="x-tree-item-editor-item" @click="">修改部门</div>
@@ -14,7 +14,7 @@
         </div>
 
         <div class='x-tree-item-children' v-if="hasChildren" v-show="model.expand">
-            <x-tree-item class="x-tree-item" v-for="model in model.children" :model="model">
+            <x-tree-item class="x-tree-item" v-for="model in model.children" :model="model" :options="treeOptions" >
             </x-tree-item>
         </div>
     </div>
@@ -24,10 +24,12 @@
     export default {
         name : 'x-tree-item',
         props: {
-            model: Object
+            model: Object,
+            options: Object
         },
         data: function () {
             return {
+                treeOptions: this.options,
                 showEditor: false,
                 newChild: {
                     id: '',
@@ -42,9 +44,6 @@
             };
         },
         computed: {
-            isROOT: function(){
-                return this.model.name === 'ROOT';
-            },
             hasChildren: function () {
                 return this.model.is_node && this.model.children &&
                     this.model.children.length
@@ -119,6 +118,11 @@
             checkFn: function () {
                 console.log("this",this);
                 this._changeItem(this.model, !this.model.is_check);
+            },
+
+            onNameFn :function () {
+                console.log("this.options",this.options);
+                this.options.onName(this.model);
             },
 
             editFn: function () {

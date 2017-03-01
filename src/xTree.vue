@@ -1,6 +1,6 @@
 <template>
     <div class="x-tree-wrapper">
-        <x-tree-item class="x-tree-root" :model="treeData"></x-tree-item>
+        <x-tree-item class="x-tree-root" :model="treeModel" :options="treeOptions"></x-tree-item>
     </div>
 </template>
 
@@ -13,17 +13,17 @@
             xTreeItem
         },
         props: {
-            model: Object
+            data: Array,
+            options: Object,
         },
         data: function () {
-            var treeDataTemp = this._arrayToTree(this.model.data);
+            var treeModelTemp = this._arrayToTree(this.data);
 
-            var treeDataChecked = this._checkTreeByIds(treeDataTemp, this.model.sel_ids);
-
-            console.log("treeDataComputed", treeDataChecked);
+            var treeModelChecked = this._checkTreeByIds(treeModelTemp, this.options.sel_ids);
 
             return {
-                treeData: treeDataChecked
+                treeModel: treeModelChecked,
+                treeOptions: this.options
             };
         },
         computed: {},
@@ -47,8 +47,7 @@
 
             _getTreeRoot: function (arrayIn) {
                 var rootId = [];
-                var clone = this._cloneArray(arrayIn);
-//                var clone = JSON.parse(JSON.stringify(arrayIn));
+                var clone = JSON.parse(JSON.stringify(arrayIn));
                 for (var i = 0, len = arrayIn.length; i < len; i++) {
                     for (var j = i; j < len; j++) {
                         if (arrayIn[i].id === arrayIn[j].nodeId) {
@@ -59,8 +58,6 @@
                         }
                     }
                 }
-                console.log(clone);
-                console.log("arrayIn",arrayIn);
 
                 for (var k = 0; k < clone.length; k++) {
                     if (clone[k]) {
@@ -69,59 +66,26 @@
 
                 }
 
-                // 去除数组重复值
-                // 方法一
-                // function unique(array) {
-                //     var n = [];
-                //     for (var i = 0; i < array.length; i++) {
-                //         if (n.indexOf(array[i]) == -1) {
-                //             n.push(array[i]);
-                //         }
-                //     }
-                //     return n;
-                // }
 
-                // 方法二
-                function unique(array) {
-                    var r = [];
-                    for (var i = 0, len = array.length; i < len; i++) {
-                        for (var j = i + 1; j < len; j++) {
-                            if (array[i] === array[j]) {
-                                j = ++i;
-                            }
-                        }
-                        r.push(array[i]);
-                    }
-                    return r;
-                }
-
-                rootId = unique(rootId);
+                rootId = this._uniqueArray(rootId);
 
                 if (rootId.length > 1) {
                     console.log('warning: rootId不唯一', rootId);
-                } else {
-                    if (rootId.length <= 0) {
-                        console.log('warning: 没有rootId', rootId);
-                    }
+                } else if (rootId.length <= 0) {
+                    console.log('warning: 没有rootId', rootId);
                 }
 
                 return rootId[0];
             },
 
-            _cloneArray: function (arrayIn) {
-                var clone = [];
-
+            _uniqueArray: function (arrayIn) {
+                var ua = [];
                 for (var i = 0; i < arrayIn.length; i++) {
-                    var temp = {
-                        id: arrayIn[i].id,
-                        name: arrayIn[i].name,
-                        nodeId: arrayIn[i].nodeId,
-                        is_node: arrayIn[i].is_node,
-                        is_check: arrayIn[i].is_check
-                    };
-                    clone.push(temp);
+                    if (ua.indexOf(arrayIn[i]) == -1) {
+                        ua.push(arrayIn[i]);
+                    }
                 }
-                return clone;
+                return ua;
             },
 
             _getSubTree: function (arrayIn, parent) {
@@ -147,7 +111,6 @@
                 }
                 return result;
             },
-
 
             _checkTreeByIds: function (tree, sel_ids) {
                 var ids = sel_ids.split(',');

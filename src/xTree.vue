@@ -14,25 +14,12 @@
         },
         props: {
             dataarray: Array,
-            options: Object,
-            dataobject: Object
+            options: Object
         },
         data: function () {
             var treeModelTemp = this._arrayToTree(this.dataarray);
 
             var treeModelChecked = this._checkTreeByIds(treeModelTemp, this.options.sel_ids);
-
-            var dataobjectTemp = this.dataobject;
-            dataobjectTemp.id = treeModelChecked.id;
-            dataobjectTemp.name = treeModelChecked.name;
-            dataobjectTemp.nodeId = treeModelChecked.nodeId;
-            dataobjectTemp.is_node = treeModelChecked.is_node;
-            dataobjectTemp.is_check = treeModelChecked.is_check;
-            dataobjectTemp.children = treeModelChecked.children;
-            dataobjectTemp.parent = treeModelChecked.parent;
-            dataobjectTemp.level = treeModelChecked.level;
-            dataobjectTemp.expand = treeModelChecked.expand;
-            dataobjectTemp.itemAmount = treeModelChecked.itemAmount;
 
             return {
                 treeModel: treeModelChecked,
@@ -218,8 +205,7 @@
             },
         },
         created() {
-            console.log("this", this);
-
+            this.options.onInit(this.treeModel);
         }
     };
 </script>

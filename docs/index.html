@@ -10,7 +10,7 @@
 </head>
 <body>
 <div id="xTreeDemo">
-    <x-tree :dataarray="treeDataArray" :dataobject="treeDataObject" :options="treeOptions"></x-tree>
+    <x-tree :dataarray="treeDataArray" :options="treeOptions"></x-tree>
 </div>
 
 <div class="button button-edit">edit</div>
@@ -27,6 +27,9 @@
         has_search: false,
         sel_ids: '3,11,12,13,30,31,32,33',
         expand: 6,
+        onInit: function (model) {
+            this.store = model;
+        },
         onName: function (item) {
             console.log("click item", item, item.name);
         },
@@ -79,11 +82,11 @@
             return {
                 treeDataArray: treeData,
                 treeOptions: treeOptions,
-                treeDataObject:{}
             };
         }
     });
     console.log("new Vue(), xTree1 is ", xTree1);
+
 // editItem
     var editTemp = {};
     function popUpEditor(item) {
@@ -100,6 +103,7 @@
     }
     var editEl = document.querySelector('.button-edit');
     editEl.addEventListener('click', editItem);
+
 // addChild()
     var addTemp = {};
     function popUpAddor(item) {
@@ -114,9 +118,9 @@
 
         if (!addTemp.parent.is_node) {
             addTemp.parent.is_node = true;
-            addTemp.parent.expand = true;
             addTemp.parent.children = [];
         }
+        addTemp.parent.expand = true;
         addTemp.parent.children.push(addTemp);
         console.log("addTempAfter", addTemp, addTemp.name);
         addTemp = {};
@@ -126,6 +130,7 @@
     }
     var addEl = document.querySelector('.button-add');
     addEl.addEventListener('click', addItem);
+
     var cancelEl = document.querySelector('.button-cancel');
     cancelEl.addEventListener('click', cancelAdd);
 </script>

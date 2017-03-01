@@ -181,13 +181,26 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         xTreeItem: __WEBPACK_IMPORTED_MODULE_0__xTreeItem_vue___default.a
     },
     props: {
-        data: Array,
-        options: Object
+        dataarray: Array,
+        options: Object,
+        dataobject: Object
     },
     data: function () {
-        var treeModelTemp = this._arrayToTree(this.data);
+        var treeModelTemp = this._arrayToTree(this.dataarray);
 
         var treeModelChecked = this._checkTreeByIds(treeModelTemp, this.options.sel_ids);
+
+        var dataobjectTemp = this.dataobject;
+        dataobjectTemp.id = treeModelChecked.id;
+        dataobjectTemp.name = treeModelChecked.name;
+        dataobjectTemp.nodeId = treeModelChecked.nodeId;
+        dataobjectTemp.is_node = treeModelChecked.is_node;
+        dataobjectTemp.is_check = treeModelChecked.is_check;
+        dataobjectTemp.children = treeModelChecked.children;
+        dataobjectTemp.parent = treeModelChecked.parent;
+        dataobjectTemp.level = treeModelChecked.level;
+        dataobjectTemp.expand = treeModelChecked.expand;
+        dataobjectTemp.itemAmount = treeModelChecked.itemAmount;
 
         return {
             treeModel: treeModelChecked,
@@ -199,15 +212,16 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         _arrayToTree: function (arrayIn) {
             var rootId = this._getTreeRoot(arrayIn);
             var treeData = {
-                amount: arrayIn.length,
                 id: rootId,
                 name: 'ROOT',
+                nodeId: null,
                 is_node: true,
                 is_check: false,
                 children: [],
-                expand: true,
                 parent: null,
-                level: 0
+                level: 0,
+                expand: true,
+                itemAmount: arrayIn.length
             };
             treeData.children = this._getSubTree(arrayIn, treeData);
             return treeData;
@@ -218,10 +232,10 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             var clone = JSON.parse(JSON.stringify(arrayIn));
             for (var i = 0, len = arrayIn.length; i < len; i++) {
                 for (var j = i; j < len; j++) {
-                    if (arrayIn[i].id === arrayIn[j].nodeId) {
+                    if (arrayIn[i].id == arrayIn[j].nodeId) {
                         clone[j] = null;
                     }
-                    if (arrayIn[i].nodeId === arrayIn[j].id) {
+                    if (arrayIn[i].nodeId == arrayIn[j].id) {
                         clone[i] = null;
                     }
                 }
@@ -232,8 +246,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                     rootId.push(clone[k].nodeId);
                 }
             }
-
-            rootId = this._unique(rootId);
+            rootId = this._uniqueArray(rootId);
 
             if (rootId.length > 1) {
                 console.log('warning: rootId不唯一', rootId);
@@ -244,21 +257,22 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             return rootId[0];
         },
 
-        _unique: function (arrayIn) {
-            var uq = [];
+        _uniqueArray: function (arrayIn) {
+            var ua = [];
             for (var i = 0; i < arrayIn.length; i++) {
-                if (uq.indexOf(arrayIn[i]) == -1) {
-                    uq.push(arrayIn[i]);
+                if (ua.indexOf(arrayIn[i]) == -1) {
+                    ua.push(arrayIn[i]);
                 }
             }
-            return uq;
+            return ua;
         },
 
         _getSubTree: function (arrayIn, parent) {
             var result = [];
             var temp = {};
             for (var i = 0; i < arrayIn.length; i++) {
-                if (arrayIn[i].nodeId === parent.id) {
+                if (arrayIn[i].nodeId == parent.id) {
+                    //                        temp = arrayIn[i];
                     temp = {
                         id: arrayIn[i].id,
                         name: arrayIn[i].name,
@@ -268,9 +282,12 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                     }; //copy
                     temp.parent = parent;
                     temp.level = parent.level + 1;
-                    if (arrayIn[i].is_node) {
+                    if (temp.is_node) {
                         temp.expand = true;
                         temp.children = this._getSubTree(arrayIn, temp);
+                    } else {
+                        temp.expand = false;
+                        temp.children = [];
                     }
                     result.push(temp);
                 }
@@ -280,9 +297,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
         _checkTreeByIds: function (tree, sel_ids) {
             var ids = sel_ids.split(',');
-            for (var i = 0; i < ids.length; i++) {
-                ids[i] = parseInt(ids[i]);
-            }
+
             this._traverseTree(tree, this._checkTreeByIdsFn, ids);
 
             return tree;
@@ -369,6 +384,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             }
             return true;
         }
+    },
+    created() {
+        console.log("this", this);
     }
 };
 
@@ -410,36 +428,12 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     data: function () {
         return {
             treeOptions: this.options,
-            showEditor: false,
-            newChild: {
-                id: '',
-                name: '',
-                is_node: '',
-                is_check: ''
-            },
-            idRE: /^(\w+|[\u4e00-\u9fa5]+)$/,
-            nameRE: /^(\w+|[\u4e00-\u9fa5]+)$/,
-            nodeRE: /^(\w+|[\u4e00-\u9fa5]+)$/,
-            checkRE: /^(\w+|[\u4e00-\u9fa5]+)$/
+            showEditor: false
         };
     },
     computed: {
         hasChildren: function () {
             return this.model.is_node && this.model.children && this.model.children.length;
-        },
-        validation: function () {
-            return {
-                id: !!this.newChild.name.trim(),
-                name: !!this.newChild.name.trim(),
-                node: this.nodeRE.test(this.newChild.is_node),
-                check: this.checkRE.test(this.newChild.is_check)
-            };
-        },
-        isValid: function () {
-            var validation = this.validation;
-            return Object.keys(validation).every(function (key) {
-                return validation[key];
-            });
         }
     },
     methods: {
@@ -490,57 +484,51 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         },
 
         expandFn: function () {
-            if (this.hasChildren) {
+            console.log(this.model.expand);
+            if (this.model.is_node) {
                 this.model.expand = !this.model.expand;
             }
+            console.log(this.model.expand);
         },
         checkFn: function () {
-            console.log("this", this);
             this._changeItem(this.model, !this.model.is_check);
         },
 
-        onNameFn: function () {
-            console.log("this.options", this.options);
+        nameFn: function () {
             this.options.onName(this.model);
         },
 
-        editFn: function () {
+        editorFn: function () {
             this.showEditor = !this.showEditor;
         },
 
-        updateItemFn: function () {
+        editFn: function () {
+            this.options.onEdit(this.model);
             this.showEditor = !this.showEditor;
-            this.model.id = this.newChild.id;
-            this.model.name = this.newChild.name;
-            this.model.is_node = this.newChild.is_node;
-            this.model.is_check = this.newChild.is_check;
         },
 
         deleteFn: function () {
             var index = this.model.parent.children.indexOf(this.model);
-            this.model.parent.children.splice(index, 1);
-            this.showEditor = !this.showEditor;
-        },
 
-        newChildFn: function () {
-            this.editOrAdd = false;
+            this.model.parent.children.splice(index, 1);
+            this.options.onDelete(this.model);
             this.showEditor = !this.showEditor;
         },
 
         addChildFn: function () {
-            this.showEditor = !this.showEditor;
-            var newChildTemp = {
-                id: this.newChild.id,
-                name: this.newChild.name,
-                nodeId: '',
-                is_node: this.newChild.is_node,
-                is_check: this.newChild.is_check,
-                expand: '',
-                level: '',
-                parent: '',
-                children: ''
+            var newChild = {
+                id: '',
+                name: '',
+                nodeId: this.model.id,
+                is_node: false,
+                is_check: false,
+                expand: false,
+                level: this.model.level + 1,
+                parent: this.model,
+                children: []
             };
-            this.model.children.push(newChildTemp);
+            this.options.onAddChild(newChild);
+            this.showEditor = !this.showEditor;
         }
     }
 };
@@ -554,7 +542,7 @@ exports = module.exports = __webpack_require__(5)();
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
 
 // exports
 
@@ -686,14 +674,26 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       value: (_vm.model.level),
       expression: "model.level"
     }],
-    staticClass: "x-tree-item-item"
-  }, [(_vm.model.is_node) ? _c('i', {
+    staticClass: "x-tree-item-self"
+  }, [_c('i', {
+    directives: [{
+      name: "show",
+      rawName: "v-show",
+      value: (_vm.model.is_node),
+      expression: "model.is_node"
+    }],
     staticClass: "fa",
     class: _vm.model.expand ? 'fa-minus' : 'fa-plus',
     on: {
       "click": _vm.expandFn
     }
-  }) : _c('span', {
+  }), _vm._v(" "), _c('span', {
+    directives: [{
+      name: "show",
+      rawName: "v-show",
+      value: (!_vm.model.is_node),
+      expression: "!model.is_node"
+    }],
     staticClass: "icon-blank"
   }), _vm._v(" "), _c('i', {
     staticClass: "fa",
@@ -703,13 +703,13 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     }
   }), _vm._v(" "), _c('span', {
     on: {
-      "click": _vm.onNameFn
+      "click": _vm.nameFn
     }
   }, [_vm._v(_vm._s(_vm.model.name))]), _vm._v(" "), _c('i', {
     staticClass: "fa",
     class: !_vm.showEditor ? 'fa-caret-down' : 'fa-caret-up',
     on: {
-      "click": _vm.editFn
+      "click": _vm.editorFn
     }
   }), _vm._v(" "), _c('div', {
     directives: [{
@@ -722,7 +722,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
   }, [_c('div', {
     staticClass: "x-tree-item-editor-item",
     on: {
-      "click": function($event) {}
+      "click": _vm.editFn
     }
   }, [_vm._v("修改部门")]), _vm._v(" "), _c('div', {
     staticClass: "x-tree-item-editor-item",
@@ -732,9 +732,9 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
   }, [_vm._v("删除部门")]), _vm._v(" "), _c('div', {
     staticClass: "x-tree-item-editor-item",
     on: {
-      "click": function($event) {}
+      "click": _vm.addChildFn
     }
-  }, [_vm._v("添加子部门")])])]), _vm._v(" "), (_vm.hasChildren) ? _c('div', {
+  }, [_vm._v("添加子部门")])])]), _vm._v(" "), (_vm.model.is_node) ? _c('div', {
     directives: [{
       name: "show",
       rawName: "v-show",
@@ -744,7 +744,6 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     staticClass: "x-tree-item-children"
   }, _vm._l((_vm.model.children), function(model) {
     return _c('x-tree-item', {
-      staticClass: "x-tree-item",
       attrs: {
         "model": model,
         "options": _vm.treeOptions

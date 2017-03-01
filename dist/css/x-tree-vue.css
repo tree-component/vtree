@@ -8,12 +8,33 @@ body {
     font-weight: bold;
 }
 
-.tree-wrap {
+.button {
     display: inline-block;
-    padding: 5px;
-    border: 1px solid #02B;
-    vertical-align: bottom;
-    background: #fff;
+    margin: 1px;
+    border: 1px solid deepskyblue;
+    padding: 1px;
+    width: 60px;
+    height: 20px;
+    cursor: pointer;
+}
+
+.fa {
+    width: 14px;
+}
+
+.icon-blank {
+    display: inline-block;
+    font-size: 14px;
+    width: 1em;
+}
+
+#xTreeDemo {
+    display: inline-block;
+    width: 300px;
+}
+
+.x-tree-wrapper {
+    cursor: pointer;
 }
 
 .x-tree-item {
@@ -26,11 +47,6 @@ body {
     cursor: pointer;
 }
 
-.x-tree-item-children {
-    padding-left: 1.5em;
-    line-height: 1.5em;
-}
-
 .x-tree-item-editor {
     position: absolute;
     z-index: 99;
@@ -40,16 +56,14 @@ body {
     background: #f2f2f2;
 }
 
+.x-tree-item-children {
+    min-width:200px;
+    min-height:20px;
+    border:1px solid deepskyblue;
+    padding-left: 1.5em;
+    line-height: 1.5em;
+}
+
 .x-tree-item-editor-item {
 
-}
-
-.fa {
-    width: 14px;
-}
-
-.icon-blank {
-    display: inline-block;
-    font-size: 14px;
-    width: 1em;
 }

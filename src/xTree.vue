@@ -13,13 +13,26 @@
             xTreeItem
         },
         props: {
-            data: Array,
+            dataarray: Array,
             options: Object,
+            dataobject: Object
         },
         data: function () {
-            var treeModelTemp = this._arrayToTree(this.data);
+            var treeModelTemp = this._arrayToTree(this.dataarray);
 
             var treeModelChecked = this._checkTreeByIds(treeModelTemp, this.options.sel_ids);
+
+            var dataobjectTemp = this.dataobject;
+            dataobjectTemp.id = treeModelChecked.id;
+            dataobjectTemp.name = treeModelChecked.name;
+            dataobjectTemp.nodeId = treeModelChecked.nodeId;
+            dataobjectTemp.is_node = treeModelChecked.is_node;
+            dataobjectTemp.is_check = treeModelChecked.is_check;
+            dataobjectTemp.children = treeModelChecked.children;
+            dataobjectTemp.parent = treeModelChecked.parent;
+            dataobjectTemp.level = treeModelChecked.level;
+            dataobjectTemp.expand = treeModelChecked.expand;
+            dataobjectTemp.itemAmount = treeModelChecked.itemAmount;
 
             return {
                 treeModel: treeModelChecked,
@@ -31,15 +44,16 @@
             _arrayToTree: function (arrayIn) {
                 var rootId = this._getTreeRoot(arrayIn);
                 var treeData = {
-                    amount: arrayIn.length,
                     id: rootId,
                     name: 'ROOT',
+                    nodeId: null,
                     is_node: true,
                     is_check: false,
                     children: [],
-                    expand: true,
                     parent: null,
-                    level: 0
+                    level: 0,
+                    expand: true,
+                    itemAmount: arrayIn.length,
                 };
                 treeData.children = this._getSubTree(arrayIn, treeData);
                 return treeData;
@@ -50,10 +64,10 @@
                 var clone = JSON.parse(JSON.stringify(arrayIn));
                 for (var i = 0, len = arrayIn.length; i < len; i++) {
                     for (var j = i; j < len; j++) {
-                        if (arrayIn[i].id === arrayIn[j].nodeId) {
+                        if (arrayIn[i].id == arrayIn[j].nodeId) {
                             clone[j] = null;
                         }
-                        if (arrayIn[i].nodeId === arrayIn[j].id) {
+                        if (arrayIn[i].nodeId == arrayIn[j].id) {
                             clone[i] = null;
                         }
                     }
@@ -63,10 +77,7 @@
                     if (clone[k]) {
                         rootId.push(clone[k].nodeId);
                     }
-
                 }
-
-
                 rootId = this._uniqueArray(rootId);
 
                 if (rootId.length > 1) {
@@ -92,7 +103,8 @@
                 var result = [];
                 var temp = {};
                 for (var i = 0; i < arrayIn.length; i++) {
-                    if (arrayIn[i].nodeId === parent.id) {
+                    if (arrayIn[i].nodeId == parent.id) {
+//                        temp = arrayIn[i];
                         temp = {
                             id: arrayIn[i].id,
                             name: arrayIn[i].name,
@@ -102,9 +114,12 @@
                         }; //copy
                         temp.parent = parent;
                         temp.level = parent.level + 1;
-                        if (arrayIn[i].is_node) {
+                        if (temp.is_node) {
                             temp.expand = true;
                             temp.children = this._getSubTree(arrayIn, temp);
+                        } else {
+                            temp.expand = false;
+                            temp.children = [];
                         }
                         result.push(temp);
                     }
@@ -114,9 +129,7 @@
 
             _checkTreeByIds: function (tree, sel_ids) {
                 var ids = sel_ids.split(',');
-                for (var i = 0; i < ids.length; i++) {
-                    ids[i] = parseInt(ids[i]);
-                }
+
                 this._traverseTree(tree, this._checkTreeByIdsFn, ids);
 
                 return tree;
@@ -204,6 +217,10 @@
                 return true;
             },
         },
+        created() {
+            console.log("this", this);
+
+        }
     };
 </script>
 

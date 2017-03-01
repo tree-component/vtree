@@ -1,20 +1,20 @@
 <template>
     <div class="x-tree-item">
-        <div class="x-tree-item-item" v-show="model.level">
-            <i v-if="model.is_node" class="fa" :class="model.expand ? 'fa-minus' : 'fa-plus'" @click="expandFn"></i>
-            <span v-else class="icon-blank"></span>
+        <div class="x-tree-item-self" v-show="model.level">
+            <i class="fa" :class="model.expand ? 'fa-minus' : 'fa-plus'" v-show="model.is_node" @click="expandFn"></i>
+            <span class="icon-blank" v-show="!model.is_node"></span>
             <i class="fa" :class="model.is_check ? 'fa-check-square-o' : 'fa-square-o'" @click="checkFn"></i>
-            <span @click="onNameFn">{{model.name}}</span>
-            <i class="fa" :class="!showEditor ? 'fa-caret-down' : 'fa-caret-up' " @click="editFn"></i>
+            <span @click="nameFn">{{model.name}}</span>
+            <i class="fa" :class="!showEditor ? 'fa-caret-down' : 'fa-caret-up' " @click="editorFn"></i>
             <div class="x-tree-item-editor" v-show="showEditor">
-                <div class="x-tree-item-editor-item" @click="">修改部门</div>
+                <div class="x-tree-item-editor-item" @click="editFn">修改部门</div>
                 <div class="x-tree-item-editor-item" @click="deleteFn">删除部门</div>
-                <div class="x-tree-item-editor-item" @click="">添加子部门</div>
+                <div class="x-tree-item-editor-item" @click="addChildFn">添加子部门</div>
             </div>
         </div>
 
-        <div class='x-tree-item-children' v-if="hasChildren" v-show="model.expand">
-            <x-tree-item class="x-tree-item" v-for="model in model.children" :model="model" :options="treeOptions" >
+        <div class='x-tree-item-children' v-if="model.is_node" v-show="model.expand">
+            <x-tree-item v-for="model in model.children" :model="model" :options="treeOptions">
             </x-tree-item>
         </div>
     </div>
@@ -22,7 +22,7 @@
 
 <script>
     export default {
-        name : 'x-tree-item',
+        name: 'x-tree-item',
         props: {
             model: Object,
             options: Object
@@ -31,36 +31,12 @@
             return {
                 treeOptions: this.options,
                 showEditor: false,
-                newChild: {
-                    id: '',
-                    name: '',
-                    is_node: '',
-                    is_check: '',
-                },
-                idRE: /^(\w+|[\u4e00-\u9fa5]+)$/,
-                nameRE: /^(\w+|[\u4e00-\u9fa5]+)$/,
-                nodeRE: /^(\w+|[\u4e00-\u9fa5]+)$/,
-                checkRE: /^(\w+|[\u4e00-\u9fa5]+)$/,
             };
         },
         computed: {
             hasChildren: function () {
                 return this.model.is_node && this.model.children &&
                     this.model.children.length
-            },
-            validation: function () {
-                return {
-                    id: !!this.newChild.name.trim(),
-                    name: !!this.newChild.name.trim(),
-                    node: this.nodeRE.test(this.newChild.is_node),
-                    check: this.checkRE.test(this.newChild.is_check),
-                }
-            },
-            isValid: function () {
-                var validation = this.validation;
-                return Object.keys(validation).every(function (key) {
-                    return validation[key]
-                })
             }
         },
         methods: {
@@ -111,58 +87,52 @@
             },
 
             expandFn: function () {
-                if (this.hasChildren) {
+                console.log(this.model.expand);
+                if(this.model.is_node){
                     this.model.expand = !this.model.expand;
                 }
+                console.log(this.model.expand);
             },
             checkFn: function () {
-                console.log("this",this);
                 this._changeItem(this.model, !this.model.is_check);
             },
 
-            onNameFn :function () {
-                console.log("this.options",this.options);
+            nameFn: function () {
                 this.options.onName(this.model);
             },
 
-            editFn: function () {
+            editorFn: function () {
                 this.showEditor = !this.showEditor;
             },
 
 
-            updateItemFn: function () {
+            editFn: function () {
+                this.options.onEdit(this.model);
                 this.showEditor = !this.showEditor;
-                this.model.id = this.newChild.id;
-                this.model.name = this.newChild.name;
-                this.model.is_node = this.newChild.is_node;
-                this.model.is_check = this.newChild.is_check;
             },
 
             deleteFn: function () {
                 var index = this.model.parent.children.indexOf(this.model);
-                this.model.parent.children.splice(index ,1);
-                this.showEditor = !this.showEditor;
-            },
 
-            newChildFn: function () {
-                this.editOrAdd = false;
+                this.model.parent.children.splice(index, 1);
+                this.options.onDelete(this.model);
                 this.showEditor = !this.showEditor;
             },
 
             addChildFn: function () {
-                this.showEditor = !this.showEditor;
-                var newChildTemp = {
-                    id: this.newChild.id,
-                    name: this.newChild.name,
-                    nodeId: '',
-                    is_node: this.newChild.is_node,
-                    is_check: this.newChild.is_check,
-                    expand: '',
-                    level: '',
-                    parent: '',
-                    children: '',
+                var newChild = {
+                    id: '',
+                    name: '',
+                    nodeId: this.model.id,
+                    is_node: false,
+                    is_check: false,
+                    expand: false,
+                    level: this.model.level + 1,
+                    parent: this.model,
+                    children: [],
                 };
-                this.model.children.push(newChildTemp);
+                this.options.onAddChild(newChild);
+                this.showEditor = !this.showEditor;
             }
         }
     }

@@ -2168,8 +2168,8 @@ function applyNS (vnode, ns) {
 /*  */
 
 function initRender (vm) {
-  vm.$vnode = null; // the placeholder node in parent tree
-  vm._vnode = null; // the root of the child tree
+  vm.$vnode = null; // the placeholder node in parent el-tree
+  vm._vnode = null; // the root of the child el-tree
   vm._staticTrees = null;
   var parentVnode = vm.$options._parentVnode;
   var renderContext = parentVnode && parentVnode.context;
@@ -2260,20 +2260,20 @@ function renderMixin (Vue) {
   // loose indexOf
   Vue.prototype._i = looseIndexOf;
 
-  // render static tree by index
+  // render static el-tree by index
   Vue.prototype._m = function renderStatic (
     index,
     isInFor
   ) {
     var tree = this._staticTrees[index];
-    // if has already-rendered static tree and not inside v-for,
-    // we can reuse the same tree by doing a shallow clone.
+    // if has already-rendered static el-tree and not inside v-for,
+    // we can reuse the same el-tree by doing a shallow clone.
     if (tree && !isInFor) {
       return Array.isArray(tree)
         ? cloneVNodes(tree)
         : cloneVNode(tree)
     }
-    // otherwise, render a fresh tree.
+    // otherwise, render a fresh el-tree.
     tree = this._staticTrees[index] = this.$options.staticRenderFns[index].call(this._renderProxy);
     markStatic(tree, ("__static__" + index), false);
     return tree
@@ -2358,7 +2358,7 @@ function renderMixin (Vue) {
       // warn duplicate slot usage
       if (slotNodes && "development" !== 'production') {
         slotNodes._rendered && warn(
-          "Duplicate presence of slot \"" + name + "\" found in the same render tree " +
+          "Duplicate presence of slot \"" + name + "\" found in the same render el-tree " +
           "- this will likely cause render errors.",
           this
         );
@@ -2671,7 +2671,7 @@ function lifecycleMixin (Vue) {
     var hasChildren = !!(vm.$options._renderChildren || renderChildren);
     vm.$options._parentVnode = parentVnode;
     vm.$vnode = parentVnode; // update vm's placeholder node without re-render
-    if (vm._vnode) { // update child tree's parent
+    if (vm._vnode) { // update child el-tree's parent
       vm._vnode.parent = parentVnode;
     }
     vm.$options._renderChildren = renderChildren;
@@ -2746,7 +2746,7 @@ function lifecycleMixin (Vue) {
     if (vm.$el) {
       vm.$el.__vue__ = null;
     }
-    // invoke destroy hooks on current rendered tree
+    // invoke destroy hooks on current rendered el-tree
     vm.__patch__(vm._vnode, null);
   };
 }
@@ -4493,7 +4493,7 @@ function createPatchFunction (backend) {
     if (isDef(data)) {
       if (isDef(i = data.hook) && isDef(i = i.init)) { i(vnode, true /* hydrating */); }
       if (isDef(i = vnode.componentInstance)) {
-        // child component. it should have hydrated its own tree.
+        // child component. it should have hydrated its own el-tree.
         initComponent(vnode, insertedVnodeQueue);
         return true
       }
@@ -4585,7 +4585,7 @@ function createPatchFunction (backend) {
               return oldVnode
             } else {
               warn(
-                'The client-side rendered virtual DOM tree is not matching ' +
+                'The client-side rendered virtual DOM el-tree is not matching ' +
                 'server-rendered content. This is likely caused by incorrect ' +
                 'HTML markup, for example nesting block-level elements inside ' +
                 '<p>, or missing <tbody>. Bailing hydration and performing ' +
@@ -7010,7 +7010,7 @@ function parse (
         }
       }
 
-      // tree management
+      // el-tree management
       if (!root) {
         root = element;
         checkRootConstraints(root);
@@ -7422,7 +7422,7 @@ var isPlatformReservedTag;
 var genStaticKeysCached = cached(genStaticKeys$1);
 
 /**
- * Goal of the optimizer: walk the generated template AST tree
+ * Goal of the optimizer: walk the generated template AST el-tree
  * and detect sub-trees that are purely static, i.e. parts of
  * the DOM that never needs to change.
  *

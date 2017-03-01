@@ -10,11 +10,15 @@
 </head>
 <body>
 <div id="xTreeDemo">
-    <x-tree :data="treeData" :options="treeOptions"></x-tree>
+    <x-tree :dataarray="treeDataArray" :dataobject="treeDataObject" :options="treeOptions"></x-tree>
 </div>
 
-<script>
+<div class="button button-edit">edit</div>
+<div class="button button-add">add</div>
+<div class="button button-cancel">cancel</div>
+<div>footer</div>
 
+<script>
     var treeOptions = {
         only_child: false,
         is_multi: true,
@@ -24,11 +28,23 @@
         sel_ids: '3,11,12,13,30,31,32,33',
         expand: 6,
         onName: function (item) {
-            console.log("onItem",item);
-            onNameFn(item);
+            console.log("click item", item, item.name);
+        },
+        onEdit: function (item) {
+            console.log("edit item", item, item.name);
+            popUpEditor(item);
         },
 
+        onDelete: function (item) {
+            console.log("delete item", item, item.name, "item.parent", item.parent);
+        },
+
+        onAddChild: function (newChild) {
+            console.log("add child, parent is", newChild.parent, newChild.parent.name);
+            popUpAddor(newChild);
+        },
     };
+
     var treeData = [
         {id: 26, name: '成都', nodeId: 7, is_node: false, is_check: false},
         {id: 27, name: '泸州', nodeId: 7, is_node: false, is_check: false},
@@ -61,20 +77,58 @@
         el: '#xTreeDemo',
         data: function () {
             return {
-                treeData: treeData,
-                treeOptions : treeOptions
+                treeDataArray: treeData,
+                treeOptions: treeOptions,
+                treeDataObject:{}
             };
         }
     });
-    console.log(xTree1);
-
-    var itemTemp = {};
-    function onNameFn(item) {
-        console.log("onNameFn",item.name);
-        itemTemp = item;
+    console.log("new Vue(), xTree1 is ", xTree1);
+// editItem
+    var editTemp = {};
+    function popUpEditor(item) {
+        editTemp = item;
     }
+    function editItem() {
+        console.log("editTempBefore", editTemp, editTemp.name);
+        editTemp.id = 666;
+        editTemp.name = "edit";
+        editTemp.is_check = false;
+        editTemp.is_node = true;
+        console.log("editTempAfter", editTemp, editTemp.name);
+        editTemp = {};
+    }
+    var editEl = document.querySelector('.button-edit');
+    editEl.addEventListener('click', editItem);
+// addChild()
+    var addTemp = {};
+    function popUpAddor(item) {
+        addTemp = item;
+    }
+    function addItem() {
+        console.log("addTempBefore", addTemp, addTemp.name);
+        addTemp.id = 777;
+        addTemp.name = "add";
+        addTemp.is_check = true;
+        addTemp.is_node = false;
+
+        if (!addTemp.parent.is_node) {
+            addTemp.parent.is_node = true;
+            addTemp.parent.expand = true;
+            addTemp.parent.children = [];
+        }
+        addTemp.parent.children.push(addTemp);
+        console.log("addTempAfter", addTemp, addTemp.name);
+        addTemp = {};
+    }
+    function cancelAdd() {
+        console.log("add cancel");
+    }
+    var addEl = document.querySelector('.button-add');
+    addEl.addEventListener('click', addItem);
+    var cancelEl = document.querySelector('.button-cancel');
+    cancelEl.addEventListener('click', cancelAdd);
 </script>
 
-<div>footer</div>
 </body>
 </html>

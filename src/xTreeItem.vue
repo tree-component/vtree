@@ -39,42 +39,36 @@
             hasChildren: function () {
                 return this.model.is_node && this.model.children && this.model.children.length
             },
+            state: function () {
+                var state = '';
+                if (!this.hasChildren) {
+                    state = this.model.is_check;
+                } else if (this.model.is_check === true) {
+                    state = true;
+                } else {
+                    state = false;
+                    for (var i = 0; i < this.model.children.length; i++) {
+                        if (this.model.children[i].is_check === true) {
+                            state = 'tristate';
+                            break;
+                        }
+                    }
+                }
+                return state;
+            },
             checkboxIcon: function () {
                 var faIcon = '';
-//                var state = '';
-//
-//                if (!this.model.is_node || !this.model.children || !this.model.children.length) {
-//                    state = this.model.is_check;
-//                } else if (this.model.is_check === true) {
-//                    state = true;
-//                } else {
-//                    state = false;
-//                    for (var i = 0; i < this.model.children.length; i++) {
-//                        if (this.model.children[i].is_check === true) {
-//                            state = 'tristate';
-//                            break;
-//                        }
-//                    }
-//                }
-//                if (state === true) {
-//                    faIcon = 'fa-check-square-o';
-//                } else if (state === false) {
-//                    faIcon = 'fa-square-o';
-//                } else if (state === 'tristate') {
-//                    faIcon = 'fa-minus-square-o';
-//                }
-                if (this.model.is_check === true) {
+                if (this.model.checkState === true) {
                     faIcon = 'fa-check-square-o';
-                } else if (this.model.is_check === false) {
+                } else if (this.model.checkState === false) {
                     faIcon = 'fa-square-o';
-                } else if (this.model.is_check === 'tristate') {
+                } else if (this.model.checkState === 'tristate') {
                     faIcon = 'fa-minus-square-o';
                 }
                 return faIcon;
             }
         },
         methods: {
-
             expandFn: function () {
                 console.log(this.model.expand);
                 if (this.hasChildren) {
@@ -87,6 +81,7 @@
             },
 
             nameFn: function () {
+                console.log("this.hasChildren", this.hasChildren);
                 this.options.onName(this.model);
             },
 

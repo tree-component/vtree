@@ -69,6 +69,7 @@ function _getSubTree(arrayIn, parent) {
                 is_node: arrayIn[i].is_node,
                 is_check: arrayIn[i].is_check
             }; //copy
+            temp.checkState = temp.is_check;
             temp.parent = parent;
             temp.level = parent.level + 1;
             if (temp.is_node) {

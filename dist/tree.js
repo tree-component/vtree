@@ -248,42 +248,36 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         hasChildren: function () {
             return this.model.is_node && this.model.children && this.model.children.length;
         },
+        state: function () {
+            var state = '';
+            if (!this.hasChildren) {
+                state = this.model.is_check;
+            } else if (this.model.is_check === true) {
+                state = true;
+            } else {
+                state = false;
+                for (var i = 0; i < this.model.children.length; i++) {
+                    if (this.model.children[i].is_check === true) {
+                        state = 'tristate';
+                        break;
+                    }
+                }
+            }
+            return state;
+        },
         checkboxIcon: function () {
             var faIcon = '';
-            //                var state = '';
-            //
-            //                if (!this.model.is_node || !this.model.children || !this.model.children.length) {
-            //                    state = this.model.is_check;
-            //                } else if (this.model.is_check === true) {
-            //                    state = true;
-            //                } else {
-            //                    state = false;
-            //                    for (var i = 0; i < this.model.children.length; i++) {
-            //                        if (this.model.children[i].is_check === true) {
-            //                            state = 'tristate';
-            //                            break;
-            //                        }
-            //                    }
-            //                }
-            //                if (state === true) {
-            //                    faIcon = 'fa-check-square-o';
-            //                } else if (state === false) {
-            //                    faIcon = 'fa-square-o';
-            //                } else if (state === 'tristate') {
-            //                    faIcon = 'fa-minus-square-o';
-            //                }
-            if (this.model.is_check === true) {
+            if (this.model.checkState === true) {
                 faIcon = 'fa-check-square-o';
-            } else if (this.model.is_check === false) {
+            } else if (this.model.checkState === false) {
                 faIcon = 'fa-square-o';
-            } else if (this.model.is_check === 'tristate') {
+            } else if (this.model.checkState === 'tristate') {
                 faIcon = 'fa-minus-square-o';
             }
             return faIcon;
         }
     },
     methods: {
-
         expandFn: function () {
             console.log(this.model.expand);
             if (this.hasChildren) {
@@ -296,6 +290,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         },
 
         nameFn: function () {
+            console.log("this.hasChildren", this.hasChildren);
             this.options.onName(this.model);
         },
 
@@ -335,6 +330,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             this.options.onAddChild(newChild);
             this.showEditor = !this.showEditor;
         }
+    },
+    created() {
+        this.model.checkState = this.state;
     }
 };
 
@@ -419,6 +417,7 @@ function _getSubTree(arrayIn, parent) {
                 is_node: arrayIn[i].is_node,
                 is_check: arrayIn[i].is_check
             }; //copy
+            temp.checkState = temp.is_check;
             temp.parent = parent;
             temp.level = parent.level + 1;
             if (temp.is_node) {

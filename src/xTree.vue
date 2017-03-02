@@ -24,7 +24,7 @@
 
             return {
                 fn: Fn,
-                model: treeChecked,
+                model: treeChecked
             };
         },
         computed: {},

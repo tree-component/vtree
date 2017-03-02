@@ -47,11 +47,29 @@
             },
             checkboxIcon: function () {
                 var state = '';
-                if (this.model.is_check === true) {
+
+                if(this.model.is_check === true){
+                    return 'fa-check-square-o';
+                }
+
+
+                var len = this.model.children.length;
+                var m = 0;
+                var n = 0;
+
+                for (var i = 0; i < len; i++) {
+                    if (this.model.children[i].is_check === true) {
+                        m += 1;
+                    } else if (this.model.children[i].is_check === false) {
+                        n += 1;
+                    }
+                }
+
+                if (m == len) {
                     state = 'fa-check-square-o';
-                } else if (this.model.is_check === false) {
+                } else if (n == len) {
                     state = 'fa-square-o';
-                } else if (this.model.is_check === "tristate") {
+                } else {
                     state = 'fa-minus-square-o';
                 }
                 return state;
@@ -67,7 +85,6 @@
                 console.log(this.model.expand);
             },
             checkFn: function () {
-                console.log(this,this.fn);
                 this.fn._changeItem(this.model, !this.model.is_check);
             },
 

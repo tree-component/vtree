@@ -254,12 +254,29 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             return this.model.is_node && this.model.children && this.model.children.length;
         },
         checkboxIcon: function () {
-            var state = '';
             if (this.model.is_check === true) {
+                return 'fa-check-square-o';
+            }
+
+            var state = '';
+
+            var len = this.model.children.length;
+            var m = 0;
+            var n = 0;
+
+            for (var i = 0; i < len; i++) {
+                if (this.model.children[i].is_check === true) {
+                    m += 1;
+                } else if (this.model.children[i].is_check === false) {
+                    n += 1;
+                }
+            }
+
+            if (m == len) {
                 state = 'fa-check-square-o';
-            } else if (this.model.is_check === false) {
+            } else if (n == len) {
                 state = 'fa-square-o';
-            } else if (this.model.is_check === "tristate") {
+            } else {
                 state = 'fa-minus-square-o';
             }
             return state;
@@ -275,7 +292,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             console.log(this.model.expand);
         },
         checkFn: function () {
-            console.log(this, this.fn);
             this.fn._changeItem(this.model, !this.model.is_check);
         },
 
@@ -490,45 +506,63 @@ function _changeChildren(children, change) {
     return true;
 }
 
+// function _changeParent(parent, change) {
+//     if (!parent) {
+//         return false;
+//     }
+//     var old = parent.is_check;
+//     var len = parent.children.length;
+//
+//     if (change === "tristate") {
+//         parent.is_check = "tristate";
+//     } else if (change === true) {
+//         var n = 0;
+//         for (var i = 0; i < len; i++) {
+//             if (parent.children[i].is_check === true) {
+//                 n += 1;
+//             } else {
+//                 parent.is_check = "tristate";
+//                 break;
+//             }
+//         }
+//         if (n === len) {
+//             parent.is_check = true;
+//         }
+//     } else if (change === false) {
+//         var m = 0;
+//         for (var j = 0; j < len; j++) {
+//             if (parent.children[j].is_check === false) {
+//                 m += 1;
+//             } else {
+//                 parent.is_check = "tristate";
+//                 break;
+//             }
+//         }
+//         if (m === len) {
+//             parent.is_check = false;
+//         }
+//     }
+//
+//     if (parent.parent && parent.is_check != old) {
+//         _changeParent(parent.parent, parent.is_check);
+//     }
+//     return true;
+// }
+
 function _changeParent(parent, change) {
-    if (!parent) {
+    if (!parent || parent.is_check == change) {
         return false;
     }
-    var old = parent.is_check;
-    var len = parent.children.length;
-
-    if (change === "tristate") {
-        parent.is_check = "tristate";
-    } else if (change === true) {
-        var n = 0;
-        for (var i = 0; i < len; i++) {
-            if (parent.children[i].is_check === true) {
-                n += 1;
-            } else {
-                parent.is_check = "tristate";
-                break;
+    if (change) {
+        for (var i = 0; i < parent.children.length; i++) {
+            if (!parent.children[i].is_check) {
+                return false;
             }
-        }
-        if (n === len) {
-            parent.is_check = true;
-        }
-    } else if (change === false) {
-        var m = 0;
-        for (var j = 0; j < len; j++) {
-            if (parent.children[j].is_check === false) {
-                m += 1;
-            } else {
-                parent.is_check = "tristate";
-                break;
-            }
-        }
-        if (m === len) {
-            parent.is_check = false;
         }
     }
-
-    if (parent.parent && parent.is_check != old) {
-        _changeParent(parent.parent, parent.is_check);
+    parent.is_check = change;
+    if (parent.parent) {
+        _changeParent(parent.parent, change);
     }
     return true;
 }

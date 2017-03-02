@@ -10,12 +10,13 @@
 </head>
 <body>
 <div id="xTreeDemo">
-    <x-tree :dataarray="treeDataArray" :options="treeOptions" ref="tree"></x-tree>
+    <x-tree :data="data" :options="options" ref="tree"></x-tree>
 </div>
 
 <div class="button button-edit">edit</div>
 <div class="button button-add">add</div>
 <div class="button button-cancel">cancel</div>
+
 <div>footer</div>
 
 <script>
@@ -77,8 +78,8 @@
         el: '#xTreeDemo',
         data: function () {
             return {
-                treeDataArray: treeData,
-                treeOptions: treeOptions,
+                data: treeData,
+                options: treeOptions,
             };
         }
     });

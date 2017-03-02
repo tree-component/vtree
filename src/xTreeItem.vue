@@ -1,20 +1,26 @@
 <template>
-    <div class="x-tree-item" @click.self="closeFn">
+    <div class="x-tree-item">
         <div class="x-tree-item-self" v-show="model.level">
-            <i class="x-tree-item-expand fa" :class="model.expand ? 'fa-minus' : 'fa-plus'" v-show="hasChildren" @click="expandFn"></i>
+            <i class="x-tree-item-expand fa" :class="model.expand ? 'fa-minus' : 'fa-plus'" v-show="hasChildren"
+               @click="expandFn"></i>
             <span class="icon-blank" v-show="!hasChildren"></span>
-            <i class="x-tree-item-checkbox fa" :class="model.is_check ? 'fa-check-square-o' : 'fa-square-o'" @click="checkFn"></i>
+            <i class="x-tree-item-checkbox fa" :class=checkboxIcon
+               @click="checkFn"></i>
             <span class="x-tree-item-name" @click="nameFn">{{model.name}}</span>
-            <i class="x-tree-item-list fa" :class="!showEditor ? 'fa-caret-down' : 'fa-caret-up' " @click="editorFn"></i>
-            <div class="x-tree-item-editor" v-show="showEditor">
-                <div class="x-tree-item-editor-item" @click="editFn">修改部门</div>
-                <div class="x-tree-item-editor-item" @click="deleteFn">删除部门</div>
-                <div class="x-tree-item-editor-item" @click="addChildFn">添加子部门</div>
-            </div>
+            <span @mouseleave="hideEditorFn">
+                <i class="x-tree-item-list fa" :class="!showEditor ? 'fa-caret-down' : 'fa-caret-up' "
+                   @click="showEditorFn"></i>
+                <span class="x-tree-item-editor" v-show="showEditor">
+                    <span class="x-tree-item-editor-item" @click="editFn">修改部门</span>
+                    <span class="x-tree-item-editor-item" @click="deleteFn">删除部门</span>
+                    <span class="x-tree-item-editor-item" @click="addChildFn">添加子部门</span>
+                </span>
+            </span>
+
         </div>
 
         <div class='x-tree-item-children' v-if="hasChildren" v-show="model.expand">
-            <x-tree-item v-for="model in model.children" :model="model" :options="treeOptions">
+            <x-tree-item v-for="model in model.children" :model="model" :options="treeOptions" :fn="fn">
             </x-tree-item>
         </div>
     </div>
@@ -25,7 +31,8 @@
         name: 'x-tree-item',
         props: {
             model: Object,
-            options: Object
+            options: Object,
+            fn: Object
         },
         data: function () {
             return {
@@ -37,75 +44,42 @@
             hasChildren: function () {
                 return this.model.is_node && this.model.children &&
                     this.model.children.length
+            },
+            checkboxIcon: function () {
+                var state = '';
+                if (this.model.is_check === true) {
+                    state = 'fa-check-square-o';
+                } else if (this.model.is_check === false) {
+                    state = 'fa-square-o';
+                } else if (this.model.is_check === "tristate") {
+                    state = 'fa-minus-square-o';
+                }
+                return state;
             }
         },
         methods: {
-            _changeItem: function (item, change) {
-                if (!item) {
-                    return false;
-                }
-                item.is_check = change;
-                if (item.children) {
-                    this._changeChildren(item.children, change);
-                }
-                if (item.parent) {
-                    this._changeParent(item.parent, change);
-                }
-            },
-
-            _changeChildren: function (children, change) {
-                if (!children) {
-                    return false;
-                }
-                for (var i = 0; i < children.length; i++) {
-                    if (children[i].is_check != change) {
-                        children[i].is_check = change;
-                        if (children[i].children) {
-                            this._changeChildren(children[i].children, change);
-                        }
-                    }
-                }
-                return true;
-            },
-
-            _changeParent: function (parent, change) {
-                if (!parent || parent.is_check == change) {
-                    return false;
-                }
-                if (change) {
-                    for (var i = 0; i < parent.children.length; i++) {
-                        if (!parent.children[i].is_check) {
-                            return false;
-                        }
-                    }
-                }
-                parent.is_check = change;
-                if (parent.parent) {
-                    this._changeParent(parent.parent, change);
-                }
-                return true;
-            },
 
             expandFn: function () {
                 console.log(this.model.expand);
-                if(this.hasChildren){
+                if (this.hasChildren) {
                     this.model.expand = !this.model.expand;
                 }
                 console.log(this.model.expand);
             },
             checkFn: function () {
-                this._changeItem(this.model, !this.model.is_check);
+                console.log(this,this.fn);
+                this.fn._changeItem(this.model, !this.model.is_check);
             },
 
             nameFn: function () {
                 this.options.onName(this.model);
             },
 
-            closeFn:function () {
-                this.showEditor = !this.showEditor;
+            hideEditorFn: function () {
+                this.showEditor = false;
             },
 
-            editorFn: function () {
+            showEditorFn: function () {
                 this.showEditor = !this.showEditor;
             },
 

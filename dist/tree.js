@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "";
 
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 12);
+/******/ 	return __webpack_require__(__webpack_require__.s = 13);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -126,13 +126,13 @@ module.exports = function normalizeComponent (
 
 
 /* styles */
-__webpack_require__(9)
+__webpack_require__(10)
 
 var Component = __webpack_require__(0)(
   /* script */
   __webpack_require__(2),
   /* template */
-  __webpack_require__(7),
+  __webpack_require__(8),
   /* scopeId */
   "data-v-20545fcf",
   /* cssModules */
@@ -164,257 +164,41 @@ module.exports = Component.exports
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__xTreeItem_vue__ = __webpack_require__(6);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__xTreeItem_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__xTreeItem_vue__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__methods__ = __webpack_require__(4);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__methods___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__methods__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__xTreeItem_vue__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__xTreeItem_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__xTreeItem_vue__);
 //
 //
 //
 //
 //
 //
-//
+
 
 
 
 /* harmony default export */ __webpack_exports__["default"] = {
     name: "x-tree",
     components: {
-        xTreeItem: __WEBPACK_IMPORTED_MODULE_0__xTreeItem_vue___default.a
+        xTreeItem: __WEBPACK_IMPORTED_MODULE_1__xTreeItem_vue___default.a
     },
     props: {
-        dataarray: Array,
+        data: Array,
         options: Object
     },
     data: function () {
-        var fn = this._fn();
-        var treeModelTemp = fn._arrayToTree(this.dataarray);
+        var treeTemp = __WEBPACK_IMPORTED_MODULE_0__methods___default.a._arrayToTree(this.data);
 
-        var treeModelChecked = fn._checkTreeByIds(treeModelTemp, this.options.sel_ids);
+        var treeChecked = __WEBPACK_IMPORTED_MODULE_0__methods___default.a._checkTreeByIds(treeTemp, this.options.sel_ids);
 
         return {
-            fn: fn,
-            treeModel: treeModelChecked,
-            treeOptions: this.options
+            fn: __WEBPACK_IMPORTED_MODULE_0__methods___default.a,
+            model: treeChecked
         };
     },
     computed: {},
-    methods: {
-        _fn: function () {
-            function _arrayToTree(arrayIn) {
-                var rootId = _getTreeRoot(arrayIn);
-                var treeData = {
-                    id: rootId,
-                    name: 'ROOT',
-                    nodeId: null,
-                    is_node: true,
-                    is_check: false,
-                    children: [],
-                    parent: null,
-                    level: 0,
-                    expand: true,
-                    itemAmount: arrayIn.length
-                };
-                treeData.children = _getSubTree(arrayIn, treeData);
-                return treeData;
-            }
-
-            function _getTreeRoot(arrayIn) {
-                var rootId = [];
-                var clone = JSON.parse(JSON.stringify(arrayIn));
-                for (var i = 0, len = arrayIn.length; i < len; i++) {
-                    for (var j = i; j < len; j++) {
-                        if (arrayIn[i].id == arrayIn[j].nodeId) {
-                            clone[j] = null;
-                        }
-                        if (arrayIn[i].nodeId == arrayIn[j].id) {
-                            clone[i] = null;
-                        }
-                    }
-                }
-
-                for (var k = 0; k < clone.length; k++) {
-                    if (clone[k]) {
-                        rootId.push(clone[k].nodeId);
-                    }
-                }
-                rootId = _uniqueArray(rootId);
-
-                if (rootId.length > 1) {
-                    console.log('warning: rootId不唯一', rootId);
-                } else if (rootId.length <= 0) {
-                    console.log('warning: 没有rootId', rootId);
-                }
-
-                return rootId[0];
-            }
-
-            function _uniqueArray(arrayIn) {
-                var ua = [];
-                for (var i = 0; i < arrayIn.length; i++) {
-                    if (ua.indexOf(arrayIn[i]) == -1) {
-                        ua.push(arrayIn[i]);
-                    }
-                }
-                return ua;
-            }
-
-            function _getSubTree(arrayIn, parent) {
-                var result = [];
-                var temp = {};
-                for (var i = 0; i < arrayIn.length; i++) {
-                    if (arrayIn[i].nodeId == parent.id) {
-                        //                        temp = arrayIn[i];
-                        temp = {
-                            id: arrayIn[i].id,
-                            name: arrayIn[i].name,
-                            nodeId: arrayIn[i].nodeId,
-                            is_node: arrayIn[i].is_node,
-                            is_check: arrayIn[i].is_check
-                        }; //copy
-                        temp.parent = parent;
-                        temp.level = parent.level + 1;
-                        if (temp.is_node) {
-                            temp.expand = true;
-                            temp.children = _getSubTree(arrayIn, temp);
-                        } else {
-                            temp.expand = false;
-                            temp.children = [];
-                        }
-                        result.push(temp);
-                    }
-                }
-                return result;
-            }
-
-            function _checkTreeByIds(tree, sel_ids) {
-                var ids = sel_ids.split(',');
-
-                _traverseTree(tree, _checkTreeByIdsFn, ids);
-
-                return tree;
-            }
-
-            function _checkTreeByIdsFn(item, ids) {
-                if (!ids.length) {
-                    return {
-                        children: false,
-                        brother: false
-                    };
-                }
-                for (var i = 0; i < ids.length; i++) {
-                    if (item.id == ids[i]) {
-                        _changeItem(item, true);
-                        ids.splice(i, 1);
-                        break;
-                    }
-                }
-                return {
-                    children: ids.length,
-                    brother: ids.length
-                };
-            }
-
-            function _traverseTree(tree, fn, input, output) {
-                if (!tree) {
-                    return true;
-                }
-                var _continue = fn(tree, input, output); //是否继续遍历
-                if (_continue.children && tree.children) {
-                    for (var i = 0; i < tree.children.length; i++) {
-                        var brother = _traverseTree(tree.children[i], fn, input, output);
-                        if (!brother) {
-                            break;
-                        }
-                    }
-                }
-                return _continue.brother;
-            }
-
-            function _changeItem(item, change) {
-                if (!item) {
-                    return false;
-                }
-                item.is_check = change;
-                if (item.children) {
-                    _changeChildren(item.children, change);
-                }
-                if (item.parent) {
-                    _changeParent(item.parent, change);
-                }
-            }
-
-            function _changeChildren(children, change) {
-                if (!children) {
-                    return false;
-                }
-                for (var i = 0; i < children.length; i++) {
-                    if (children[i].is_check != change) {
-                        children[i].is_check = change;
-                        if (children[i].children) {
-                            _changeChildren(children[i].children, change);
-                        }
-                    }
-                }
-                return true;
-            }
-
-            function _changeParent(parent, change) {
-                if (!parent || parent.is_check == change) {
-                    return false;
-                }
-                if (change) {
-                    for (var i = 0; i < parent.children.length; i++) {
-                        if (!parent.children[i].is_check) {
-                            return false;
-                        }
-                    }
-                }
-                parent.is_check = change;
-                if (parent.parent) {
-                    _changeParent(parent.parent, change);
-                }
-                return true;
-            }
-
-            function getName() {
-                var name = [];
-                _traverseTree(this.treeModel, getNameFn, name);
-                return name;
-            }
-
-            function getNameFn(item, name) {
-                if (item.is_check) {
-                    name.push(item.name);
-                }
-            }
-
-            return {
-                _arrayToTree: _arrayToTree,
-
-                _getTreeRoot: _getTreeRoot,
-
-                _uniqueArray: _uniqueArray,
-
-                _getSubTree: _getSubTree,
-
-                _checkTreeByIds: _checkTreeByIds,
-
-                _checkTreeByIdsFn: _checkTreeByIdsFn,
-
-                _traverseTree: _traverseTree,
-
-                _changeItem: _changeItem,
-
-                _changeChildren: _changeChildren,
-
-                _changeParent: _changeParent,
-
-                getName: getName,
-
-                getNameFn: getNameFn
-            };
-        }
-    }
+    methods: {}
 };
 
 /***/ }),
@@ -445,12 +229,19 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = {
     name: 'x-tree-item',
     props: {
         model: Object,
-        options: Object
+        options: Object,
+        fn: Object
     },
     data: function () {
         return {
@@ -461,54 +252,20 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     computed: {
         hasChildren: function () {
             return this.model.is_node && this.model.children && this.model.children.length;
+        },
+        checkboxIcon: function () {
+            var state = '';
+            if (this.model.is_check === true) {
+                state = 'fa-check-square-o';
+            } else if (this.model.is_check === false) {
+                state = 'fa-square-o';
+            } else if (this.model.is_check === "tristate") {
+                state = 'fa-minus-square-o';
+            }
+            return state;
         }
     },
     methods: {
-        _changeItem: function (item, change) {
-            if (!item) {
-                return false;
-            }
-            item.is_check = change;
-            if (item.children) {
-                this._changeChildren(item.children, change);
-            }
-            if (item.parent) {
-                this._changeParent(item.parent, change);
-            }
-        },
-
-        _changeChildren: function (children, change) {
-            if (!children) {
-                return false;
-            }
-            for (var i = 0; i < children.length; i++) {
-                if (children[i].is_check != change) {
-                    children[i].is_check = change;
-                    if (children[i].children) {
-                        this._changeChildren(children[i].children, change);
-                    }
-                }
-            }
-            return true;
-        },
-
-        _changeParent: function (parent, change) {
-            if (!parent || parent.is_check == change) {
-                return false;
-            }
-            if (change) {
-                for (var i = 0; i < parent.children.length; i++) {
-                    if (!parent.children[i].is_check) {
-                        return false;
-                    }
-                }
-            }
-            parent.is_check = change;
-            if (parent.parent) {
-                this._changeParent(parent.parent, change);
-            }
-            return true;
-        },
 
         expandFn: function () {
             console.log(this.model.expand);
@@ -518,18 +275,19 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             console.log(this.model.expand);
         },
         checkFn: function () {
-            this._changeItem(this.model, !this.model.is_check);
+            console.log(this, this.fn);
+            this.fn._changeItem(this.model, !this.model.is_check);
         },
 
         nameFn: function () {
             this.options.onName(this.model);
         },
 
-        closeFn: function () {
-            this.showEditor = !this.showEditor;
+        hideEditorFn: function () {
+            this.showEditor = false;
         },
 
-        editorFn: function () {
+        showEditorFn: function () {
             this.showEditor = !this.showEditor;
         },
 
@@ -568,18 +326,273 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(5)();
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+function _arrayToTree(arrayIn) {
+    var rootId = _getTreeRoot(arrayIn);
+    var treeData = {
+        id: rootId,
+        name: 'ROOT',
+        nodeId: null,
+        is_node: true,
+        is_check: false,
+        children: [],
+        parent: null,
+        level: 0,
+        expand: true,
+        itemAmount: arrayIn.length
+    };
+    treeData.children = _getSubTree(arrayIn, treeData);
+    return treeData;
+}
+
+function _getTreeRoot(arrayIn) {
+    var rootId = [];
+    var clone = JSON.parse(JSON.stringify(arrayIn));
+    for (var i = 0, len = arrayIn.length; i < len; i++) {
+        for (var j = i; j < len; j++) {
+            if (arrayIn[i].id == arrayIn[j].nodeId) {
+                clone[j] = null;
+            }
+            if (arrayIn[i].nodeId == arrayIn[j].id) {
+                clone[i] = null;
+            }
+        }
+    }
+
+    for (var k = 0; k < clone.length; k++) {
+        if (clone[k]) {
+            rootId.push(clone[k].nodeId);
+        }
+    }
+    rootId = _uniqueArray(rootId);
+
+    if (rootId.length > 1) {
+        console.log('warning: rootId不唯一', rootId);
+    } else if (rootId.length <= 0) {
+        console.log('warning: 没有rootId', rootId);
+    }
+
+    return rootId[0];
+}
+
+function _uniqueArray(arrayIn) {
+    var ua = [];
+    for (var i = 0; i < arrayIn.length; i++) {
+        if (ua.indexOf(arrayIn[i]) == -1) {
+            ua.push(arrayIn[i]);
+        }
+    }
+    return ua;
+}
+
+function _getSubTree(arrayIn, parent) {
+    var result = [];
+    var temp = {};
+    for (var i = 0; i < arrayIn.length; i++) {
+        if (arrayIn[i].nodeId == parent.id) {
+            //                        temp = arrayIn[i];
+            temp = {
+                id: arrayIn[i].id,
+                name: arrayIn[i].name,
+                nodeId: arrayIn[i].nodeId,
+                is_node: arrayIn[i].is_node,
+                is_check: arrayIn[i].is_check
+            }; //copy
+            temp.parent = parent;
+            temp.level = parent.level + 1;
+            if (temp.is_node) {
+                temp.expand = true;
+                temp.children = _getSubTree(arrayIn, temp);
+            } else {
+                temp.expand = false;
+                temp.children = [];
+            }
+            result.push(temp);
+        }
+    }
+    return result;
+}
+
+function _checkTreeByIds(tree, sel_ids) {
+    var ids = sel_ids.split(',');
+
+    _traverseTree(tree, _checkTreeByIdsFn, ids);
+
+    return tree;
+}
+
+function _checkTreeByIdsFn(item, ids) {
+    if (!ids.length) {
+        return {
+            children: false,
+            brother: false
+        };
+    }
+    for (var i = 0; i < ids.length; i++) {
+        if (item.id == ids[i]) {
+            _changeItem(item, true);
+            ids.splice(i, 1);
+            break;
+        }
+    }
+    return {
+        children: ids.length,
+        brother: ids.length
+    };
+}
+
+function _traverseTree(tree, fn, input, output) {
+    if (!tree) {
+        return true;
+    }
+    var _continue = fn(tree, input, output); //是否继续遍历
+    if (_continue.children && tree.children) {
+        for (var i = 0; i < tree.children.length; i++) {
+            var brother = _traverseTree(tree.children[i], fn, input, output);
+            if (!brother) {
+                break;
+            }
+        }
+    }
+    return _continue.brother;
+}
+
+function _changeItem(item, change) {
+    if (!item) {
+        return false;
+    }
+    item.is_check = change;
+    if (item.children) {
+        _changeChildren(item.children, change);
+    }
+    if (item.parent) {
+        _changeParent(item.parent, change);
+    }
+}
+
+function _changeChildren(children, change) {
+    if (!children) {
+        return false;
+    }
+    for (var i = 0; i < children.length; i++) {
+        if (children[i].is_check != change) {
+            children[i].is_check = change;
+            if (children[i].children) {
+                _changeChildren(children[i].children, change);
+            }
+        }
+    }
+    return true;
+}
+
+function _changeParent(parent, change) {
+    if (!parent) {
+        return false;
+    }
+    var old = parent.is_check;
+    var len = parent.children.length;
+
+    if (change === "tristate") {
+        parent.is_check = "tristate";
+    } else if (change === true) {
+        var n = 0;
+        for (var i = 0; i < len; i++) {
+            if (parent.children[i].is_check === true) {
+                n += 1;
+            } else {
+                parent.is_check = "tristate";
+                break;
+            }
+        }
+        if (n === len) {
+            parent.is_check = true;
+        }
+    } else if (change === false) {
+        var m = 0;
+        for (var j = 0; j < len; j++) {
+            if (parent.children[j].is_check === false) {
+                m += 1;
+            } else {
+                parent.is_check = "tristate";
+                break;
+            }
+        }
+        if (m === len) {
+            parent.is_check = false;
+        }
+    }
+
+    if (parent.parent && parent.is_check != old) {
+        _changeParent(parent.parent, parent.is_check);
+    }
+    return true;
+}
+
+function getName(model) {
+    var name = [];
+    _traverseTree(model, getNameFn, name);
+    return name;
+}
+
+function getNameFn(item, name) {
+    if (item.is_check) {
+        name.push(item.name);
+    }
+    return {
+        children: true,
+        brother: true
+    };
+}
+
+var fn = {
+    _arrayToTree: _arrayToTree,
+
+    _getTreeRoot: _getTreeRoot,
+
+    _uniqueArray: _uniqueArray,
+
+    _getSubTree: _getSubTree,
+
+    _checkTreeByIds: _checkTreeByIds,
+
+    _checkTreeByIdsFn: _checkTreeByIdsFn,
+
+    _traverseTree: _traverseTree,
+
+    _changeItem: _changeItem,
+
+    _changeChildren: _changeChildren,
+
+    _changeParent: _changeParent,
+
+    getName: getName,
+
+    getNameFn: getNameFn
+};
+
+exports.default = fn;
+
+/***/ }),
+/* 5 */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(6)();
 // imports
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
 
 // exports
 
 
 /***/ }),
-/* 5 */
+/* 6 */
 /***/ (function(module, exports) {
 
 /*
@@ -635,14 +648,14 @@ module.exports = function() {
 
 
 /***/ }),
-/* 6 */
+/* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var Component = __webpack_require__(0)(
   /* script */
   __webpack_require__(3),
   /* template */
-  __webpack_require__(8),
+  __webpack_require__(9),
   /* scopeId */
   null,
   /* cssModules */
@@ -669,7 +682,7 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 7 */
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -679,9 +692,9 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     ref: "treeItem",
     staticClass: "x-tree-root",
     attrs: {
-      "model": _vm.treeModel,
-      "options": _vm.treeOptions,
-      "method": _vm.fn
+      "model": _vm.model,
+      "options": _vm.options,
+      "fn": _vm.fn
     }
   })], 1)
 },staticRenderFns: []}
@@ -694,18 +707,12 @@ if (false) {
 }
 
 /***/ }),
-/* 8 */
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
   return _c('div', {
-    staticClass: "x-tree-item",
-    on: {
-      "click": function($event) {
-        if ($event.target !== $event.currentTarget) { return null; }
-        _vm.closeFn($event)
-      }
-    }
+    staticClass: "x-tree-item"
   }, [_c('div', {
     directives: [{
       name: "show",
@@ -736,7 +743,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     staticClass: "icon-blank"
   }), _vm._v(" "), _c('i', {
     staticClass: "x-tree-item-checkbox fa",
-    class: _vm.model.is_check ? 'fa-check-square-o' : 'fa-square-o',
+    class: _vm.checkboxIcon,
     on: {
       "click": _vm.checkFn
     }
@@ -745,13 +752,17 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     on: {
       "click": _vm.nameFn
     }
-  }, [_vm._v(_vm._s(_vm.model.name))]), _vm._v(" "), _c('i', {
+  }, [_vm._v(_vm._s(_vm.model.name))]), _vm._v(" "), _c('span', {
+    on: {
+      "mouseleave": _vm.hideEditorFn
+    }
+  }, [_c('i', {
     staticClass: "x-tree-item-list fa",
     class: !_vm.showEditor ? 'fa-caret-down' : 'fa-caret-up',
     on: {
-      "click": _vm.editorFn
+      "click": _vm.showEditorFn
     }
-  }), _vm._v(" "), _c('div', {
+  }), _vm._v(" "), _c('span', {
     directives: [{
       name: "show",
       rawName: "v-show",
@@ -759,22 +770,22 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       expression: "showEditor"
     }],
     staticClass: "x-tree-item-editor"
-  }, [_c('div', {
+  }, [_c('span', {
     staticClass: "x-tree-item-editor-item",
     on: {
       "click": _vm.editFn
     }
-  }, [_vm._v("修改部门")]), _vm._v(" "), _c('div', {
+  }, [_vm._v("修改部门")]), _vm._v(" "), _c('span', {
     staticClass: "x-tree-item-editor-item",
     on: {
       "click": _vm.deleteFn
     }
-  }, [_vm._v("删除部门")]), _vm._v(" "), _c('div', {
+  }, [_vm._v("删除部门")]), _vm._v(" "), _c('span', {
     staticClass: "x-tree-item-editor-item",
     on: {
       "click": _vm.addChildFn
     }
-  }, [_vm._v("添加子部门")])])]), _vm._v(" "), (_vm.hasChildren) ? _c('div', {
+  }, [_vm._v("添加子部门")])])])]), _vm._v(" "), (_vm.hasChildren) ? _c('div', {
     directives: [{
       name: "show",
       rawName: "v-show",
@@ -786,7 +797,8 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     return _c('x-tree-item', {
       attrs: {
         "model": model,
-        "options": _vm.treeOptions
+        "options": _vm.treeOptions,
+        "fn": _vm.fn
       }
     })
   })) : _vm._e()])
@@ -800,17 +812,17 @@ if (false) {
 }
 
 /***/ }),
-/* 9 */
+/* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(4);
+var content = __webpack_require__(5);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(10)("5697fec0", content, false);
+var update = __webpack_require__(11)("5697fec0", content, false);
 // Hot Module Replacement
 if(false) {
  // When the styles change, update the <style> tags
@@ -826,7 +838,7 @@ if(false) {
 }
 
 /***/ }),
-/* 10 */
+/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*
@@ -845,7 +857,7 @@ if (typeof DEBUG !== 'undefined' && DEBUG) {
   ) }
 }
 
-var listToStyles = __webpack_require__(11)
+var listToStyles = __webpack_require__(12)
 
 /*
 type StyleObject = {
@@ -1062,7 +1074,7 @@ function applyToTag (styleElement, obj) {
 
 
 /***/ }),
-/* 11 */
+/* 12 */
 /***/ (function(module, exports) {
 
 /**
@@ -1095,7 +1107,7 @@ module.exports = function listToStyles (parentId, list) {
 
 
 /***/ }),
-/* 12 */
+/* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";

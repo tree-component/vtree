@@ -52,6 +52,7 @@ body {
 }
 
 .x-tree-item-editor {
+    display: block;
     position: absolute;
     z-index: 99;
     font-size: 14px;
@@ -69,5 +70,5 @@ body {
 }
 
 .x-tree-item-editor-item {
-
+    display: block;
 }

@@ -10,7 +10,7 @@
 </head>
 <body>
 <div id="xTreeDemo">
-    <x-tree :dataarray="treeDataArray" :options="treeOptions"></x-tree>
+    <x-tree :dataarray="treeDataArray" :options="treeOptions" ref="tree"></x-tree>
 </div>
 
 <div class="button button-edit">edit</div>
@@ -27,9 +27,6 @@
         has_search: false,
         sel_ids: '3,11,12,13,30,31,32,33',
         expand: 6,
-        onInit: function (model) {
-            this.store = model;
-        },
         onName: function (item) {
             console.log("click item", item, item.name);
         },

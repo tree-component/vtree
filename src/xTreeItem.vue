@@ -1,11 +1,11 @@
 <template>
-    <div class="x-tree-item">
+    <div class="x-tree-item" @click.self="closeFn">
         <div class="x-tree-item-self" v-show="model.level">
-            <i class="fa" :class="model.expand ? 'fa-minus' : 'fa-plus'" v-show="model.is_node" @click="expandFn"></i>
-            <span class="icon-blank" v-show="!model.is_node"></span>
-            <i class="fa" :class="model.is_check ? 'fa-check-square-o' : 'fa-square-o'" @click="checkFn"></i>
-            <span @click="nameFn">{{model.name}}</span>
-            <i class="fa" :class="!showEditor ? 'fa-caret-down' : 'fa-caret-up' " @click="editorFn"></i>
+            <i class="x-tree-item-expand fa" :class="model.expand ? 'fa-minus' : 'fa-plus'" v-show="hasChildren" @click="expandFn"></i>
+            <span class="icon-blank" v-show="!hasChildren"></span>
+            <i class="x-tree-item-checkbox fa" :class="model.is_check ? 'fa-check-square-o' : 'fa-square-o'" @click="checkFn"></i>
+            <span class="x-tree-item-name" @click="nameFn">{{model.name}}</span>
+            <i class="x-tree-item-list fa" :class="!showEditor ? 'fa-caret-down' : 'fa-caret-up' " @click="editorFn"></i>
             <div class="x-tree-item-editor" v-show="showEditor">
                 <div class="x-tree-item-editor-item" @click="editFn">修改部门</div>
                 <div class="x-tree-item-editor-item" @click="deleteFn">删除部门</div>
@@ -13,7 +13,7 @@
             </div>
         </div>
 
-        <div class='x-tree-item-children' v-if="model.is_node" v-show="model.expand">
+        <div class='x-tree-item-children' v-if="hasChildren" v-show="model.expand">
             <x-tree-item v-for="model in model.children" :model="model" :options="treeOptions">
             </x-tree-item>
         </div>
@@ -88,7 +88,7 @@
 
             expandFn: function () {
                 console.log(this.model.expand);
-                if(this.model.is_node){
+                if(this.hasChildren){
                     this.model.expand = !this.model.expand;
                 }
                 console.log(this.model.expand);
@@ -99,6 +99,10 @@
 
             nameFn: function () {
                 this.options.onName(this.model);
+            },
+
+            closeFn:function () {
+                this.showEditor = !this.showEditor;
             },
 
             editorFn: function () {

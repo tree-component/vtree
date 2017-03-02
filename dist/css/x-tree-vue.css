@@ -1,6 +1,6 @@
 body {
     padding: 20px;
-    background: #5CD;
+    background: #bbb;
     word-break: break-all;
 }
 
@@ -47,6 +47,10 @@ body {
     cursor: pointer;
 }
 
+.x-tree-item-expand:hover,.x-tree-item-checkbox:hover,.x-tree-item-name:hover, .x-tree-item-list:hover,.x-tree-item-editor-item:hover {
+    color: deepskyblue;
+}
+
 .x-tree-item-editor {
     position: absolute;
     z-index: 99;
@@ -57,9 +61,9 @@ body {
 }
 
 .x-tree-item-children {
-    min-width:200px;
-    min-height:20px;
-    border:1px solid deepskyblue;
+    min-width: 200px;
+    min-height: 20px;
+    border: 1px solid deepskyblue;
     padding-left: 1.5em;
     line-height: 1.5em;
 }

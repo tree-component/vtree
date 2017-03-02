@@ -230,11 +230,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
-//
-//
-//
-//
-//
 
 /* harmony default export */ __webpack_exports__["default"] = {
     name: 'x-tree-item',
@@ -254,32 +249,31 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             return this.model.is_node && this.model.children && this.model.children.length;
         },
         checkboxIcon: function () {
-            if (this.model.is_check === true) {
-                return 'fa-check-square-o';
-            }
-
             var state = '';
+            var faIcon = '';
 
-            var len = this.model.children.length;
-            var m = 0;
-            var n = 0;
-
-            for (var i = 0; i < len; i++) {
-                if (this.model.children[i].is_check === true) {
-                    m += 1;
-                } else if (this.model.children[i].is_check === false) {
-                    n += 1;
+            if (!this.model.is_node || !this.model.children || !this.model.children.length) {
+                state = this.model.is_check;
+            } else if (this.model.is_check === true) {
+                state = true;
+            } else {
+                state = false;
+                for (var i = 0; i < this.model.children.length; i++) {
+                    if (this.model.children[i].is_check === true) {
+                        state = 'tristate';
+                        break;
+                    }
                 }
             }
 
-            if (m == len) {
-                state = 'fa-check-square-o';
-            } else if (n == len) {
-                state = 'fa-square-o';
-            } else {
-                state = 'fa-minus-square-o';
+            if (state === true) {
+                faIcon = 'fa-check-square-o';
+            } else if (state === false) {
+                faIcon = 'fa-square-o';
+            } else if (state === 'tristate') {
+                faIcon = 'fa-minus-square-o';
             }
-            return state;
+            return faIcon;
         }
     },
     methods: {
@@ -786,11 +780,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     on: {
       "click": _vm.nameFn
     }
-  }, [_vm._v(_vm._s(_vm.model.name))]), _vm._v(" "), _c('span', {
-    on: {
-      "mouseleave": _vm.hideEditorFn
-    }
-  }, [_c('i', {
+  }, [_vm._v(_vm._s(_vm.model.name))]), _vm._v(" "), _c('i', {
     staticClass: "x-tree-item-list fa",
     class: !_vm.showEditor ? 'fa-caret-down' : 'fa-caret-up',
     on: {
@@ -803,7 +793,10 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       value: (_vm.showEditor),
       expression: "showEditor"
     }],
-    staticClass: "x-tree-item-editor"
+    staticClass: "x-tree-item-editor",
+    on: {
+      "mouseleave": _vm.hideEditorFn
+    }
   }, [_c('span', {
     staticClass: "x-tree-item-editor-item",
     on: {
@@ -819,7 +812,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     on: {
       "click": _vm.addChildFn
     }
-  }, [_vm._v("添加子部门")])])])]), _vm._v(" "), (_vm.hasChildren) ? _c('div', {
+  }, [_vm._v("添加子部门")])])]), _vm._v(" "), (_vm.hasChildren) ? _c('div', {
     directives: [{
       name: "show",
       rawName: "v-show",

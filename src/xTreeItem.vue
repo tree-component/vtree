@@ -4,21 +4,16 @@
             <i class="x-tree-item-expand fa" :class="model.expand ? 'fa-minus' : 'fa-plus'" v-show="hasChildren"
                @click="expandFn"></i>
             <span class="icon-blank" v-show="!hasChildren"></span>
-            <i class="x-tree-item-checkbox fa" :class=checkboxIcon
-               @click="checkFn"></i>
+            <i class="x-tree-item-checkbox fa" :class=checkboxIcon @click="checkFn"></i>
             <span class="x-tree-item-name" @click="nameFn">{{model.name}}</span>
-            <span @mouseleave="hideEditorFn">
-                <i class="x-tree-item-list fa" :class="!showEditor ? 'fa-caret-down' : 'fa-caret-up' "
-                   @click="showEditorFn"></i>
-                <span class="x-tree-item-editor" v-show="showEditor">
-                    <span class="x-tree-item-editor-item" @click="editFn">修改部门</span>
-                    <span class="x-tree-item-editor-item" @click="deleteFn">删除部门</span>
-                    <span class="x-tree-item-editor-item" @click="addChildFn">添加子部门</span>
-                </span>
+            <i class="x-tree-item-list fa" :class="!showEditor ? 'fa-caret-down' : 'fa-caret-up' "
+               @click="showEditorFn"></i>
+            <span class="x-tree-item-editor" v-show="showEditor" @mouseleave="hideEditorFn">
+                <span class="x-tree-item-editor-item" @click="editFn">修改部门</span>
+                <span class="x-tree-item-editor-item" @click="deleteFn">删除部门</span>
+                <span class="x-tree-item-editor-item" @click="addChildFn">添加子部门</span>
             </span>
-
         </div>
-
         <div class='x-tree-item-children' v-if="hasChildren" v-show="model.expand">
             <x-tree-item v-for="model in model.children" :model="model" :options="treeOptions" :fn="fn">
             </x-tree-item>
@@ -42,37 +37,34 @@
         },
         computed: {
             hasChildren: function () {
-                return this.model.is_node && this.model.children &&
-                    this.model.children.length
+                return this.model.is_node && this.model.children && this.model.children.length
             },
             checkboxIcon: function () {
                 var state = '';
+                var faIcon = '';
 
-                if(this.model.is_check === true){
-                    return 'fa-check-square-o';
-                }
-
-
-                var len = this.model.children.length;
-                var m = 0;
-                var n = 0;
-
-                for (var i = 0; i < len; i++) {
-                    if (this.model.children[i].is_check === true) {
-                        m += 1;
-                    } else if (this.model.children[i].is_check === false) {
-                        n += 1;
+                if (!this.model.is_node || !this.model.children || !this.model.children.length) {
+                    state = this.model.is_check;
+                } else if (this.model.is_check === true) {
+                    state = true;
+                } else {
+                    state = false;
+                    for (var i = 0; i < this.model.children.length; i++) {
+                        if (this.model.children[i].is_check === true) {
+                            state = 'tristate';
+                            break;
+                        }
                     }
                 }
 
-                if (m == len) {
-                    state = 'fa-check-square-o';
-                } else if (n == len) {
-                    state = 'fa-square-o';
-                } else {
-                    state = 'fa-minus-square-o';
+                if (state === true) {
+                    faIcon = 'fa-check-square-o';
+                } else if (state === false) {
+                    faIcon = 'fa-square-o';
+                } else if (state === 'tristate') {
+                    faIcon = 'fa-minus-square-o';
                 }
-                return state;
+                return faIcon;
             }
         },
         methods: {

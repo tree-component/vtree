@@ -249,28 +249,34 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             return this.model.is_node && this.model.children && this.model.children.length;
         },
         checkboxIcon: function () {
-            var state = '';
             var faIcon = '';
-
-            if (!this.model.is_node || !this.model.children || !this.model.children.length) {
-                state = this.model.is_check;
-            } else if (this.model.is_check === true) {
-                state = true;
-            } else {
-                state = false;
-                for (var i = 0; i < this.model.children.length; i++) {
-                    if (this.model.children[i].is_check === true) {
-                        state = 'tristate';
-                        break;
-                    }
-                }
-            }
-
-            if (state === true) {
+            //                var state = '';
+            //
+            //                if (!this.model.is_node || !this.model.children || !this.model.children.length) {
+            //                    state = this.model.is_check;
+            //                } else if (this.model.is_check === true) {
+            //                    state = true;
+            //                } else {
+            //                    state = false;
+            //                    for (var i = 0; i < this.model.children.length; i++) {
+            //                        if (this.model.children[i].is_check === true) {
+            //                            state = 'tristate';
+            //                            break;
+            //                        }
+            //                    }
+            //                }
+            //                if (state === true) {
+            //                    faIcon = 'fa-check-square-o';
+            //                } else if (state === false) {
+            //                    faIcon = 'fa-square-o';
+            //                } else if (state === 'tristate') {
+            //                    faIcon = 'fa-minus-square-o';
+            //                }
+            if (this.model.is_check === true) {
                 faIcon = 'fa-check-square-o';
-            } else if (state === false) {
+            } else if (this.model.is_check === false) {
                 faIcon = 'fa-square-o';
-            } else if (state === 'tristate') {
+            } else if (this.model.is_check === 'tristate') {
                 faIcon = 'fa-minus-square-o';
             }
             return faIcon;
@@ -500,66 +506,66 @@ function _changeChildren(children, change) {
     return true;
 }
 
-// function _changeParent(parent, change) {
-//     if (!parent) {
-//         return false;
-//     }
-//     var old = parent.is_check;
-//     var len = parent.children.length;
-//
-//     if (change === "tristate") {
-//         parent.is_check = "tristate";
-//     } else if (change === true) {
-//         var n = 0;
-//         for (var i = 0; i < len; i++) {
-//             if (parent.children[i].is_check === true) {
-//                 n += 1;
-//             } else {
-//                 parent.is_check = "tristate";
-//                 break;
-//             }
-//         }
-//         if (n === len) {
-//             parent.is_check = true;
-//         }
-//     } else if (change === false) {
-//         var m = 0;
-//         for (var j = 0; j < len; j++) {
-//             if (parent.children[j].is_check === false) {
-//                 m += 1;
-//             } else {
-//                 parent.is_check = "tristate";
-//                 break;
-//             }
-//         }
-//         if (m === len) {
-//             parent.is_check = false;
-//         }
-//     }
-//
-//     if (parent.parent && parent.is_check != old) {
-//         _changeParent(parent.parent, parent.is_check);
-//     }
-//     return true;
-// }
-
 function _changeParent(parent, change) {
-    if (!parent || parent.is_check == change) {
+    if (!parent) {
         return false;
     }
-    if (change) {
-        for (var i = 0; i < parent.children.length; i++) {
-            if (!parent.children[i].is_check) {
-                return false;
+    var old = parent.is_check;
+    var len = parent.children.length;
+
+    if (change === "tristate") {
+        parent.is_check = "tristate";
+    } else if (change === true) {
+        var n = 0;
+        for (var i = 0; i < len; i++) {
+            if (parent.children[i].is_check === true) {
+                n += 1;
+            } else {
+                parent.is_check = "tristate";
+                break;
             }
         }
+        if (n === len) {
+            parent.is_check = true;
+        }
+    } else if (change === false) {
+        var m = 0;
+        for (var j = 0; j < len; j++) {
+            if (parent.children[j].is_check === false) {
+                m += 1;
+            } else {
+                parent.is_check = "tristate";
+                break;
+            }
+        }
+        if (m === len) {
+            parent.is_check = false;
+        }
     }
-    parent.is_check = change;
-    if (parent.parent) {
-        _changeParent(parent.parent, change);
+
+    if (parent.parent && parent.is_check != old) {
+        _changeParent(parent.parent, parent.is_check);
     }
     return true;
 }
+
+// function _changeParent(parent, change) {
+//     if (!parent || parent.is_check == change) {
+//         return false;
+//     }
+//     if (change) {
+//         for (var i = 0; i < parent.children.length; i++) {
+//             if (!parent.children[i].is_check) {
+//                 return false;
+//             }
+//         }
+//     }
+//     parent.is_check = change;
+//     if (parent.parent) {
+//         _changeParent(parent.parent, change);
+//     }
+//     return true;
+// }
 
 function getName(model) {
     var name = [];

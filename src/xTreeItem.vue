@@ -32,7 +32,7 @@
         data: function () {
             return {
                 treeOptions: this.options,
-                showEditor: false,
+                showEditor: false
             };
         },
         computed: {
@@ -40,28 +40,34 @@
                 return this.model.is_node && this.model.children && this.model.children.length
             },
             checkboxIcon: function () {
-                var state = '';
                 var faIcon = '';
-
-                if (!this.model.is_node || !this.model.children || !this.model.children.length) {
-                    state = this.model.is_check;
-                } else if (this.model.is_check === true) {
-                    state = true;
-                } else {
-                    state = false;
-                    for (var i = 0; i < this.model.children.length; i++) {
-                        if (this.model.children[i].is_check === true) {
-                            state = 'tristate';
-                            break;
-                        }
-                    }
-                }
-
-                if (state === true) {
+//                var state = '';
+//
+//                if (!this.model.is_node || !this.model.children || !this.model.children.length) {
+//                    state = this.model.is_check;
+//                } else if (this.model.is_check === true) {
+//                    state = true;
+//                } else {
+//                    state = false;
+//                    for (var i = 0; i < this.model.children.length; i++) {
+//                        if (this.model.children[i].is_check === true) {
+//                            state = 'tristate';
+//                            break;
+//                        }
+//                    }
+//                }
+//                if (state === true) {
+//                    faIcon = 'fa-check-square-o';
+//                } else if (state === false) {
+//                    faIcon = 'fa-square-o';
+//                } else if (state === 'tristate') {
+//                    faIcon = 'fa-minus-square-o';
+//                }
+                if (this.model.is_check === true) {
                     faIcon = 'fa-check-square-o';
-                } else if (state === false) {
+                } else if (this.model.is_check === false) {
                     faIcon = 'fa-square-o';
-                } else if (state === 'tristate') {
+                } else if (this.model.is_check === 'tristate') {
                     faIcon = 'fa-minus-square-o';
                 }
                 return faIcon;

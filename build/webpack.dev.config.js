@@ -7,11 +7,12 @@ const config = {
     // watch: true,
     context: path.resolve(__dirname, '../'),
     entry: {
-        app: "./src/index.js",
+        tree: "./src/index.js",
+        // tree_ele: "./src/components/el-tree/index.js"
     },
     output: {
         path: path.resolve(__dirname, '../dist'),
-        filename: "tree.js",
+        filename: "[name].js",
     },
     module: {
         rules: [

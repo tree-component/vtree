@@ -9,13 +9,14 @@
             <i class="x-tree-item-list fa" :class="!showEditor ? 'fa-caret-down' : 'fa-caret-up' "
                @click="showEditorFn"></i>
             <span class="x-tree-item-editor" v-show="showEditor" @mouseleave="hideEditorFn">
-                <span class="x-tree-item-editor-item" @click="editFn">修改部门</span>
-                <span class="x-tree-item-editor-item" @click="deleteFn">删除部门</span>
-                <span class="x-tree-item-editor-item" @click="addChildFn">添加子部门</span>
+                <span class="x-tree-item-editor-item" v-show="model.is_edit" @click="editFn">修改部门</span>
+                <span class="x-tree-item-editor-item" v-show="model.is_delete" @click="deleteFn">删除部门</span>
+                <span class="x-tree-item-editor-item" v-show="model.is_add" @click="addChildFn">添加子部门</span>
+                <span class="x-tree-item-editor-item" v-show="cantEdit"></span>
             </span>
         </div>
         <div class='x-tree-item-children' v-if="hasChildren" v-show="model.expand">
-            <x-tree-item v-for="model in model.children" :model="model" :options="treeOptions" :fn="fn">
+            <x-tree-item v-for="model in model.children" :model="model" :options="options" :fn="fn">
             </x-tree-item>
         </div>
     </div>
@@ -31,7 +32,6 @@
         },
         data: function () {
             return {
-                treeOptions: this.options,
                 showEditor: false
             };
         },
@@ -49,6 +49,9 @@
                     faIcon = 'fa-minus-square-o';
                 }
                 return faIcon;
+            },
+            cantEdit : function () {
+                return !this.model.is_edit && !this.model.is_delete && !this.model.is_add;
             }
         },
         methods: {

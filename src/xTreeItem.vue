@@ -12,7 +12,7 @@
                 <span class="x-tree-item-editor-item" v-show="model.is_edit" @click="editFn">修改部门</span>
                 <span class="x-tree-item-editor-item" v-show="model.is_delete" @click="deleteFn">删除部门</span>
                 <span class="x-tree-item-editor-item" v-show="model.is_add" @click="addChildFn">添加子部门</span>
-                <span class="x-tree-item-editor-item" v-show="cantEdit"></span>
+                <span class="x-tree-item-editor-item" v-show="cantEdit">无法操作</span>
             </span>
         </div>
         <div class='x-tree-item-children' v-if="hasChildren" v-show="model.expand">

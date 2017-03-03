@@ -15,7 +15,7 @@
             </span>
         </div>
         <div class='x-tree-item-children' v-if="hasChildren" v-show="model.expand">
-            <x-tree-item v-for="model in model.children" :model="model" :options="treeOptions" :fn="fn">
+            <x-tree-item v-for="model in model.children" :model="model" :options="treeOptions" :fn="fn" ref="treeItem">
             </x-tree-item>
         </div>
     </div>

@@ -250,11 +250,11 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         },
         checkboxIcon: function () {
             var faIcon = '';
-            if (this.state === true) {
+            if (this.model.is_check === true) {
                 faIcon = 'fa-check-square-o';
-            } else if (this.state === false) {
+            } else if (this.model.is_check === false) {
                 faIcon = 'fa-square-o';
-            } else if (this.state === 'tristate') {
+            } else if (this.model.is_check === 'tristate') {
                 faIcon = 'fa-minus-square-o';
             }
             return faIcon;

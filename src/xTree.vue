@@ -18,11 +18,14 @@
             options: Object
         },
         data: function () {
+            var opt = Fn._mergeOptions(this.options);
+
             var treeTemp = Fn._arrayToTree(this.data);
 
-            var treeChecked = Fn._checkTreeByIds(treeTemp, this.options.sel_ids);
+            var treeChecked = Fn._checkTreeByIds(treeTemp, opt.sel_ids);
 
             return {
+                options: opt,
                 fn: Fn,
                 model: treeChecked
             };

@@ -33,7 +33,7 @@ function _mergeOptions(options) {
     return opt;
 }
 
-function _arrayToTree(arrayIn) {
+function _arrayToTree(arrayIn, opt) {
     var rootId = _getTreeRoot(arrayIn);
     var treeData = {
         id: rootId,
@@ -44,10 +44,11 @@ function _arrayToTree(arrayIn) {
         children: [],
         parent: null,
         level: 0,
-        expand: false,
+        expand: true,
+        options: opt,
         itemAmount: arrayIn.length,
     };
-    treeData.children = _getSubTree(arrayIn, treeData);
+    treeData.children = _getSubTree(arrayIn, treeData, opt);
     return treeData;
 }
 
@@ -91,7 +92,7 @@ function _uniqueArray(arrayIn) {
     return ua;
 }
 
-function _getSubTree(arrayIn, parent) {
+function _getSubTree(arrayIn, parent, opt) {
     var result = [];
     var temp = {};
     for (var i = 0; i < arrayIn.length; i++) {
@@ -107,10 +108,20 @@ function _getSubTree(arrayIn, parent) {
             temp = Object.assign({},arrayIn[i]);
             temp.parent = parent;
             temp.level = parent.level + 1;
-            temp.expand = false;
+
+            if(opt.expand === true){
+                temp.expand = true;
+            }else if (opt.expand === false && temp.level <= 0){
+                temp.expand = true;
+            }else if(temp.level <= opt.expand){
+                temp.expand = true;
+            }else {
+                temp.expand = false;
+            }
+
             temp.checkState = temp.is_check;
             if (temp.is_node) {
-                temp.children = _getSubTree(arrayIn, temp);
+                temp.children = _getSubTree(arrayIn, temp, opt);
             } else {
                 temp.children = [];
             }
@@ -288,6 +299,7 @@ function getNameFn(item, name) {
 
 var fn = {
     _mergeOptions: _mergeOptions,
+
     _arrayToTree: _arrayToTree,
 
     _getTreeRoot: _getTreeRoot,

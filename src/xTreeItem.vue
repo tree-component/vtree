@@ -4,7 +4,7 @@
             <i class="x-tree-item-expand fa" :class="model.expand ? 'fa-minus' : 'fa-plus'" v-show="hasChildren"
                @click="expandFn"></i>
             <span class="icon-blank" v-show="!hasChildren"></span>
-            <i class="x-tree-item-checkbox fa" :class=checkboxIcon @click="checkFn"></i>
+            <i class="x-tree-item-checkbox fa" v-if="options.checkbox" :class=checkboxIcon @click="checkFn"></i>
             <span class="x-tree-item-name" @click="nameFn">{{model.name}}</span>
             <i class="x-tree-item-list fa" :class="!showEditor ? 'fa-caret-down' : 'fa-caret-up' "
                @click="showEditorFn"></i>

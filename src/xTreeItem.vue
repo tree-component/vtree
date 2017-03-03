@@ -1,13 +1,11 @@
 <template>
     <div class="x-tree-item">
         <div class="x-tree-item-self" v-show="model.level">
-            <i class="x-tree-item-expand fa" :class="model.expand ? 'fa-minus' : 'fa-plus'" v-show="hasChildren"
-               @click="expandFn"></i>
+            <i class="x-tree-item-expand fa" :class="model.expand ? 'fa-minus' : 'fa-plus'" v-show="hasChildren" @click="expandFn"></i>
             <span class="icon-blank" v-show="!hasChildren"></span>
             <i class="x-tree-item-checkbox fa" :class=checkboxIcon @click="checkFn"></i>
             <span class="x-tree-item-name" @click="nameFn">{{model.name}}</span>
-            <i class="x-tree-item-list fa" :class="!showEditor ? 'fa-caret-down' : 'fa-caret-up' "
-               @click="showEditorFn"></i>
+            <i class="x-tree-item-list fa" :class="!showEditor ? 'fa-caret-down' : 'fa-caret-up' " @click="showEditorFn"></i>
             <span class="x-tree-item-editor" v-show="showEditor" @mouseleave="hideEditorFn">
                 <span class="x-tree-item-editor-item" @click="editFn">修改部门</span>
                 <span class="x-tree-item-editor-item" @click="deleteFn">删除部门</span>
@@ -58,11 +56,11 @@
             },
             checkboxIcon: function () {
                 var faIcon = '';
-                if (this.model.checkState === true) {
+                if (this.state === true) {
                     faIcon = 'fa-check-square-o';
-                } else if (this.model.checkState === false) {
+                } else if (this.state === false) {
                     faIcon = 'fa-square-o';
-                } else if (this.model.checkState === 'tristate') {
+                } else if (this.state === 'tristate') {
                     faIcon = 'fa-minus-square-o';
                 }
                 return faIcon;

@@ -196,11 +196,14 @@ exports.default = {
         options: Object
     },
     data: function data() {
-        var treeTemp = _methods2.default._arrayToTree(this.data);
+        var opt = _methods2.default._mergeOptions(this.options);
 
-        var treeChecked = _methods2.default._checkTreeByIds(treeTemp, this.options.sel_ids);
+        var treeTemp = _methods2.default._arrayToTree(this.data, opt);
+
+        var treeChecked = _methods2.default._checkTreeByIds(treeTemp, opt.sel_ids);
 
         return {
+            opt: opt,
             fn: _methods2.default,
             model: treeChecked
         };
@@ -242,6 +245,7 @@ Object.defineProperty(exports, "__esModule", {
 //
 //
 //
+//
 
 exports.default = {
     name: 'x-tree-item',
@@ -252,7 +256,6 @@ exports.default = {
     },
     data: function data() {
         return {
-            treeOptions: this.options,
             showEditor: false
         };
     },
@@ -270,6 +273,9 @@ exports.default = {
                 faIcon = 'fa-minus-square-o';
             }
             return faIcon;
+        },
+        cantEdit: function cantEdit() {
+            return !this.model.is_edit && !this.model.is_delete && !this.model.is_add;
         }
     },
     methods: {
@@ -336,9 +342,7 @@ exports.default = {
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-
-
-function mergeOptions(options) {
+function _mergeOptions(options) {
     var defOpt = {
         dom: '', //jqueryDom
         is_trigger: false, //是否需要触发? 否则直接显示
@@ -349,7 +353,7 @@ function mergeOptions(options) {
         choose: false, //哪些是选中的？优先级高于data  {nodeId:[1,2,3],id:[1,2,3]}
         // node_first:false,//是否需要节点排在前面  否则按照data的顺序
         is_multi: true, //是否多选
-        expand: false, //是否展开，false、true、num
+        expand: true, //是否展开，false、true、num,(0、1、false,都展开一级。true,完全展开。num>=2时，展开到对应级）
         width: null,
         maxHeight: 300,
         data: [], //{id:1,name:'xx',nodeId:'0',is_node:true,is_check:false},
@@ -362,9 +366,11 @@ function mergeOptions(options) {
         onChange: function onChange() {},
         onClose: function onClose() {}
     };
+    var opt = Object.assign({}, defOpt, options);
+    return opt;
 }
 
-function _arrayToTree(arrayIn) {
+function _arrayToTree(arrayIn, opt) {
     var rootId = _getTreeRoot(arrayIn);
     var treeData = {
         id: rootId,
@@ -376,9 +382,10 @@ function _arrayToTree(arrayIn) {
         parent: null,
         level: 0,
         expand: true,
+        options: opt,
         itemAmount: arrayIn.length
     };
-    treeData.children = _getSubTree(arrayIn, treeData);
+    treeData.children = _getSubTree(arrayIn, treeData, opt);
     return treeData;
 }
 
@@ -422,27 +429,37 @@ function _uniqueArray(arrayIn) {
     return ua;
 }
 
-function _getSubTree(arrayIn, parent) {
+function _getSubTree(arrayIn, parent, opt) {
     var result = [];
     var temp = {};
     for (var i = 0; i < arrayIn.length; i++) {
         if (arrayIn[i].nodeId == parent.id) {
-            // temp = arrayIn[i];
-            temp = {
-                id: arrayIn[i].id,
-                name: arrayIn[i].name,
-                nodeId: arrayIn[i].nodeId,
-                is_node: arrayIn[i].is_node,
-                is_check: arrayIn[i].is_check
-            }; //copy
+            // // temp = arrayIn[i];
+            // temp = {
+            //     id: arrayIn[i].id,
+            //     name: arrayIn[i].name,
+            //     nodeId: arrayIn[i].nodeId,
+            //     is_node: arrayIn[i].is_node,
+            //     is_check: arrayIn[i].is_check
+            // }; //copy
+            temp = Object.assign({}, arrayIn[i]);
             temp.parent = parent;
             temp.level = parent.level + 1;
-            temp.checkState = temp.is_check;
-            if (temp.is_node) {
+
+            if (opt.expand === true) {
                 temp.expand = true;
-                temp.children = _getSubTree(arrayIn, temp);
+            } else if (opt.expand === false && temp.level <= 0) {
+                temp.expand = true;
+            } else if (temp.level <= opt.expand) {
+                temp.expand = true;
             } else {
                 temp.expand = false;
+            }
+
+            temp.checkState = temp.is_check;
+            if (temp.is_node) {
+                temp.children = _getSubTree(arrayIn, temp, opt);
+            } else {
                 temp.children = [];
             }
             result.push(temp);
@@ -617,6 +634,8 @@ function getNameFn(item, name) {
 }
 
 var fn = {
+    _mergeOptions: _mergeOptions,
+
     _arrayToTree: _arrayToTree,
 
     _getTreeRoot: _getTreeRoot,
@@ -653,7 +672,7 @@ exports = module.exports = __webpack_require__(6)();
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", "", {"version":3,"sources":[],"names":[],"mappings":"","file":"xTree.vue","sourceRoot":"webpack://"}]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", "", {"version":3,"sources":[],"names":[],"mappings":"","file":"xTree.vue","sourceRoot":"webpack://"}]);
 
 // exports
 
@@ -759,7 +778,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     staticClass: "x-tree-root",
     attrs: {
       "model": _vm.model,
-      "options": _vm.options,
+      "options": _vm.opt,
       "fn": _vm.fn
     }
   })], 1)
@@ -836,21 +855,47 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       "mouseleave": _vm.hideEditorFn
     }
   }, [_c('span', {
+    directives: [{
+      name: "show",
+      rawName: "v-show",
+      value: (_vm.model.is_edit),
+      expression: "model.is_edit"
+    }],
     staticClass: "x-tree-item-editor-item",
     on: {
       "click": _vm.editFn
     }
   }, [_vm._v("修改部门")]), _vm._v(" "), _c('span', {
+    directives: [{
+      name: "show",
+      rawName: "v-show",
+      value: (_vm.model.is_delete),
+      expression: "model.is_delete"
+    }],
     staticClass: "x-tree-item-editor-item",
     on: {
       "click": _vm.deleteFn
     }
   }, [_vm._v("删除部门")]), _vm._v(" "), _c('span', {
+    directives: [{
+      name: "show",
+      rawName: "v-show",
+      value: (_vm.model.is_add),
+      expression: "model.is_add"
+    }],
     staticClass: "x-tree-item-editor-item",
     on: {
       "click": _vm.addChildFn
     }
-  }, [_vm._v("添加子部门")])])]), _vm._v(" "), (_vm.hasChildren) ? _c('div', {
+  }, [_vm._v("添加子部门")]), _vm._v(" "), _c('span', {
+    directives: [{
+      name: "show",
+      rawName: "v-show",
+      value: (_vm.cantEdit),
+      expression: "cantEdit"
+    }],
+    staticClass: "x-tree-item-editor-item"
+  }, [_vm._v("无法操作")])])]), _vm._v(" "), (_vm.hasChildren) ? _c('div', {
     directives: [{
       name: "show",
       rawName: "v-show",
@@ -862,7 +907,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     return _c('x-tree-item', {
       attrs: {
         "model": model,
-        "options": _vm.treeOptions,
+        "options": _vm.options,
         "fn": _vm.fn
       }
     })

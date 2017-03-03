@@ -1,6 +1,4 @@
-
-
-function mergeOptions(options) {
+function _mergeOptions(options) {
     var defOpt = {
         dom: '',  //jqueryDom
         is_trigger: false,  //是否需要触发? 否则直接显示
@@ -11,7 +9,7 @@ function mergeOptions(options) {
         choose: false,  //哪些是选中的？优先级高于data  {nodeId:[1,2,3],id:[1,2,3]}
         // node_first:false,//是否需要节点排在前面  否则按照data的顺序
         is_multi: true,//是否多选
-        expand: false, //是否展开，false、true、num
+        expand: true, //是否展开，false、true、num,(0、1、false,都展开一级。true,完全展开。num>=2时，展开到对应级）
         width: null,
         maxHeight: 300,
         data: [],//{id:1,name:'xx',nodeId:'0',is_node:true,is_check:false},
@@ -31,6 +29,8 @@ function mergeOptions(options) {
         onClose: function () {
         },
     };
+    var opt = Object.assign({}, defOpt, options);
+    return opt;
 }
 
 function _arrayToTree(arrayIn) {
@@ -44,7 +44,7 @@ function _arrayToTree(arrayIn) {
         children: [],
         parent: null,
         level: 0,
-        expand: true,
+        expand: false,
         itemAmount: arrayIn.length,
     };
     treeData.children = _getSubTree(arrayIn, treeData);
@@ -96,22 +96,22 @@ function _getSubTree(arrayIn, parent) {
     var temp = {};
     for (var i = 0; i < arrayIn.length; i++) {
         if (arrayIn[i].nodeId == parent.id) {
-            // temp = arrayIn[i];
-            temp = {
-                id: arrayIn[i].id,
-                name: arrayIn[i].name,
-                nodeId: arrayIn[i].nodeId,
-                is_node: arrayIn[i].is_node,
-                is_check: arrayIn[i].is_check
-            }; //copy
+            // // temp = arrayIn[i];
+            // temp = {
+            //     id: arrayIn[i].id,
+            //     name: arrayIn[i].name,
+            //     nodeId: arrayIn[i].nodeId,
+            //     is_node: arrayIn[i].is_node,
+            //     is_check: arrayIn[i].is_check
+            // }; //copy
+            temp = Object.assign({},arrayIn[i]);
             temp.parent = parent;
             temp.level = parent.level + 1;
+            temp.expand = false;
             temp.checkState = temp.is_check;
             if (temp.is_node) {
-                temp.expand = true;
                 temp.children = _getSubTree(arrayIn, temp);
             } else {
-                temp.expand = false;
                 temp.children = [];
             }
             result.push(temp);
@@ -287,6 +287,7 @@ function getNameFn(item, name) {
 
 
 var fn = {
+    _mergeOptions: _mergeOptions,
     _arrayToTree: _arrayToTree,
 
     _getTreeRoot: _getTreeRoot,

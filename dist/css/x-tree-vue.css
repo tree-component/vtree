@@ -1,6 +1,6 @@
 body {
     padding: 20px;
-    background: #bbb;
+    background: #5cd;
     word-break: break-all;
 }
 
@@ -31,6 +31,7 @@ body {
 #xTreeDemo {
     display: inline-block;
     width: 300px;
+    background: #f2f2f2;
 }
 
 .x-tree-wrapper {

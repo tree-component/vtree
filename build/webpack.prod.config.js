@@ -12,19 +12,21 @@ const config = {
         path: path.resolve(__dirname, '../dist'),
         filename: "tree.js",
     },
+    devtool: "source-map",
     module: {
-        rules: [
+        loaders: [
             {
                 test: /\.vue$/,
                 loader: 'vue-loader',
             },
             {
                 test: /\.js$/,
-                use: [{
-                    loader: "babel-loader",
-                    options: { presets: ["es2015"] }
-                }],
-                exclude: /node_modules/,
+                exclude: /(node_modules|bower_components)/,
+                loader: 'babel-loader',
+                query: {
+                    presets: ['es2015'],
+                    plugins: ['transform-runtime']
+                }
             },
             {
                 test: /\.css$/,

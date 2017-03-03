@@ -1,6 +1,6 @@
 <template>
     <div class="x-tree-wrapper">
-        <x-tree-item class="x-tree-root" :model="model" :options="options" :fn="fn"></x-tree-item>
+        <x-tree-item class="x-tree-root" :model="model" :options="opt" :fn="fn"></x-tree-item>
     </div>
 </template>
 
@@ -20,12 +20,12 @@
         data: function () {
             var opt = Fn._mergeOptions(this.options);
 
-            var treeTemp = Fn._arrayToTree(this.data);
+            var treeTemp = Fn._arrayToTree(this.data, opt);
 
             var treeChecked = Fn._checkTreeByIds(treeTemp, opt.sel_ids);
 
             return {
-                options: opt,
+                opt: opt,
                 fn: Fn,
                 model: treeChecked
             };

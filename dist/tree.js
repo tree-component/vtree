@@ -250,11 +250,11 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         },
         checkboxIcon: function () {
             var faIcon = '';
-            if (this.model.is_check === true) {
+            if (this.model.checkState === true) {
                 faIcon = 'fa-check-square-o';
-            } else if (this.model.is_check === false) {
+            } else if (this.model.checkState === false) {
                 faIcon = 'fa-square-o';
-            } else if (this.model.is_check === 'tristate') {
+            } else if (this.model.checkState === 'z') {
                 faIcon = 'fa-minus-square-o';
             }
             return faIcon;
@@ -387,7 +387,7 @@ function _getSubTree(arrayIn, parent) {
     var temp = {};
     for (var i = 0; i < arrayIn.length; i++) {
         if (arrayIn[i].nodeId == parent.id) {
-            //                        temp = arrayIn[i];
+            // temp = arrayIn[i];
             temp = {
                 id: arrayIn[i].id,
                 name: arrayIn[i].name,
@@ -397,6 +397,7 @@ function _getSubTree(arrayIn, parent) {
             }; //copy
             temp.parent = parent;
             temp.level = parent.level + 1;
+            temp.checkState = temp.is_check;
             if (temp.is_node) {
                 temp.expand = true;
                 temp.children = _getSubTree(arrayIn, temp);
@@ -461,10 +462,25 @@ function _changeItem(item, change) {
     item.is_check = change;
     if (item.children) {
         _changeChildren(item.children, change);
+        _changeChildrenState(item.children, change);
     }
     if (item.parent) {
         _changeParent(item.parent, change);
+        _changeParentState(item.parent, change);
     }
+}
+
+function _changeChildrenState(children, change) {
+    if (!children) {
+        return false;
+    }
+    for (var i = 0; i < children.length; i++) {
+        children[i].checkState = change;
+        if (children[i].children) {
+            _changeChildrenState(children[i].children, change);
+        }
+    }
+    return true;
 }
 
 function _changeChildren(children, change) {
@@ -472,7 +488,7 @@ function _changeChildren(children, change) {
         return false;
     }
     for (var i = 0; i < children.length; i++) {
-        if (children[i].is_check != change) {
+        if (children[i].is_check !== change) {
             children[i].is_check = change;
             if (children[i].children) {
                 _changeChildren(children[i].children, change);
@@ -482,66 +498,66 @@ function _changeChildren(children, change) {
     return true;
 }
 
-function _changeParent(parent, change) {
+function _changeParentState(parent, change) {
     if (!parent) {
         return false;
     }
-    var old = parent.is_check;
+    var old = parent.checkState;
     var len = parent.children.length;
 
-    if (change === "tristate") {
-        parent.is_check = "tristate";
+    if (change === "z") {
+        parent.checkState = "z";
     } else if (change === true) {
         var n = 0;
         for (var i = 0; i < len; i++) {
-            if (parent.children[i].is_check === true) {
+            if (parent.children[i].checkState === true) {
                 n += 1;
             } else {
-                parent.is_check = "tristate";
+                parent.checkState = "z";
                 break;
             }
         }
         if (n === len) {
-            parent.is_check = true;
+            parent.checkState = true;
         }
     } else if (change === false) {
         var m = 0;
         for (var j = 0; j < len; j++) {
-            if (parent.children[j].is_check === false) {
+            if (parent.children[j].checkState === false) {
                 m += 1;
             } else {
-                parent.is_check = "tristate";
+                parent.checkState = "z";
                 break;
             }
         }
         if (m === len) {
-            parent.is_check = false;
+            parent.checkState = false;
         }
     }
 
-    if (parent.parent && parent.is_check != old) {
-        _changeParent(parent.parent, parent.is_check);
+    if (parent.parent && parent.checkState !== old) {
+        _changeParentState(parent.parent, parent.checkState);
     }
     return true;
 }
 
-// function _changeParent(parent, change) {
-//     if (!parent || parent.is_check == change) {
-//         return false;
-//     }
-//     if (change) {
-//         for (var i = 0; i < parent.children.length; i++) {
-//             if (!parent.children[i].is_check) {
-//                 return false;
-//             }
-//         }
-//     }
-//     parent.is_check = change;
-//     if (parent.parent) {
-//         _changeParent(parent.parent, change);
-//     }
-//     return true;
-// }
+function _changeParent(parent, change) {
+    if (!parent || parent.is_check == change) {
+        return false;
+    }
+    if (change) {
+        for (var i = 0; i < parent.children.length; i++) {
+            if (!parent.children[i].is_check) {
+                return false;
+            }
+        }
+    }
+    parent.is_check = change;
+    if (parent.parent) {
+        _changeParent(parent.parent, change);
+    }
+    return true;
+}
 
 function getName(model) {
     var name = [];

@@ -41,11 +41,11 @@
             },
             checkboxIcon: function () {
                 var faIcon = '';
-                if (this.model.is_check === true) {
+                if (this.model.checkState === true) {
                     faIcon = 'fa-check-square-o';
-                } else if (this.model.is_check === false) {
+                } else if (this.model.checkState === false) {
                     faIcon = 'fa-square-o';
-                } else if (this.model.is_check === 'tristate') {
+                } else if (this.model.checkState === 'z') {
                     faIcon = 'fa-minus-square-o';
                 }
                 return faIcon;

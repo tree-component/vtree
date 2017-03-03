@@ -1,6 +1,6 @@
 <template>
     <div class="x-tree-wrapper">
-        <x-tree-item class="x-tree-root" :model="model" :options="options" :fn="fn" ref="treeItem"></x-tree-item>
+        <x-tree-item class="x-tree-root" :model="model" :options="options" :fn="fn"></x-tree-item>
     </div>
 </template>
 

@@ -4,7 +4,7 @@ const path = require('path');
 const webpack = require("webpack");
 
 const config = {
-    // watch: true,
+    watch: true,
     context: path.resolve(__dirname, '../'),
     entry: {
         tree: "./src/index.js",

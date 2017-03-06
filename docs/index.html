@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="../dist/font-awesome-4.7.0/css/font-awesome.css">
     <link rel="stylesheet" href="../dist/css/x-tree-vue.css">
     <script src="../dist/lib/vue.js"></script>
-    <script src="../dist/tree.js"></script>
+    <script src="../dist/treeRadio.js"></script>
 </head>
 <body>
 <div id="xTreeDemo">
@@ -21,14 +21,9 @@
 
 <script>
     var treeOptions = {
-        only_child: false,
-        is_multi: true,
-        is_trigger: false,
-        node_merge: false,
-        has_search: false,
-        checkbox:true,
+        checkbox:false,
         sel_ids: '3,11,12,13,30,31,32,33',
-        expand: 1,
+        expand: true,
         onName: function (item) {
             console.log("click item", item, item.name);
         },
@@ -48,29 +43,29 @@
     };
 
     var treeData = [
-        {id: 26, name: '成都', nodeId: 7, is_node: false, is_check: false,is_edit:false,is_delete:false,is_add:false},
-        {id: 27, name: '泸州', nodeId: 7, is_node: false, is_check: false,is_edit:true,is_delete:false,is_add:true},
-        {id: 28, name: '昆明', nodeId: 7, is_node: false, is_check: false,is_edit:true,is_delete:false,is_add:true},
-        {id: 29, name: '大理', nodeId: 7, is_node: true, is_check: false,is_edit:true,is_delete:false,is_add:false},
-        {id: 30, name: '贵阳', nodeId: 29, is_node: false, is_check: false,is_edit:true,is_delete:false,is_add:true},
-        {id: 31, name: '遵义', nodeId: 29, is_node: false, is_check: false,is_edit:true,is_delete:false,is_add:true},
-        {id: 32, name: '南宁', nodeId: 29, is_node: false, is_check: false,is_edit:true,is_delete:false,is_add:true},
-        {id: 33, name: '桂林', nodeId: 29, is_node: false, is_check: false,is_edit:true,is_delete:false,is_add:true},
+        {id: 26, name: '成都', nodeId: 7, is_node: false, is_check: false,is_edit:true,is_delete:true,is_add:true},
+        {id: 27, name: '泸州', nodeId: 7, is_node: false, is_check: false,is_edit:true,is_delete:true,is_add:true},
+        {id: 28, name: '昆明', nodeId: 7, is_node: false, is_check: false,is_edit:true,is_delete:true,is_add:true},
+        {id: 29, name: '大理', nodeId: 7, is_node: true, is_check: false,is_edit:true,is_delete:true,is_add:true},
+        {id: 30, name: '贵阳', nodeId: 29, is_node: false, is_check: false,is_edit:true,is_delete:true,is_add:true},
+        {id: 31, name: '遵义', nodeId: 29, is_node: false, is_check: false,is_edit:true,is_delete:true,is_add:true},
+        {id: 32, name: '南宁', nodeId: 29, is_node: false, is_check: false,is_edit:true,is_delete:true,is_add:true},
+        {id: 33, name: '桂林', nodeId: 29, is_node: false, is_check: false,is_edit:true,is_delete:true,is_add:true},
 
         {id: 1, name: '中国', nodeId: 99, is_node: true, is_check: false,is_edit:true,is_delete:true,is_add:true},
-        {id: 110, name: '大陆', nodeId: 99, is_node: true, is_check: false,is_edit:true,is_delete:false,is_add:true},
-        {id: 111, name: '大陆', nodeId: 110, is_node: false, is_check: false,is_edit:true,is_delete:false,is_add:true},
+        {id: 110, name: '大陆', nodeId: 99, is_node: true, is_check: false,is_edit:true,is_delete:true,is_add:true},
+        {id: 111, name: '大陆', nodeId: 110, is_node: false, is_check: false,is_edit:true,is_delete:true,is_add:true},
 
-        {id: 2, name: '四川', nodeId: 1, is_node: true, is_check: false,is_edit:true,is_delete:false,is_add:true},
-        {id: 3, name: '云南', nodeId: 1, is_node: true, is_check: false,is_edit:true,is_delete:false,is_add:true},
-        {id: 4, name: '贵州', nodeId: 1, is_node: true, is_check: false,is_edit:true,is_delete:false,is_add:true},
-        {id: 5, name: '广西', nodeId: 1, is_node: true, is_check: false,is_edit:true,is_delete:false,is_add:true},
-        {id: 6, name: '成都', nodeId: 2, is_node: false, is_check: false,is_edit:true,is_delete:false,is_add:true},
-        {id: 7, name: '泸州', nodeId: 2, is_node: true, is_check: false,is_edit:true,is_delete:false,is_add:true},
-        {id: 8, name: '昆明', nodeId: 3, is_node: false, is_check: false,is_edit:true,is_delete:false,is_add:true},
-        {id: 9, name: '大理', nodeId: 3, is_node: false, is_check: false,is_edit:true,is_delete:false,is_add:true},
-        {id: 10, name: '贵阳', nodeId: 4, is_node: false, is_check: false,is_edit:true,is_delete:false,is_add:true},
-        {id: 11, name: '遵义', nodeId: 4, is_node: false, is_check: false,is_edit:true,is_delete:false,is_add:true},
+        {id: 2, name: '四川', nodeId: 1, is_node: true, is_check: false,is_edit:true,is_delete:true,is_add:true},
+        {id: 3, name: '云南', nodeId: 1, is_node: true, is_check: false,is_edit:true,is_delete:true,is_add:true},
+        {id: 4, name: '贵州', nodeId: 1, is_node: true, is_check: false,is_edit:true,is_delete:true,is_add:true},
+        {id: 5, name: '广西', nodeId: 1, is_node: true, is_check: false,is_edit:true,is_delete:true,is_add:true},
+        {id: 6, name: '成都', nodeId: 2, is_node: false, is_check: false,is_edit:true,is_delete:true,is_add:true},
+        {id: 7, name: '泸州', nodeId: 2, is_node: true, is_check: false,is_edit:true,is_delete:true,is_add:true},
+        {id: 8, name: '昆明', nodeId: 3, is_node: false, is_check: false,is_edit:true,is_delete:true,is_add:true},
+        {id: 9, name: '大理', nodeId: 3, is_node: false, is_check: false,is_edit:true,is_delete:true,is_add:true},
+        {id: 10, name: '贵阳', nodeId: 4, is_node: false, is_check: false,is_edit:true,is_delete:true,is_add:true},
+        {id: 11, name: '遵义', nodeId: 4, is_node: false, is_check: false,is_edit:true,is_delete:true,is_add:true},
         {id: 12, name: '南宁', nodeId: 5, is_node: false, is_check: false,is_edit:true,is_delete:true,is_add:true},
         {id: 13, name: '桂林', nodeId: 5, is_node: false, is_check: false,is_edit:true,is_delete:true,is_add:true},
     ];

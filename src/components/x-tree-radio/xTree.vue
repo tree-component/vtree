@@ -37,6 +37,7 @@
 
 <style scoped>
     .x-tree-wrapper {
+        position: relative;
         cursor: pointer;
     }
 </style>

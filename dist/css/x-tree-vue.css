@@ -1,11 +1,12 @@
-body {
-    padding: 20px;
-    background: #5cd;
-    word-break: break-all;
-}
 
 .bold {
+    overflow-x: hidden;
     font-weight: bold;
+}
+
+#xTreeDemo {
+    display: inline-block;
+    min-width: 200px;
 }
 
 .button {
@@ -18,9 +19,5 @@ body {
     cursor: pointer;
 }
 
-#xTreeDemo {
-    display: inline-block;
-    width: 300px;
-    background: #f2f2f2;
-}
+
 

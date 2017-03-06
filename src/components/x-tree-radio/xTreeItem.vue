@@ -1,19 +1,19 @@
 <template>
     <div class="x-tree-item">
-        <div class="x-tree-item-self" v-show="model.level">
-            <i class="x-tree-item-expand fa" :class="model.expand ? 'fa-minus' : 'fa-plus'" v-show="hasChildren"
-               @click="expandFn"></i>
-            <span class="icon-blank" v-show="!hasChildren"></span>
-            <i class="x-tree-item-checkbox fa" v-if="options.checkbox" :class=checkboxIcon @click="checkFn"></i>
+        <div class="x-tree-item-body" v-show="model.level">
+            <i class="x-tree-item-expand fa" v-if="hasChildren" :class="model.expand ? 'fa-caret-down' : 'fa-caret-right'"  @click="expandFn"></i>
+            <span class="icon-blank" v-else></span>
+            <i class="x-tree-item-checkbox fa" :class="options.checkbox ? checkboxIcon :'fa-folder-o' " @click="checkFn"></i>
             <span class="x-tree-item-name" @click="nameFn">{{model.name}}</span>
-            <i class="x-tree-item-list fa" :class="!showEditor ? 'fa-caret-down' : 'fa-caret-up' "
-               @click="showEditorFn"></i>
-            <ul class="x-tree-item-editor" v-show="showEditor" @mouseleave="hideEditorFn">
-                <li class="x-tree-item-editor-item" v-show="model.is_edit" @click="editFn">修改部门</li>
-                <li class="x-tree-item-editor-item" v-show="model.is_delete" @click="deleteFn">删除部门</li>
-                <li class="x-tree-item-editor-item" v-show="model.is_add" @click="addChildFn">添加子部门</li>
-                <li class="x-tree-item-editor-item" v-show="cantEdit">无法操作</li>
-            </ul>
+            <i class="x-tree-item-list fa fa-caret-square-o-down" @click="showEditorFn"></i>
+            <div class="x-tree-item-editor" v-show="showEditor">
+                <span class="x-tree-item-editor-item" v-show="model.is_edit" @click="editFn">修改部门</span>
+                <span class="x-tree-item-editor-item" v-show="model.is_delete" @click="deleteFn">删除部门</span>
+                <span class="x-tree-item-editor-item" v-show="model.is_add" @click="addChildFn">添加子部门</span>
+                <span class="x-tree-item-editor-item" v-show="model.is_add" @click="addChildFn">上移</span>
+                <span class="x-tree-item-editor-item" v-show="model.is_add" @click="addChildFn">下移</span>
+                <span class="x-tree-item-editor-item" v-show="cantEdit">无法操作</span>
+            </div>
         </div>
         <div class='x-tree-item-children' v-if="hasChildren" v-show="model.expand">
             <x-tree-item v-for="model in model.children" :model="model" :options="options" :fn="fn">
@@ -111,16 +111,6 @@
 </script>
 
 <style scoped>
-    .fa {
-        width: 14px;
-    }
-
-    .icon-blank {
-        display: inline-block;
-        font-size: 14px;
-        width: 1em;
-    }
-
     .x-tree-item {
         position: relative;
         font-size: 14px;
@@ -128,32 +118,79 @@
         -moz-user-select: none;
         -ms-user-select: none;
         user-select: none;
-        cursor: pointer;
     }
 
-    .x-tree-item-expand:hover,.x-tree-item-checkbox:hover,.x-tree-item-name:hover, .x-tree-item-list:hover,.x-tree-item-editor-item:hover {
-        color: deepskyblue;
+    .x-tree-item-body {
+        padding: 0 2em 0 1.5em;
+        line-height: 2em;
+    }
+
+    .x-tree-item-body:hover {
+        background:#E9EBEE;
+    }
+
+    .fa {
+        font-size: 16px;
+        width: 16px;
+        color: #999;
+    }
+
+    .icon-blank {
+        display: inline-block;
+        font-size: 16px;
+        width: 1em;
+    }
+
+    .fa {
+    }
+
+    .x-tree-item-expand {
+
+    }
+
+    .x-tree-item-checkbox {
+
+    }
+
+    .x-tree-item-name {
+        padding: 0 0.5em;
+    }
+
+    .x-tree-item-list {
+        display: none;
+        position: absolute;
+        top: 0.27em;
+        right: 0.27em;
+    }
+
+    .x-tree-item-body:hover .x-tree-item-list{
+        display: block;
     }
 
     .x-tree-item-editor {
         display: block;
         position: absolute;
+        right: 0;
         z-index: 99;
         font-size: 14px;
-        padding: 5px 10px;
-        border: 1px solid #666;
-        background: #f2f2f2;
+        box-shadow: 0 1px 4px #999;
+        background: #fff;
     }
 
+
+    .x-tree-item-editor-item {
+        display: block;
+        padding: 2px 35px 2px 15px;
+    }
+
+    .x-tree-item-editor-item:hover {
+        background: #E9EBEE;
+    }
+
+
     .x-tree-item-children {
-        min-width: 200px;
-        min-height: 20px;
-        border: 1px solid deepskyblue;
         padding-left: 1.5em;
         line-height: 1.5em;
     }
 
-    .x-tree-item-editor-item {
-        display: block;
-    }
 </style>

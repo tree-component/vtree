@@ -6,11 +6,12 @@ const webpack = require("webpack");
 const config = {
     context: path.resolve(__dirname, '../'),
     entry: {
-        app: "./src/index.js",
+        tree: "./src/components/x-tree/index.js",
+        treeRadio: "./src/components/x-tree-radio/index.js"
     },
     output: {
         path: path.resolve(__dirname, '../dist'),
-        filename: "tree.js",
+        filename: "[name].js",
     },
     // devtool: "source-map",
     module: {

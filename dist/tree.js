@@ -63,11 +63,67 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 13);
+/******/ 	return __webpack_require__(__webpack_require__.s = 15);
 /******/ })
 /************************************************************************/
 /******/ ([
 /* 0 */
+/***/ (function(module, exports) {
+
+/*
+	MIT License http://www.opensource.org/licenses/mit-license.php
+	Author Tobias Koppers @sokra
+*/
+// css base code, injected by the css-loader
+module.exports = function() {
+	var list = [];
+
+	// return the list of modules as css string
+	list.toString = function toString() {
+		var result = [];
+		for(var i = 0; i < this.length; i++) {
+			var item = this[i];
+			if(item[2]) {
+				result.push("@media " + item[2] + "{" + item[1] + "}");
+			} else {
+				result.push(item[1]);
+			}
+		}
+		return result.join("");
+	};
+
+	// import a list of modules into the list
+	list.i = function(modules, mediaQuery) {
+		if(typeof modules === "string")
+			modules = [[null, modules, ""]];
+		var alreadyImportedModules = {};
+		for(var i = 0; i < this.length; i++) {
+			var id = this[i][0];
+			if(typeof id === "number")
+				alreadyImportedModules[id] = true;
+		}
+		for(i = 0; i < modules.length; i++) {
+			var item = modules[i];
+			// skip already imported module
+			// this implementation is not 100% perfect for weird media query combinations
+			//  when a module is imported multiple times with different media queries.
+			//  I hope this will never occur (Hey this way we have smaller bundles)
+			if(typeof item[0] !== "number" || !alreadyImportedModules[item[0]]) {
+				if(mediaQuery && !item[2]) {
+					item[2] = mediaQuery;
+				} else if(mediaQuery) {
+					item[2] = "(" + item[2] + ") and (" + mediaQuery + ")";
+				}
+				list.push(item);
+			}
+		}
+	};
+	return list;
+};
+
+
+/***/ }),
+/* 1 */
 /***/ (function(module, exports) {
 
 module.exports = function normalizeComponent (
@@ -121,18 +177,254 @@ module.exports = function normalizeComponent (
 
 
 /***/ }),
-/* 1 */
+/* 2 */
+/***/ (function(module, exports, __webpack_require__) {
+
+/*
+  MIT License http://www.opensource.org/licenses/mit-license.php
+  Author Tobias Koppers @sokra
+  Modified by Evan You @yyx990803
+*/
+
+var hasDocument = typeof document !== 'undefined'
+
+if (typeof DEBUG !== 'undefined' && DEBUG) {
+  if (!hasDocument) {
+    throw new Error(
+    'vue-style-loader cannot be used in a non-browser environment. ' +
+    "Use { target: 'node' } in your Webpack config to indicate a server-rendering environment."
+  ) }
+}
+
+var listToStyles = __webpack_require__(14)
+
+/*
+type StyleObject = {
+  id: number;
+  parts: Array<StyleObjectPart>
+}
+
+type StyleObjectPart = {
+  css: string;
+  media: string;
+  sourceMap: ?string
+}
+*/
+
+var stylesInDom = {/*
+  [id: number]: {
+    id: number,
+    refs: number,
+    parts: Array<(obj?: StyleObjectPart) => void>
+  }
+*/}
+
+var head = hasDocument && (document.head || document.getElementsByTagName('head')[0])
+var singletonElement = null
+var singletonCounter = 0
+var isProduction = false
+var noop = function () {}
+
+// Force single-tag solution on IE6-9, which has a hard limit on the # of <style>
+// tags it will allow on a page
+var isOldIE = typeof navigator !== 'undefined' && /msie [6-9]\b/.test(navigator.userAgent.toLowerCase())
+
+module.exports = function (parentId, list, _isProduction) {
+  isProduction = _isProduction
+
+  var styles = listToStyles(parentId, list)
+  addStylesToDom(styles)
+
+  return function update (newList) {
+    var mayRemove = []
+    for (var i = 0; i < styles.length; i++) {
+      var item = styles[i]
+      var domStyle = stylesInDom[item.id]
+      domStyle.refs--
+      mayRemove.push(domStyle)
+    }
+    if (newList) {
+      styles = listToStyles(parentId, newList)
+      addStylesToDom(styles)
+    } else {
+      styles = []
+    }
+    for (var i = 0; i < mayRemove.length; i++) {
+      var domStyle = mayRemove[i]
+      if (domStyle.refs === 0) {
+        for (var j = 0; j < domStyle.parts.length; j++) {
+          domStyle.parts[j]()
+        }
+        delete stylesInDom[domStyle.id]
+      }
+    }
+  }
+}
+
+function addStylesToDom (styles /* Array<StyleObject> */) {
+  for (var i = 0; i < styles.length; i++) {
+    var item = styles[i]
+    var domStyle = stylesInDom[item.id]
+    if (domStyle) {
+      domStyle.refs++
+      for (var j = 0; j < domStyle.parts.length; j++) {
+        domStyle.parts[j](item.parts[j])
+      }
+      for (; j < item.parts.length; j++) {
+        domStyle.parts.push(addStyle(item.parts[j]))
+      }
+      if (domStyle.parts.length > item.parts.length) {
+        domStyle.parts.length = item.parts.length
+      }
+    } else {
+      var parts = []
+      for (var j = 0; j < item.parts.length; j++) {
+        parts.push(addStyle(item.parts[j]))
+      }
+      stylesInDom[item.id] = { id: item.id, refs: 1, parts: parts }
+    }
+  }
+}
+
+function listToStyles (parentId, list) {
+  var styles = []
+  var newStyles = {}
+  for (var i = 0; i < list.length; i++) {
+    var item = list[i]
+    var id = item[0]
+    var css = item[1]
+    var media = item[2]
+    var sourceMap = item[3]
+    var part = { css: css, media: media, sourceMap: sourceMap }
+    if (!newStyles[id]) {
+      part.id = parentId + ':0'
+      styles.push(newStyles[id] = { id: id, parts: [part] })
+    } else {
+      part.id = parentId + ':' + newStyles[id].parts.length
+      newStyles[id].parts.push(part)
+    }
+  }
+  return styles
+}
+
+function createStyleElement () {
+  var styleElement = document.createElement('style')
+  styleElement.type = 'text/css'
+  head.appendChild(styleElement)
+  return styleElement
+}
+
+function addStyle (obj /* StyleObjectPart */) {
+  var update, remove
+  var styleElement = document.querySelector('style[data-vue-ssr-id~="' + obj.id + '"]')
+  var hasSSR = styleElement != null
+
+  // if in production mode and style is already provided by SSR,
+  // simply do nothing.
+  if (hasSSR && isProduction) {
+    return noop
+  }
+
+  if (isOldIE) {
+    // use singleton mode for IE9.
+    var styleIndex = singletonCounter++
+    styleElement = singletonElement || (singletonElement = createStyleElement())
+    update = applyToSingletonTag.bind(null, styleElement, styleIndex, false)
+    remove = applyToSingletonTag.bind(null, styleElement, styleIndex, true)
+  } else {
+    // use multi-style-tag mode in all other cases
+    styleElement = styleElement || createStyleElement()
+    update = applyToTag.bind(null, styleElement)
+    remove = function () {
+      styleElement.parentNode.removeChild(styleElement)
+    }
+  }
+
+  if (!hasSSR) {
+    update(obj)
+  }
+
+  return function updateStyle (newObj /* StyleObjectPart */) {
+    if (newObj) {
+      if (newObj.css === obj.css &&
+          newObj.media === obj.media &&
+          newObj.sourceMap === obj.sourceMap) {
+        return
+      }
+      update(obj = newObj)
+    } else {
+      remove()
+    }
+  }
+}
+
+var replaceText = (function () {
+  var textStore = []
+
+  return function (index, replacement) {
+    textStore[index] = replacement
+    return textStore.filter(Boolean).join('\n')
+  }
+})()
+
+function applyToSingletonTag (styleElement, index, remove, obj) {
+  var css = remove ? '' : obj.css
+
+  if (styleElement.styleSheet) {
+    styleElement.styleSheet.cssText = replaceText(index, css)
+  } else {
+    var cssNode = document.createTextNode(css)
+    var childNodes = styleElement.childNodes
+    if (childNodes[index]) styleElement.removeChild(childNodes[index])
+    if (childNodes.length) {
+      styleElement.insertBefore(cssNode, childNodes[index])
+    } else {
+      styleElement.appendChild(cssNode)
+    }
+  }
+}
+
+function applyToTag (styleElement, obj) {
+  var css = obj.css
+  var media = obj.media
+  var sourceMap = obj.sourceMap
+
+  if (media) {
+    styleElement.setAttribute('media', media)
+  }
+
+  if (sourceMap) {
+    // https://developer.chrome.com/devtools/docs/javascript-debugging
+    // this makes source maps inside style tags work properly in Chrome
+    css += '\n/*# sourceURL=' + sourceMap.sources[0] + ' */'
+    // http://stackoverflow.com/a/26603875
+    css += '\n/*# sourceMappingURL=data:application/json;base64,' + btoa(unescape(encodeURIComponent(JSON.stringify(sourceMap)))) + ' */'
+  }
+
+  if (styleElement.styleSheet) {
+    styleElement.styleSheet.cssText = css
+  } else {
+    while (styleElement.firstChild) {
+      styleElement.removeChild(styleElement.firstChild)
+    }
+    styleElement.appendChild(document.createTextNode(css))
+  }
+}
+
+
+/***/ }),
+/* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
 /* styles */
-__webpack_require__(10)
+__webpack_require__(12)
 
-var Component = __webpack_require__(0)(
+var Component = __webpack_require__(1)(
   /* script */
-  __webpack_require__(2),
+  __webpack_require__(4),
   /* template */
-  __webpack_require__(8),
+  __webpack_require__(10),
   /* scopeId */
   "data-v-20545fcf",
   /* cssModules */
@@ -159,7 +451,7 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 2 */
+/* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -169,11 +461,11 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _methods = __webpack_require__(4);
+var _methods = __webpack_require__(6);
 
 var _methods2 = _interopRequireDefault(_methods);
 
-var _xTreeItem = __webpack_require__(7);
+var _xTreeItem = __webpack_require__(9);
 
 var _xTreeItem2 = _interopRequireDefault(_xTreeItem);
 
@@ -213,7 +505,7 @@ exports.default = {
 };
 
 /***/ }),
-/* 3 */
+/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -333,7 +625,7 @@ exports.default = {
 };
 
 /***/ }),
-/* 4 */
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -664,86 +956,48 @@ var fn = {
 exports.default = fn;
 
 /***/ }),
-/* 5 */
+/* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(6)();
+exports = module.exports = __webpack_require__(0)();
 // imports
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", "", {"version":3,"sources":[],"names":[],"mappings":"","file":"xTree.vue","sourceRoot":"webpack://"}]);
+exports.push([module.i, "\n.x-tree-wrapper[data-v-20545fcf] {\n    cursor: pointer;\n}\n", "", {"version":3,"sources":["/./src/xTree.vue?141412ff"],"names":[],"mappings":";AAsCA;IACA,gBAAA;CACA","file":"xTree.vue","sourcesContent":["<template>\r\n    <div class=\"x-tree-wrapper\">\r\n        <x-tree-item class=\"x-tree-root\" :model=\"model\" :options=\"opt\" :fn=\"fn\"></x-tree-item>\r\n    </div>\r\n</template>\r\n\r\n<script>\r\n    import Fn from './methods'\r\n    import xTreeItem from './xTreeItem.vue';\r\n\r\n    export default {\r\n        name: \"x-tree\",\r\n        components: {\r\n            xTreeItem\r\n        },\r\n        props: {\r\n            data: Array,\r\n            options: Object\r\n        },\r\n        data: function () {\r\n            var opt = Fn._mergeOptions(this.options);\r\n\r\n            var treeTemp = Fn._arrayToTree(this.data, opt);\r\n\r\n            var treeChecked = Fn._checkTreeByIds(treeTemp, opt.sel_ids);\r\n\r\n            return {\r\n                opt: opt,\r\n                fn: Fn,\r\n                model: treeChecked\r\n            };\r\n        },\r\n        computed: {},\r\n        methods: {}\r\n    };\r\n</script>\r\n\r\n<style scoped>\r\n    .x-tree-wrapper {\r\n        cursor: pointer;\r\n    }\r\n</style>\r\n"],"sourceRoot":"webpack://"}]);
 
 // exports
 
 
 /***/ }),
-/* 6 */
-/***/ (function(module, exports) {
+/* 8 */
+/***/ (function(module, exports, __webpack_require__) {
 
-/*
-	MIT License http://www.opensource.org/licenses/mit-license.php
-	Author Tobias Koppers @sokra
-*/
-// css base code, injected by the css-loader
-module.exports = function() {
-	var list = [];
+exports = module.exports = __webpack_require__(0)();
+// imports
 
-	// return the list of modules as css string
-	list.toString = function toString() {
-		var result = [];
-		for(var i = 0; i < this.length; i++) {
-			var item = this[i];
-			if(item[2]) {
-				result.push("@media " + item[2] + "{" + item[1] + "}");
-			} else {
-				result.push(item[1]);
-			}
-		}
-		return result.join("");
-	};
 
-	// import a list of modules into the list
-	list.i = function(modules, mediaQuery) {
-		if(typeof modules === "string")
-			modules = [[null, modules, ""]];
-		var alreadyImportedModules = {};
-		for(var i = 0; i < this.length; i++) {
-			var id = this[i][0];
-			if(typeof id === "number")
-				alreadyImportedModules[id] = true;
-		}
-		for(i = 0; i < modules.length; i++) {
-			var item = modules[i];
-			// skip already imported module
-			// this implementation is not 100% perfect for weird media query combinations
-			//  when a module is imported multiple times with different media queries.
-			//  I hope this will never occur (Hey this way we have smaller bundles)
-			if(typeof item[0] !== "number" || !alreadyImportedModules[item[0]]) {
-				if(mediaQuery && !item[2]) {
-					item[2] = mediaQuery;
-				} else if(mediaQuery) {
-					item[2] = "(" + item[2] + ") and (" + mediaQuery + ")";
-				}
-				list.push(item);
-			}
-		}
-	};
-	return list;
-};
+// module
+exports.push([module.i, "\n.fa[data-v-e6c1ebfc] {\n    width: 14px;\n}\n.icon-blank[data-v-e6c1ebfc] {\n    display: inline-block;\n    font-size: 14px;\n    width: 1em;\n}\n.x-tree-item[data-v-e6c1ebfc] {\n    position: relative;\n    font-size: 14px;\n    -webkit-user-select: none;\n    -moz-user-select: none;\n    -ms-user-select: none;\n    user-select: none;\n    cursor: pointer;\n}\n.x-tree-item-expand[data-v-e6c1ebfc]:hover,.x-tree-item-checkbox[data-v-e6c1ebfc]:hover,.x-tree-item-name[data-v-e6c1ebfc]:hover, .x-tree-item-list[data-v-e6c1ebfc]:hover,.x-tree-item-editor-item[data-v-e6c1ebfc]:hover {\n    color: deepskyblue;\n}\n.x-tree-item-editor[data-v-e6c1ebfc] {\n    display: block;\n    position: absolute;\n    z-index: 99;\n    font-size: 14px;\n    padding: 5px 10px;\n    border: 1px solid #666;\n    background: #f2f2f2;\n}\n.x-tree-item-children[data-v-e6c1ebfc] {\n    min-width: 200px;\n    min-height: 20px;\n    border: 1px solid deepskyblue;\n    padding-left: 1.5em;\n    line-height: 1.5em;\n}\n.x-tree-item-editor-item[data-v-e6c1ebfc] {\n    display: block;\n}\n", "", {"version":3,"sources":["/./src/xTreeItem.vue?355b9389"],"names":[],"mappings":";AAiHA;IACA,YAAA;CACA;AAEA;IACA,sBAAA;IACA,gBAAA;IACA,WAAA;CACA;AAEA;IACA,mBAAA;IACA,gBAAA;IACA,0BAAA;IACA,uBAAA;IACA,sBAAA;IACA,kBAAA;IACA,gBAAA;CACA;AAEA;IACA,mBAAA;CACA;AAEA;IACA,eAAA;IACA,mBAAA;IACA,YAAA;IACA,gBAAA;IACA,kBAAA;IACA,uBAAA;IACA,oBAAA;CACA;AAEA;IACA,iBAAA;IACA,iBAAA;IACA,8BAAA;IACA,oBAAA;IACA,mBAAA;CACA;AAEA;IACA,eAAA;CACA","file":"xTreeItem.vue","sourcesContent":["<template>\r\n    <div class=\"x-tree-item\">\r\n        <div class=\"x-tree-item-self\" v-show=\"model.level\">\r\n            <i class=\"x-tree-item-expand fa\" :class=\"model.expand ? 'fa-minus' : 'fa-plus'\" v-show=\"hasChildren\"\r\n               @click=\"expandFn\"></i>\r\n            <span class=\"icon-blank\" v-show=\"!hasChildren\"></span>\r\n            <i class=\"x-tree-item-checkbox fa\" v-if=\"options.checkbox\" :class=checkboxIcon @click=\"checkFn\"></i>\r\n            <span class=\"x-tree-item-name\" @click=\"nameFn\">{{model.name}}</span>\r\n            <i class=\"x-tree-item-list fa\" :class=\"!showEditor ? 'fa-caret-down' : 'fa-caret-up' \"\r\n               @click=\"showEditorFn\"></i>\r\n            <ul class=\"x-tree-item-editor\" v-show=\"showEditor\" @mouseleave=\"hideEditorFn\">\r\n                <li class=\"x-tree-item-editor-item\" v-show=\"model.is_edit\" @click=\"editFn\">修改部门</li>\r\n                <li class=\"x-tree-item-editor-item\" v-show=\"model.is_delete\" @click=\"deleteFn\">删除部门</li>\r\n                <li class=\"x-tree-item-editor-item\" v-show=\"model.is_add\" @click=\"addChildFn\">添加子部门</li>\r\n                <li class=\"x-tree-item-editor-item\" v-show=\"cantEdit\">无法操作</li>\r\n            </ul>\r\n        </div>\r\n        <div class='x-tree-item-children' v-if=\"hasChildren\" v-show=\"model.expand\">\r\n            <x-tree-item v-for=\"model in model.children\" :model=\"model\" :options=\"options\" :fn=\"fn\">\r\n            </x-tree-item>\r\n        </div>\r\n    </div>\r\n</template>\r\n\r\n<script>\r\n    export default {\r\n        name: 'x-tree-item',\r\n        props: {\r\n            model: Object,\r\n            options: Object,\r\n            fn: Object\r\n        },\r\n        data: function () {\r\n            return {\r\n                showEditor: false\r\n            };\r\n        },\r\n        computed: {\r\n            hasChildren: function () {\r\n                return this.model.is_node && this.model.children && this.model.children.length\r\n            },\r\n            checkboxIcon: function () {\r\n                var faIcon = '';\r\n                if (this.model.checkState === true) {\r\n                    faIcon = 'fa-check-square-o';\r\n                } else if (this.model.checkState === false) {\r\n                    faIcon = 'fa-square-o';\r\n                } else if (this.model.checkState === 'z') {\r\n                    faIcon = 'fa-minus-square-o';\r\n                }\r\n                return faIcon;\r\n            },\r\n            cantEdit : function () {\r\n                return !this.model.is_edit && !this.model.is_delete && !this.model.is_add;\r\n            }\r\n        },\r\n        methods: {\r\n            expandFn: function () {\r\n                if (this.hasChildren) {\r\n                    this.model.expand = !this.model.expand;\r\n                }\r\n            },\r\n            checkFn: function () {\r\n                this.fn._changeItem(this.model, !this.model.is_check);\r\n            },\r\n\r\n            nameFn: function () {\r\n                console.log(\"this\",this);\r\n                this.options.onName(this.model);\r\n            },\r\n\r\n            hideEditorFn: function () {\r\n                this.showEditor = false;\r\n            },\r\n\r\n            showEditorFn: function () {\r\n                this.showEditor = !this.showEditor;\r\n            },\r\n\r\n\r\n            editFn: function () {\r\n                this.options.onEdit(this.model);\r\n                this.showEditor = !this.showEditor;\r\n            },\r\n\r\n            deleteFn: function () {\r\n                var index = this.model.parent.children.indexOf(this.model);\r\n\r\n                this.model.parent.children.splice(index, 1);\r\n                this.options.onDelete(this.model);\r\n                this.showEditor = !this.showEditor;\r\n            },\r\n\r\n            addChildFn: function () {\r\n                var newChild = {\r\n                    id: '',\r\n                    name: '',\r\n                    nodeId: this.model.id,\r\n                    is_node: false,\r\n                    is_check: false,\r\n                    expand: false,\r\n                    level: this.model.level + 1,\r\n                    parent: this.model,\r\n                    children: [],\r\n                };\r\n                this.options.onAddChild(newChild);\r\n                this.showEditor = !this.showEditor;\r\n            }\r\n        }\r\n    }\r\n</script>\r\n\r\n<style scoped>\r\n    .fa {\r\n        width: 14px;\r\n    }\r\n\r\n    .icon-blank {\r\n        display: inline-block;\r\n        font-size: 14px;\r\n        width: 1em;\r\n    }\r\n\r\n    .x-tree-item {\r\n        position: relative;\r\n        font-size: 14px;\r\n        -webkit-user-select: none;\r\n        -moz-user-select: none;\r\n        -ms-user-select: none;\r\n        user-select: none;\r\n        cursor: pointer;\r\n    }\r\n\r\n    .x-tree-item-expand:hover,.x-tree-item-checkbox:hover,.x-tree-item-name:hover, .x-tree-item-list:hover,.x-tree-item-editor-item:hover {\r\n        color: deepskyblue;\r\n    }\r\n\r\n    .x-tree-item-editor {\r\n        display: block;\r\n        position: absolute;\r\n        z-index: 99;\r\n        font-size: 14px;\r\n        padding: 5px 10px;\r\n        border: 1px solid #666;\r\n        background: #f2f2f2;\r\n    }\r\n\r\n    .x-tree-item-children {\r\n        min-width: 200px;\r\n        min-height: 20px;\r\n        border: 1px solid deepskyblue;\r\n        padding-left: 1.5em;\r\n        line-height: 1.5em;\r\n    }\r\n\r\n    .x-tree-item-editor-item {\r\n        display: block;\r\n    }\r\n</style>"],"sourceRoot":"webpack://"}]);
+
+// exports
 
 
 /***/ }),
-/* 7 */
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var Component = __webpack_require__(0)(
+
+/* styles */
+__webpack_require__(13)
+
+var Component = __webpack_require__(1)(
   /* script */
-  __webpack_require__(3),
+  __webpack_require__(5),
   /* template */
-  __webpack_require__(9),
+  __webpack_require__(11),
   /* scopeId */
-  null,
+  "data-v-e6c1ebfc",
   /* cssModules */
   null
 )
@@ -768,7 +1022,7 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 8 */
+/* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -792,7 +1046,7 @@ if (false) {
 }
 
 /***/ }),
-/* 9 */
+/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -843,7 +1097,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     on: {
       "click": _vm.showEditorFn
     }
-  }), _vm._v(" "), _c('span', {
+  }), _vm._v(" "), _c('ul', {
     directives: [{
       name: "show",
       rawName: "v-show",
@@ -854,7 +1108,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     on: {
       "mouseleave": _vm.hideEditorFn
     }
-  }, [_c('span', {
+  }, [_c('li', {
     directives: [{
       name: "show",
       rawName: "v-show",
@@ -865,7 +1119,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     on: {
       "click": _vm.editFn
     }
-  }, [_vm._v("修改部门")]), _vm._v(" "), _c('span', {
+  }, [_vm._v("修改部门")]), _vm._v(" "), _c('li', {
     directives: [{
       name: "show",
       rawName: "v-show",
@@ -876,7 +1130,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     on: {
       "click": _vm.deleteFn
     }
-  }, [_vm._v("删除部门")]), _vm._v(" "), _c('span', {
+  }, [_vm._v("删除部门")]), _vm._v(" "), _c('li', {
     directives: [{
       name: "show",
       rawName: "v-show",
@@ -887,7 +1141,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     on: {
       "click": _vm.addChildFn
     }
-  }, [_vm._v("添加子部门")]), _vm._v(" "), _c('span', {
+  }, [_vm._v("添加子部门")]), _vm._v(" "), _c('li', {
     directives: [{
       name: "show",
       rawName: "v-show",
@@ -922,17 +1176,17 @@ if (false) {
 }
 
 /***/ }),
-/* 10 */
+/* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(5);
+var content = __webpack_require__(7);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(11)("08439162", content, false);
+var update = __webpack_require__(2)("08439162", content, false);
 // Hot Module Replacement
 if(false) {
  // When the styles change, update the <style> tags
@@ -948,243 +1202,33 @@ if(false) {
 }
 
 /***/ }),
-/* 11 */
+/* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
-/*
-  MIT License http://www.opensource.org/licenses/mit-license.php
-  Author Tobias Koppers @sokra
-  Modified by Evan You @yyx990803
-*/
+// style-loader: Adds some css to the DOM by adding a <style> tag
 
-var hasDocument = typeof document !== 'undefined'
-
-if (typeof DEBUG !== 'undefined' && DEBUG) {
-  if (!hasDocument) {
-    throw new Error(
-    'vue-style-loader cannot be used in a non-browser environment. ' +
-    "Use { target: 'node' } in your Webpack config to indicate a server-rendering environment."
-  ) }
+// load the styles
+var content = __webpack_require__(8);
+if(typeof content === 'string') content = [[module.i, content, '']];
+if(content.locals) module.exports = content.locals;
+// add the styles to the DOM
+var update = __webpack_require__(2)("1e35dc32", content, false);
+// Hot Module Replacement
+if(false) {
+ // When the styles change, update the <style> tags
+ if(!content.locals) {
+   module.hot.accept("!!../node_modules/css-loader/index.js?sourceMap!../node_modules/vue-loader/lib/style-rewriter.js?{\"id\":\"data-v-e6c1ebfc\",\"scoped\":true,\"hasInlineConfig\":false}!../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./xTreeItem.vue", function() {
+     var newContent = require("!!../node_modules/css-loader/index.js?sourceMap!../node_modules/vue-loader/lib/style-rewriter.js?{\"id\":\"data-v-e6c1ebfc\",\"scoped\":true,\"hasInlineConfig\":false}!../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./xTreeItem.vue");
+     if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+     update(newContent);
+   });
+ }
+ // When the module is disposed, remove the <style> tags
+ module.hot.dispose(function() { update(); });
 }
-
-var listToStyles = __webpack_require__(12)
-
-/*
-type StyleObject = {
-  id: number;
-  parts: Array<StyleObjectPart>
-}
-
-type StyleObjectPart = {
-  css: string;
-  media: string;
-  sourceMap: ?string
-}
-*/
-
-var stylesInDom = {/*
-  [id: number]: {
-    id: number,
-    refs: number,
-    parts: Array<(obj?: StyleObjectPart) => void>
-  }
-*/}
-
-var head = hasDocument && (document.head || document.getElementsByTagName('head')[0])
-var singletonElement = null
-var singletonCounter = 0
-var isProduction = false
-var noop = function () {}
-
-// Force single-tag solution on IE6-9, which has a hard limit on the # of <style>
-// tags it will allow on a page
-var isOldIE = typeof navigator !== 'undefined' && /msie [6-9]\b/.test(navigator.userAgent.toLowerCase())
-
-module.exports = function (parentId, list, _isProduction) {
-  isProduction = _isProduction
-
-  var styles = listToStyles(parentId, list)
-  addStylesToDom(styles)
-
-  return function update (newList) {
-    var mayRemove = []
-    for (var i = 0; i < styles.length; i++) {
-      var item = styles[i]
-      var domStyle = stylesInDom[item.id]
-      domStyle.refs--
-      mayRemove.push(domStyle)
-    }
-    if (newList) {
-      styles = listToStyles(parentId, newList)
-      addStylesToDom(styles)
-    } else {
-      styles = []
-    }
-    for (var i = 0; i < mayRemove.length; i++) {
-      var domStyle = mayRemove[i]
-      if (domStyle.refs === 0) {
-        for (var j = 0; j < domStyle.parts.length; j++) {
-          domStyle.parts[j]()
-        }
-        delete stylesInDom[domStyle.id]
-      }
-    }
-  }
-}
-
-function addStylesToDom (styles /* Array<StyleObject> */) {
-  for (var i = 0; i < styles.length; i++) {
-    var item = styles[i]
-    var domStyle = stylesInDom[item.id]
-    if (domStyle) {
-      domStyle.refs++
-      for (var j = 0; j < domStyle.parts.length; j++) {
-        domStyle.parts[j](item.parts[j])
-      }
-      for (; j < item.parts.length; j++) {
-        domStyle.parts.push(addStyle(item.parts[j]))
-      }
-      if (domStyle.parts.length > item.parts.length) {
-        domStyle.parts.length = item.parts.length
-      }
-    } else {
-      var parts = []
-      for (var j = 0; j < item.parts.length; j++) {
-        parts.push(addStyle(item.parts[j]))
-      }
-      stylesInDom[item.id] = { id: item.id, refs: 1, parts: parts }
-    }
-  }
-}
-
-function listToStyles (parentId, list) {
-  var styles = []
-  var newStyles = {}
-  for (var i = 0; i < list.length; i++) {
-    var item = list[i]
-    var id = item[0]
-    var css = item[1]
-    var media = item[2]
-    var sourceMap = item[3]
-    var part = { css: css, media: media, sourceMap: sourceMap }
-    if (!newStyles[id]) {
-      part.id = parentId + ':0'
-      styles.push(newStyles[id] = { id: id, parts: [part] })
-    } else {
-      part.id = parentId + ':' + newStyles[id].parts.length
-      newStyles[id].parts.push(part)
-    }
-  }
-  return styles
-}
-
-function createStyleElement () {
-  var styleElement = document.createElement('style')
-  styleElement.type = 'text/css'
-  head.appendChild(styleElement)
-  return styleElement
-}
-
-function addStyle (obj /* StyleObjectPart */) {
-  var update, remove
-  var styleElement = document.querySelector('style[data-vue-ssr-id~="' + obj.id + '"]')
-  var hasSSR = styleElement != null
-
-  // if in production mode and style is already provided by SSR,
-  // simply do nothing.
-  if (hasSSR && isProduction) {
-    return noop
-  }
-
-  if (isOldIE) {
-    // use singleton mode for IE9.
-    var styleIndex = singletonCounter++
-    styleElement = singletonElement || (singletonElement = createStyleElement())
-    update = applyToSingletonTag.bind(null, styleElement, styleIndex, false)
-    remove = applyToSingletonTag.bind(null, styleElement, styleIndex, true)
-  } else {
-    // use multi-style-tag mode in all other cases
-    styleElement = styleElement || createStyleElement()
-    update = applyToTag.bind(null, styleElement)
-    remove = function () {
-      styleElement.parentNode.removeChild(styleElement)
-    }
-  }
-
-  if (!hasSSR) {
-    update(obj)
-  }
-
-  return function updateStyle (newObj /* StyleObjectPart */) {
-    if (newObj) {
-      if (newObj.css === obj.css &&
-          newObj.media === obj.media &&
-          newObj.sourceMap === obj.sourceMap) {
-        return
-      }
-      update(obj = newObj)
-    } else {
-      remove()
-    }
-  }
-}
-
-var replaceText = (function () {
-  var textStore = []
-
-  return function (index, replacement) {
-    textStore[index] = replacement
-    return textStore.filter(Boolean).join('\n')
-  }
-})()
-
-function applyToSingletonTag (styleElement, index, remove, obj) {
-  var css = remove ? '' : obj.css
-
-  if (styleElement.styleSheet) {
-    styleElement.styleSheet.cssText = replaceText(index, css)
-  } else {
-    var cssNode = document.createTextNode(css)
-    var childNodes = styleElement.childNodes
-    if (childNodes[index]) styleElement.removeChild(childNodes[index])
-    if (childNodes.length) {
-      styleElement.insertBefore(cssNode, childNodes[index])
-    } else {
-      styleElement.appendChild(cssNode)
-    }
-  }
-}
-
-function applyToTag (styleElement, obj) {
-  var css = obj.css
-  var media = obj.media
-  var sourceMap = obj.sourceMap
-
-  if (media) {
-    styleElement.setAttribute('media', media)
-  }
-
-  if (sourceMap) {
-    // https://developer.chrome.com/devtools/docs/javascript-debugging
-    // this makes source maps inside style tags work properly in Chrome
-    css += '\n/*# sourceURL=' + sourceMap.sources[0] + ' */'
-    // http://stackoverflow.com/a/26603875
-    css += '\n/*# sourceMappingURL=data:application/json;base64,' + btoa(unescape(encodeURIComponent(JSON.stringify(sourceMap)))) + ' */'
-  }
-
-  if (styleElement.styleSheet) {
-    styleElement.styleSheet.cssText = css
-  } else {
-    while (styleElement.firstChild) {
-      styleElement.removeChild(styleElement.firstChild)
-    }
-    styleElement.appendChild(document.createTextNode(css))
-  }
-}
-
 
 /***/ }),
-/* 12 */
+/* 14 */
 /***/ (function(module, exports) {
 
 /**
@@ -1217,13 +1261,13 @@ module.exports = function listToStyles (parentId, list) {
 
 
 /***/ }),
-/* 13 */
+/* 15 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var _xTree = __webpack_require__(1);
+var _xTree = __webpack_require__(3);
 
 var _xTree2 = _interopRequireDefault(_xTree);
 

@@ -36,5 +36,7 @@
 </script>
 
 <style scoped>
-
+    .x-tree-wrapper {
+        cursor: pointer;
+    }
 </style>

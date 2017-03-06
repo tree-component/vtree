@@ -8,12 +8,12 @@
             <span class="x-tree-item-name" @click="nameFn">{{model.name}}</span>
             <i class="x-tree-item-list fa" :class="!showEditor ? 'fa-caret-down' : 'fa-caret-up' "
                @click="showEditorFn"></i>
-            <span class="x-tree-item-editor" v-show="showEditor" @mouseleave="hideEditorFn">
-                <span class="x-tree-item-editor-item" v-show="model.is_edit" @click="editFn">修改部门</span>
-                <span class="x-tree-item-editor-item" v-show="model.is_delete" @click="deleteFn">删除部门</span>
-                <span class="x-tree-item-editor-item" v-show="model.is_add" @click="addChildFn">添加子部门</span>
-                <span class="x-tree-item-editor-item" v-show="cantEdit">无法操作</span>
-            </span>
+            <ul class="x-tree-item-editor" v-show="showEditor" @mouseleave="hideEditorFn">
+                <li class="x-tree-item-editor-item" v-show="model.is_edit" @click="editFn">修改部门</li>
+                <li class="x-tree-item-editor-item" v-show="model.is_delete" @click="deleteFn">删除部门</li>
+                <li class="x-tree-item-editor-item" v-show="model.is_add" @click="addChildFn">添加子部门</li>
+                <li class="x-tree-item-editor-item" v-show="cantEdit">无法操作</li>
+            </ul>
         </div>
         <div class='x-tree-item-children' v-if="hasChildren" v-show="model.expand">
             <x-tree-item v-for="model in model.children" :model="model" :options="options" :fn="fn">
@@ -109,3 +109,51 @@
         }
     }
 </script>
+
+<style scoped>
+    .fa {
+        width: 14px;
+    }
+
+    .icon-blank {
+        display: inline-block;
+        font-size: 14px;
+        width: 1em;
+    }
+
+    .x-tree-item {
+        position: relative;
+        font-size: 14px;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+        cursor: pointer;
+    }
+
+    .x-tree-item-expand:hover,.x-tree-item-checkbox:hover,.x-tree-item-name:hover, .x-tree-item-list:hover,.x-tree-item-editor-item:hover {
+        color: deepskyblue;
+    }
+
+    .x-tree-item-editor {
+        display: block;
+        position: absolute;
+        z-index: 99;
+        font-size: 14px;
+        padding: 5px 10px;
+        border: 1px solid #666;
+        background: #f2f2f2;
+    }
+
+    .x-tree-item-children {
+        min-width: 200px;
+        min-height: 20px;
+        border: 1px solid deepskyblue;
+        padding-left: 1.5em;
+        line-height: 1.5em;
+    }
+
+    .x-tree-item-editor-item {
+        display: block;
+    }
+</style>

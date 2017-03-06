@@ -18,58 +18,9 @@ body {
     cursor: pointer;
 }
 
-.fa {
-    width: 14px;
-}
-
-.icon-blank {
-    display: inline-block;
-    font-size: 14px;
-    width: 1em;
-}
-
 #xTreeDemo {
     display: inline-block;
     width: 300px;
     background: #f2f2f2;
 }
 
-.x-tree-wrapper {
-    cursor: pointer;
-}
-
-.x-tree-item {
-    position: relative;
-    font-size: 14px;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-    cursor: pointer;
-}
-
-.x-tree-item-expand:hover,.x-tree-item-checkbox:hover,.x-tree-item-name:hover, .x-tree-item-list:hover,.x-tree-item-editor-item:hover {
-    color: deepskyblue;
-}
-
-.x-tree-item-editor {
-    display: block;
-    position: absolute;
-    z-index: 99;
-    font-size: 14px;
-    padding: 5px 10px;
-    border: 1px solid #666;
-    background: #f2f2f2;
-}
-
-.x-tree-item-children {
-    min-width: 200px;
-    min-height: 20px;
-    border: 1px solid deepskyblue;
-    padding-left: 1.5em;
-    line-height: 1.5em;
-}
-
-.x-tree-item-editor-item {
-    display: block;
-}

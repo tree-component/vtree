@@ -14,7 +14,7 @@ const config = {
         path: path.resolve(__dirname, '../dist'),
         filename: "[name].js",
     },
-    devtool: "source-map",
+    // devtool: "source-map",
     module: {
         rules: [
             {

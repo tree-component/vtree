@@ -7,8 +7,8 @@ const config = {
     watch: true,
     context: path.resolve(__dirname, '../'),
     entry: {
-        tree: "./src/index.js",
-        // tree_ele: "./src/components/el-tree/index.js"
+        tree: "./src/components/x-tree/index.js",
+        treeRadio: "./src/components/x-tree-radio/index.js"
     },
     output: {
         path: path.resolve(__dirname, '../dist'),

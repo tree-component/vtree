@@ -12,7 +12,7 @@ const config = {
         path: path.resolve(__dirname, '../dist'),
         filename: "tree.js",
     },
-    devtool: "source-map",
+    // devtool: "source-map",
     module: {
         loaders: [
             {

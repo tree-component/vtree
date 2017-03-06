@@ -1,17 +1,19 @@
 <template>
     <div class="x-tree-item">
         <div class="x-tree-item-body" v-show="model.level">
-            <i class="x-tree-item-expand fa" v-if="hasChildren" :class="model.expand ? 'fa-caret-down' : 'fa-caret-right'"  @click="expandFn"></i>
+            <i class="x-tree-item-expand fa" v-if="hasChildren"
+               :class="model.expand ? 'fa-caret-down' : 'fa-caret-right'" @click="expandFn"></i>
             <span class="icon-blank" v-else></span>
-            <i class="x-tree-item-checkbox fa" :class="options.checkbox ? checkboxIcon :'fa-folder-o' " @click="checkFn"></i>
+            <i class="x-tree-item-checkbox fa" :class="options.checkbox ? checkboxIcon :'fa-folder-o' "
+               @click="checkFn"></i>
             <span class="x-tree-item-name" @click="nameFn">{{model.name}}</span>
             <i class="x-tree-item-list fa fa-caret-square-o-down" @click="showEditorFn"></i>
-            <div class="x-tree-item-editor" v-show="showEditor">
+            <div class="x-tree-item-editor" v-show="showEditor" @mouseleave="hideEditorFn">
                 <span class="x-tree-item-editor-item" v-show="model.is_edit" @click="editFn">修改部门</span>
                 <span class="x-tree-item-editor-item" v-show="model.is_delete" @click="deleteFn">删除部门</span>
                 <span class="x-tree-item-editor-item" v-show="model.is_add" @click="addChildFn">添加子部门</span>
-                <span class="x-tree-item-editor-item" v-show="model.is_add" @click="addChildFn">上移</span>
-                <span class="x-tree-item-editor-item" v-show="model.is_add" @click="addChildFn">下移</span>
+                <span class="x-tree-item-editor-item" v-show="model.is_add" @click="sortFn(true)">上移</span>
+                <span class="x-tree-item-editor-item" v-show="model.is_add" @click="sortFn(false)">下移</span>
                 <span class="x-tree-item-editor-item" v-show="cantEdit">无法操作</span>
             </div>
         </div>
@@ -50,8 +52,11 @@
                 }
                 return faIcon;
             },
-            cantEdit : function () {
+            cantEdit: function () {
                 return !this.model.is_edit && !this.model.is_delete && !this.model.is_add;
+            },
+            index: function () {
+                return this.model.parent.children.indexOf(this.model);
             }
         },
         methods: {
@@ -65,30 +70,40 @@
             },
 
             nameFn: function () {
-                console.log("this",this);
+                console.log("this", this);
                 this.options.onName(this.model);
             },
-
-            hideEditorFn: function () {
-                this.showEditor = false;
+            nameFnn: function () {
+                console.log("this", this);
             },
 
             showEditorFn: function () {
                 this.showEditor = !this.showEditor;
             },
 
+            hideEditorFn: function () {
+                this.showEditor = false;
+            },
 
             editFn: function () {
-                this.options.onEdit(this.model);
+                this.options.onEdit(this.model,this.editFnn);
                 this.showEditor = !this.showEditor;
             },
 
-            deleteFn: function () {
-                var index = this.model.parent.children.indexOf(this.model);
+            editFnn: function (item, result) {
 
-                this.model.parent.children.splice(index, 1);
-                this.options.onDelete(this.model);
+            },
+
+            deleteFn: function () {
+                this.options.onDelete(this.model, this.deleteFnn);
                 this.showEditor = !this.showEditor;
+            },
+
+            deleteFnn: function (item, result) {
+                var index = this.model.parent.children.indexOf(this.model);
+                if (result) {
+                    item.parent.children.splice(index, 1);
+                }
             },
 
             addChildFn: function () {
@@ -103,8 +118,37 @@
                     parent: this.model,
                     children: [],
                 };
-                this.options.onAddChild(newChild);
+                this.options.onAddChild(newChild,this.addChildFnn);
                 this.showEditor = !this.showEditor;
+            },
+
+            addChildFnn: function (item, result) {
+                if (result) {
+                    item.parent.children.push(item);
+                }
+            },
+            sortFn: function (type) {
+                var index = this.model.parent.children.indexOf(this.model);
+                if (type) {
+                    this.options.onSort(this.model, this.model.parent.children[index - 1], this.upFnn);
+                } else {
+                    this.options.onSort(this.model, this.model.parent.children[index + 1], this.downFnn);
+                }
+                this.showEditor = !this.showEditor;
+            },
+            upFnn: function (item, result) {
+                var index = this.model.parent.children.indexOf(this.model);
+                if (result) {
+                    item.parent.children.splice(index, 1);
+                    item.parent.children.splice(index - 1, 0, item);
+                }
+            },
+            downFnn: function (item, result) {
+                var index = this.model.parent.children.indexOf(this.model);
+                if (result) {
+                    item.parent.children.splice(index, 1);
+                    item.parent.children.splice(index + 1, 0, item);
+                }
             }
         }
     }
@@ -126,7 +170,7 @@
     }
 
     .x-tree-item-body:hover {
-        background:#E9EBEE;
+        background: #E9EBEE;
     }
 
     .fa {
@@ -163,7 +207,7 @@
         right: 0.27em;
     }
 
-    .x-tree-item-body:hover .x-tree-item-list{
+    .x-tree-item-body:hover .x-tree-item-list {
         display: block;
     }
 
@@ -177,7 +221,6 @@
         background: #fff;
     }
 
-
     .x-tree-item-editor-item {
         display: block;
         padding: 2px 35px 2px 15px;
@@ -186,7 +229,6 @@
     .x-tree-item-editor-item:hover {
         background: #E9EBEE;
     }
-
 
     .x-tree-item-children {
         padding-left: 1.5em;

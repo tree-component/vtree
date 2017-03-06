@@ -572,6 +572,8 @@ Object.defineProperty(exports, "__esModule", {
 //
 //
 //
+//
+//
 
 exports.default = {
     name: 'x-tree-item',
@@ -602,6 +604,9 @@ exports.default = {
         },
         cantEdit: function cantEdit() {
             return !this.model.is_edit && !this.model.is_delete && !this.model.is_add;
+        },
+        index: function index() {
+            return this.model.parent.children.indexOf(this.model);
         }
     },
     methods: {
@@ -618,26 +623,35 @@ exports.default = {
             console.log("this", this);
             this.options.onName(this.model);
         },
-
-        hideEditorFn: function hideEditorFn() {
-            this.showEditor = false;
+        nameFnn: function nameFnn() {
+            console.log("this", this);
         },
 
         showEditorFn: function showEditorFn() {
             this.showEditor = !this.showEditor;
         },
 
+        hideEditorFn: function hideEditorFn() {
+            this.showEditor = false;
+        },
+
         editFn: function editFn() {
-            this.options.onEdit(this.model);
+            this.options.onEdit(this.model, this.editFnn);
             this.showEditor = !this.showEditor;
         },
 
-        deleteFn: function deleteFn() {
-            var index = this.model.parent.children.indexOf(this.model);
+        editFnn: function editFnn(item, result) {},
 
-            this.model.parent.children.splice(index, 1);
-            this.options.onDelete(this.model);
+        deleteFn: function deleteFn() {
+            this.options.onDelete(this.model, this.deleteFnn);
             this.showEditor = !this.showEditor;
+        },
+
+        deleteFnn: function deleteFnn(item, result) {
+            var index = this.model.parent.children.indexOf(this.model);
+            if (result) {
+                item.parent.children.splice(index, 1);
+            }
         },
 
         addChildFn: function addChildFn() {
@@ -652,8 +666,37 @@ exports.default = {
                 parent: this.model,
                 children: []
             };
-            this.options.onAddChild(newChild);
+            this.options.onAddChild(newChild, this.addChildFnn);
             this.showEditor = !this.showEditor;
+        },
+
+        addChildFnn: function addChildFnn(item, result) {
+            if (result) {
+                item.parent.children.push(item);
+            }
+        },
+        sortFn: function sortFn(type) {
+            var index = this.model.parent.children.indexOf(this.model);
+            if (type) {
+                this.options.onSort(this.model, this.model.parent.children[index - 1], this.upFnn);
+            } else {
+                this.options.onSort(this.model, this.model.parent.children[index + 1], this.downFnn);
+            }
+            this.showEditor = !this.showEditor;
+        },
+        upFnn: function upFnn(item, result) {
+            var index = this.model.parent.children.indexOf(this.model);
+            if (result) {
+                item.parent.children.splice(index, 1);
+                item.parent.children.splice(index - 1, 0, item);
+            }
+        },
+        downFnn: function downFnn(item, result) {
+            var index = this.model.parent.children.indexOf(this.model);
+            if (result) {
+                item.parent.children.splice(index, 1);
+                item.parent.children.splice(index + 1, 0, item);
+            }
         }
     }
 };
@@ -1017,7 +1060,7 @@ exports = module.exports = __webpack_require__(0)();
 
 
 // module
-exports.push([module.i, "\n.x-tree-item[data-v-fa2654e6] {\n    position: relative;\n    font-size: 14px;\n    -webkit-user-select: none;\n    -moz-user-select: none;\n    -ms-user-select: none;\n    user-select: none;\n}\n.x-tree-item-body[data-v-fa2654e6] {\n    padding: 0 2em 0 1.5em;\n    line-height: 2em;\n}\n.x-tree-item-body[data-v-fa2654e6]:hover {\n    background:#E9EBEE;\n}\n.fa[data-v-fa2654e6] {\n    font-size: 16px;\n    width: 16px;\n    color: #999;\n}\n.icon-blank[data-v-fa2654e6] {\n    display: inline-block;\n    font-size: 16px;\n    width: 1em;\n}\n.fa[data-v-fa2654e6] {\n}\n.x-tree-item-expand[data-v-fa2654e6] {\n}\n.x-tree-item-checkbox[data-v-fa2654e6] {\n}\n.x-tree-item-name[data-v-fa2654e6] {\n    padding: 0 0.5em;\n}\n.x-tree-item-list[data-v-fa2654e6] {\n    display: none;\n    position: absolute;\n    top: 0.27em;\n    right: 0.27em;\n}\n.x-tree-item-body:hover .x-tree-item-list[data-v-fa2654e6]{\n    display: block;\n}\n.x-tree-item-editor[data-v-fa2654e6] {\n    display: block;\n    position: absolute;\n    right: 0;\n    z-index: 99;\n    font-size: 14px;\n    box-shadow: 0 1px 4px #999;\n    background: #fff;\n}\n.x-tree-item-editor-item[data-v-fa2654e6] {\n    display: block;\n    padding: 2px 35px 2px 15px;\n}\n.x-tree-item-editor-item[data-v-fa2654e6]:hover {\n    background: #E9EBEE;\n}\n.x-tree-item-children[data-v-fa2654e6] {\n    padding-left: 1.5em;\n    line-height: 1.5em;\n}\n\n", ""]);
+exports.push([module.i, "\n.x-tree-item[data-v-fa2654e6] {\n    position: relative;\n    font-size: 14px;\n    -webkit-user-select: none;\n    -moz-user-select: none;\n    -ms-user-select: none;\n    user-select: none;\n}\n.x-tree-item-body[data-v-fa2654e6] {\n    padding: 0 2em 0 1.5em;\n    line-height: 2em;\n}\n.x-tree-item-body[data-v-fa2654e6]:hover {\n    background: #E9EBEE;\n}\n.fa[data-v-fa2654e6] {\n    font-size: 16px;\n    width: 16px;\n    color: #999;\n}\n.icon-blank[data-v-fa2654e6] {\n    display: inline-block;\n    font-size: 16px;\n    width: 1em;\n}\n.fa[data-v-fa2654e6] {\n}\n.x-tree-item-expand[data-v-fa2654e6] {\n}\n.x-tree-item-checkbox[data-v-fa2654e6] {\n}\n.x-tree-item-name[data-v-fa2654e6] {\n    padding: 0 0.5em;\n}\n.x-tree-item-list[data-v-fa2654e6] {\n    display: none;\n    position: absolute;\n    top: 0.27em;\n    right: 0.27em;\n}\n.x-tree-item-body:hover .x-tree-item-list[data-v-fa2654e6] {\n    display: block;\n}\n.x-tree-item-editor[data-v-fa2654e6] {\n    display: block;\n    position: absolute;\n    right: 0;\n    z-index: 99;\n    font-size: 14px;\n    box-shadow: 0 1px 4px #999;\n    background: #fff;\n}\n.x-tree-item-editor-item[data-v-fa2654e6] {\n    display: block;\n    padding: 2px 35px 2px 15px;\n}\n.x-tree-item-editor-item[data-v-fa2654e6]:hover {\n    background: #E9EBEE;\n}\n.x-tree-item-children[data-v-fa2654e6] {\n    padding-left: 1.5em;\n    line-height: 1.5em;\n}\n\n", ""]);
 
 // exports
 
@@ -1133,7 +1176,10 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       value: (_vm.showEditor),
       expression: "showEditor"
     }],
-    staticClass: "x-tree-item-editor"
+    staticClass: "x-tree-item-editor",
+    on: {
+      "mouseleave": _vm.hideEditorFn
+    }
   }, [_c('span', {
     directives: [{
       name: "show",
@@ -1176,7 +1222,9 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     }],
     staticClass: "x-tree-item-editor-item",
     on: {
-      "click": _vm.addChildFn
+      "click": function($event) {
+        _vm.sortFn(true)
+      }
     }
   }, [_vm._v("上移")]), _vm._v(" "), _c('span', {
     directives: [{
@@ -1187,7 +1235,9 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     }],
     staticClass: "x-tree-item-editor-item",
     on: {
-      "click": _vm.addChildFn
+      "click": function($event) {
+        _vm.sortFn(false)
+      }
     }
   }, [_vm._v("下移")]), _vm._v(" "), _c('span', {
     directives: [{

@@ -118,55 +118,73 @@
         -moz-user-select: none;
         -ms-user-select: none;
         user-select: none;
-        cursor: pointer;
     }
 
     .x-tree-item-body {
-        padding-left: 1.5em;
+        padding: 0 2em 0 1.5em;
+        line-height: 2em;
     }
 
     .x-tree-item-body:hover {
-        padding-left: 1.5em;
-        background:#E9EBEE;
+        background: #E9EBEE;
     }
 
     .fa {
-        width: 14px;
+        font-size: 16px;
+        width: 16px;
+        color: #999;
     }
 
     .icon-blank {
         display: inline-block;
-        font-size: 14px;
+        font-size: 16px;
         width: 1em;
     }
 
     .fa {
-        color: #80B1EA;
     }
 
-    .x-tree-item-expand:hover,.x-tree-item-checkbox:hover,.x-tree-item-name:hover, .x-tree-item-list:hover,.x-tree-item-editor-item:hover {
+    .x-tree-item-expand {
+
+    }
+
+    .x-tree-item-checkbox {
 
     }
 
     .x-tree-item-name {
-        padding: 0.5em;
+        padding: 0 0.5em;
+    }
+
+    .x-tree-item-list {
+        display: none;
+        position: absolute;
+        top: 0.27em;
+        right: 0.27em;
+    }
+
+    .x-tree-item-body:hover .x-tree-item-list {
+        display: block;
     }
 
     .x-tree-item-editor {
         display: block;
         position: absolute;
+        right: 0;
         z-index: 99;
         font-size: 14px;
-        padding: 5px 10px;
-        border: 1px solid #666;
-        background: #f2f2f2;
+        box-shadow: 0 1px 4px #999;
+        background: #fff;
     }
-
 
     .x-tree-item-editor-item {
         display: block;
+        padding: 2px 35px 2px 15px;
     }
 
+    .x-tree-item-editor-item:hover {
+        background: #E9EBEE;
+    }
 
     .x-tree-item-children {
         padding-left: 1.5em;

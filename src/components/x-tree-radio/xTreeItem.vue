@@ -7,8 +7,8 @@
             <i class="x-tree-item-checkbox fa" :class="options.checkbox ? checkboxIcon :'fa-folder-o' "
                @click="checkFn"></i>
             <span class="x-tree-item-name" @click="nameFn">{{model.name}}</span>
-            <i class="x-tree-item-list fa fa-caret-square-o-down" @click="showEditorFn"></i>
-            <div class="x-tree-item-editor" v-show="showEditor" @mouseleave="hideEditorFn">
+            <i class="x-tree-item-list fa fa-caret-square-o-down" @click.stop="showEditorFn"></i>
+            <div class="x-tree-item-editor" v-show="showEditor" @click.stop="showEditorFn">
                 <span class="x-tree-item-editor-item" v-show="model.is_edit" @click="editFn">修改部门</span>
                 <span class="x-tree-item-editor-item" v-show="model.is_delete" @click="deleteFn">删除部门</span>
                 <span class="x-tree-item-editor-item" v-show="model.is_add" @click="addChildFn">添加子部门</span>

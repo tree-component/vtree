@@ -1167,7 +1167,10 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
   }, [_vm._v(_vm._s(_vm.model.name))]), _vm._v(" "), _c('i', {
     staticClass: "x-tree-item-list fa fa-caret-square-o-down",
     on: {
-      "click": _vm.showEditorFn
+      "click": function($event) {
+        $event.stopPropagation();
+        _vm.showEditorFn($event)
+      }
     }
   }), _vm._v(" "), _c('div', {
     directives: [{
@@ -1178,7 +1181,10 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     }],
     staticClass: "x-tree-item-editor",
     on: {
-      "mouseleave": _vm.hideEditorFn
+      "click": function($event) {
+        $event.stopPropagation();
+        _vm.showEditorFn($event)
+      }
     }
   }, [_c('span', {
     directives: [{

@@ -153,13 +153,13 @@
             }
         },
         created() {
-            if(this.tree.accordion) {
-                this.$on('el-tree-node-expand', function (node) {
-                    if(this.node !== node) {
-                        this.node.collapse();
-                    }
-                });
-            }
+//            if(this.tree.accordion) {
+//                this.$on('el-tree-node-expand', function (node) {
+//                    if(this.node !== node) {
+//                        this.node.collapse();
+//                    }
+//                });
+//            }
         }
     }
 </script>

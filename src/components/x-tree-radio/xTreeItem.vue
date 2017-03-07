@@ -1,6 +1,6 @@
 <template>
     <div class="x-tree-item">
-        <div class="x-tree-item-body" v-show="model.level">
+        <div class="x-tree-item-self" v-show="model.level">
             <i class="x-tree-item-expand fa" v-if="hasChildren"
                :class="model.expand ? 'fa-caret-down' : 'fa-caret-right'" @click="expandFn"></i>
             <span class="icon-blank" v-else></span>
@@ -8,7 +8,7 @@
                @click="checkFn"></i>
             <span class="x-tree-item-name" @click="nameFn">{{model.name}}</span>
             <i class="x-tree-item-list fa fa-caret-square-o-down" @click.stop="showEditorFn"></i>
-            <div class="x-tree-item-editor" v-show="showEditor" @click.stop="showEditorFn">
+            <div class="x-tree-item-editor" v-show="showEditor">
                 <span class="x-tree-item-editor-item" v-show="model.is_edit" @click="editFn">修改部门</span>
                 <span class="x-tree-item-editor-item" v-show="model.is_delete" @click="deleteFn">删除部门</span>
                 <span class="x-tree-item-editor-item" v-show="model.is_add" @click="addChildFn">添加子部门</span>
@@ -17,7 +17,8 @@
                 <span class="x-tree-item-editor-item" v-show="cantEdit">无法操作</span>
             </div>
         </div>
-        <div class='x-tree-item-children' v-if="hasChildren" v-show="model.expand">
+        <div class='x-tree-item-children' v-if="hasChildren" v-show="model.expand"
+             :class="model.level ?  '' : 'padding-left-0' ">
             <x-tree-item v-for="model in model.children" :model="model" :options="options" :fn="fn">
             </x-tree-item>
         </div>
@@ -86,8 +87,8 @@
             },
 
             editFn: function () {
-                this.options.onEdit(this.model,this.editFnn);
-                this.showEditor = !this.showEditor;
+                this.options.onEdit(this.model, this.editFnn);
+                this.showEditor = false;
             },
 
             editFnn: function (item, result) {
@@ -96,7 +97,7 @@
 
             deleteFn: function () {
                 this.options.onDelete(this.model, this.deleteFnn);
-                this.showEditor = !this.showEditor;
+                this.showEditor = false;
             },
 
             deleteFnn: function (item, result) {
@@ -118,8 +119,8 @@
                     parent: this.model,
                     children: [],
                 };
-                this.options.onAddChild(newChild,this.addChildFnn);
-                this.showEditor = !this.showEditor;
+                this.options.onAddChild(newChild, this.addChildFnn);
+                this.showEditor = false;
             },
 
             addChildFnn: function (item, result) {
@@ -134,7 +135,7 @@
                 } else {
                     this.options.onSort(this.model, this.model.parent.children[index + 1], this.downFnn);
                 }
-                this.showEditor = !this.showEditor;
+                this.showEditor = false;
             },
             upFnn: function (item, result) {
                 var index = this.model.parent.children.indexOf(this.model);
@@ -164,28 +165,24 @@
         user-select: none;
     }
 
-    .x-tree-item-body {
-        padding: 0 2em 0 1.5em;
-        line-height: 2em;
+    .x-tree-item-self {
+        padding: 0 2em 0 0.5em;
     }
 
-    .x-tree-item-body:hover {
+    .x-tree-item-self:hover {
         background: #E9EBEE;
     }
 
     .fa {
-        font-size: 16px;
-        width: 16px;
+        font-size: 14px;
+        width: 14px;
         color: #999;
     }
 
     .icon-blank {
         display: inline-block;
-        font-size: 16px;
+        font-size: 14px;
         width: 1em;
-    }
-
-    .fa {
     }
 
     .x-tree-item-expand {
@@ -197,17 +194,23 @@
     }
 
     .x-tree-item-name {
-        padding: 0 0.5em;
+        display: inline-block;
+        vertical-align: bottom;
+        padding: 0 1em 0 0.2em;
+        width: calc(100% - 40px);
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
     }
 
     .x-tree-item-list {
         display: none;
         position: absolute;
-        top: 0.27em;
+        top: 0.36em;
         right: 0.27em;
     }
 
-    .x-tree-item-body:hover .x-tree-item-list {
+    .x-tree-item-self:hover .x-tree-item-list {
         display: block;
     }
 
@@ -215,8 +218,8 @@
         display: block;
         position: absolute;
         right: 0;
+        width: 120px;
         z-index: 99;
-        font-size: 14px;
         box-shadow: 0 1px 4px #999;
         background: #fff;
     }
@@ -232,7 +235,9 @@
 
     .x-tree-item-children {
         padding-left: 1.5em;
-        line-height: 1.5em;
     }
 
+    .padding-left-0 {
+        padding-left: 0;
+    }
 </style>

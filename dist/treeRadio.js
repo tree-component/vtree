@@ -574,6 +574,7 @@ Object.defineProperty(exports, "__esModule", {
 //
 //
 //
+//
 
 exports.default = {
     name: 'x-tree-item',
@@ -637,14 +638,14 @@ exports.default = {
 
         editFn: function editFn() {
             this.options.onEdit(this.model, this.editFnn);
-            this.showEditor = !this.showEditor;
+            this.showEditor = false;
         },
 
         editFnn: function editFnn(item, result) {},
 
         deleteFn: function deleteFn() {
             this.options.onDelete(this.model, this.deleteFnn);
-            this.showEditor = !this.showEditor;
+            this.showEditor = false;
         },
 
         deleteFnn: function deleteFnn(item, result) {
@@ -667,7 +668,7 @@ exports.default = {
                 children: []
             };
             this.options.onAddChild(newChild, this.addChildFnn);
-            this.showEditor = !this.showEditor;
+            this.showEditor = false;
         },
 
         addChildFnn: function addChildFnn(item, result) {
@@ -682,7 +683,7 @@ exports.default = {
             } else {
                 this.options.onSort(this.model, this.model.parent.children[index + 1], this.downFnn);
             }
-            this.showEditor = !this.showEditor;
+            this.showEditor = false;
         },
         upFnn: function upFnn(item, result) {
             var index = this.model.parent.children.indexOf(this.model);
@@ -1045,7 +1046,7 @@ exports = module.exports = __webpack_require__(0)();
 
 
 // module
-exports.push([module.i, "\n.x-tree-wrapper[data-v-68d3a8da] {\n    position: relative;\n    cursor: pointer;\n}\n", ""]);
+exports.push([module.i, "\n.x-tree-wrapper[data-v-68d3a8da] {\n    position: relative;\n    cursor: pointer;\n    font-size: 1em;\n    line-height: 1.8em;\n    overflow: hidden;\n    text-overflow: ellipsis;\n    white-space: nowrap;\n}\n", ""]);
 
 // exports
 
@@ -1060,7 +1061,7 @@ exports = module.exports = __webpack_require__(0)();
 
 
 // module
-exports.push([module.i, "\n.x-tree-item[data-v-fa2654e6] {\n    position: relative;\n    font-size: 14px;\n    -webkit-user-select: none;\n    -moz-user-select: none;\n    -ms-user-select: none;\n    user-select: none;\n}\n.x-tree-item-body[data-v-fa2654e6] {\n    padding: 0 2em 0 1.5em;\n    line-height: 2em;\n}\n.x-tree-item-body[data-v-fa2654e6]:hover {\n    background: #E9EBEE;\n}\n.fa[data-v-fa2654e6] {\n    font-size: 16px;\n    width: 16px;\n    color: #999;\n}\n.icon-blank[data-v-fa2654e6] {\n    display: inline-block;\n    font-size: 16px;\n    width: 1em;\n}\n.fa[data-v-fa2654e6] {\n}\n.x-tree-item-expand[data-v-fa2654e6] {\n}\n.x-tree-item-checkbox[data-v-fa2654e6] {\n}\n.x-tree-item-name[data-v-fa2654e6] {\n    padding: 0 0.5em;\n}\n.x-tree-item-list[data-v-fa2654e6] {\n    display: none;\n    position: absolute;\n    top: 0.27em;\n    right: 0.27em;\n}\n.x-tree-item-body:hover .x-tree-item-list[data-v-fa2654e6] {\n    display: block;\n}\n.x-tree-item-editor[data-v-fa2654e6] {\n    display: block;\n    position: absolute;\n    right: 0;\n    z-index: 99;\n    font-size: 14px;\n    box-shadow: 0 1px 4px #999;\n    background: #fff;\n}\n.x-tree-item-editor-item[data-v-fa2654e6] {\n    display: block;\n    padding: 2px 35px 2px 15px;\n}\n.x-tree-item-editor-item[data-v-fa2654e6]:hover {\n    background: #E9EBEE;\n}\n.x-tree-item-children[data-v-fa2654e6] {\n    padding-left: 1.5em;\n    line-height: 1.5em;\n}\n\n", ""]);
+exports.push([module.i, "\n.x-tree-item[data-v-fa2654e6] {\n    position: relative;\n    font-size: 14px;\n    -webkit-user-select: none;\n    -moz-user-select: none;\n    -ms-user-select: none;\n    user-select: none;\n}\n.x-tree-item-self[data-v-fa2654e6] {\n    padding: 0 2em 0 0.5em;\n}\n.x-tree-item-self[data-v-fa2654e6]:hover {\n    background: #E9EBEE;\n}\n.fa[data-v-fa2654e6] {\n    font-size: 14px;\n    width: 14px;\n    color: #999;\n}\n.icon-blank[data-v-fa2654e6] {\n    display: inline-block;\n    font-size: 14px;\n    width: 1em;\n}\n.x-tree-item-expand[data-v-fa2654e6] {\n}\n.x-tree-item-checkbox[data-v-fa2654e6] {\n}\n.x-tree-item-name[data-v-fa2654e6] {\n    display: inline-block;\n    vertical-align: bottom;\n    padding: 0 1em 0 0.2em;\n    width: calc(100% - 40px);\n    overflow: hidden;\n    text-overflow: ellipsis;\n    white-space: nowrap;\n}\n.x-tree-item-list[data-v-fa2654e6] {\n    display: none;\n    position: absolute;\n    top: 0.36em;\n    right: 0.27em;\n}\n.x-tree-item-self:hover .x-tree-item-list[data-v-fa2654e6] {\n    display: block;\n}\n.x-tree-item-editor[data-v-fa2654e6] {\n    display: block;\n    position: absolute;\n    right: 0;\n    width: 120px;\n    z-index: 99;\n    box-shadow: 0 1px 4px #999;\n    background: #fff;\n}\n.x-tree-item-editor-item[data-v-fa2654e6] {\n    display: block;\n    padding: 2px 35px 2px 15px;\n}\n.x-tree-item-editor-item[data-v-fa2654e6]:hover {\n    background: #E9EBEE;\n}\n.x-tree-item-children[data-v-fa2654e6] {\n    padding-left: 1.5em;\n}\n.padding-left-0[data-v-fa2654e6] {\n    padding-left: 0;\n}\n", ""]);
 
 // exports
 
@@ -1144,7 +1145,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       value: (_vm.model.level),
       expression: "model.level"
     }],
-    staticClass: "x-tree-item-body"
+    staticClass: "x-tree-item-self"
   }, [(_vm.hasChildren) ? _c('i', {
     staticClass: "x-tree-item-expand fa",
     class: _vm.model.expand ? 'fa-caret-down' : 'fa-caret-right',
@@ -1179,13 +1180,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       value: (_vm.showEditor),
       expression: "showEditor"
     }],
-    staticClass: "x-tree-item-editor",
-    on: {
-      "click": function($event) {
-        $event.stopPropagation();
-        _vm.showEditorFn($event)
-      }
-    }
+    staticClass: "x-tree-item-editor"
   }, [_c('span', {
     directives: [{
       name: "show",
@@ -1260,7 +1255,8 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       value: (_vm.model.expand),
       expression: "model.expand"
     }],
-    staticClass: "x-tree-item-children"
+    staticClass: "x-tree-item-children",
+    class: _vm.model.level ? '' : 'padding-left-0'
   }, _vm._l((_vm.model.children), function(model) {
     return _c('x-tree-item', {
       attrs: {

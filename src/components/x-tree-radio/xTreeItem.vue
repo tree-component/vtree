@@ -151,6 +151,15 @@
                     item.parent.children.splice(index + 1, 0, item);
                 }
             }
+        },
+        created() {
+            if(this.tree.accordion) {
+                this.$on('el-tree-node-expand', function (node) {
+                    if(this.node !== node) {
+                        this.node.collapse();
+                    }
+                });
+            }
         }
     }
 </script>

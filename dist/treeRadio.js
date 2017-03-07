@@ -699,6 +699,15 @@ exports.default = {
                 item.parent.children.splice(index + 1, 0, item);
             }
         }
+    },
+    created: function created() {
+        if (this.tree.accordion) {
+            this.$on('el-tree-node-expand', function (node) {
+                if (this.node !== node) {
+                    this.node.collapse();
+                }
+            });
+        }
     }
 };
 

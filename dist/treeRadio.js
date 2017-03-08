@@ -607,7 +607,31 @@ exports.default = {
             return !this.model.is_edit && !this.model.is_delete && !this.model.is_add;
         },
         index: function index() {
+            if (!this.model.parent) {
+                return false;
+            }
             return this.model.parent.children.indexOf(this.model);
+        },
+        sortAble: function sortAble() {
+            if (!this.model.parent) {
+                return {
+                    upAble: false,
+                    downAble: false
+                };
+            }
+            var upable = true;
+            var downable = true;
+            var index = this.model.parent.children.indexOf(this.model);
+            var len = this.model.parent.children.length;
+            if (index === 0) {
+                upable = false;
+            } else if (index >= len - 1) {
+                downable = false;
+            }
+            return {
+                upAble: upable,
+                downAble: downable
+            };
         }
     },
     methods: {
@@ -1240,8 +1264,8 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     directives: [{
       name: "show",
       rawName: "v-show",
-      value: (_vm.model.is_add),
-      expression: "model.is_add"
+      value: (_vm.sortAble.upAble),
+      expression: "sortAble.upAble"
     }],
     staticClass: "x-tree-item-editor-item",
     on: {
@@ -1253,8 +1277,8 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     directives: [{
       name: "show",
       rawName: "v-show",
-      value: (_vm.model.is_add),
-      expression: "model.is_add"
+      value: (_vm.sortAble.downAble),
+      expression: "sortAble.downAble"
     }],
     staticClass: "x-tree-item-editor-item",
     on: {

@@ -12,8 +12,8 @@
                 <span class="x-tree-item-editor-item" v-show="model.is_edit" @click="editFn">修改部门</span>
                 <span class="x-tree-item-editor-item" v-show="model.is_delete" @click="deleteFn">删除部门</span>
                 <span class="x-tree-item-editor-item" v-show="model.is_add" @click="addChildFn">添加子部门</span>
-                <span class="x-tree-item-editor-item" v-show="model.is_add" @click="sortFn(true)">上移</span>
-                <span class="x-tree-item-editor-item" v-show="model.is_add" @click="sortFn(false)">下移</span>
+                <span class="x-tree-item-editor-item" v-show="sortAble.upAble" @click="sortFn(true)">上移</span>
+                <span class="x-tree-item-editor-item" v-show="sortAble.downAble" @click="sortFn(false)">下移</span>
                 <span class="x-tree-item-editor-item" v-show="cantEdit">无法操作</span>
             </div>
         </div>
@@ -57,7 +57,31 @@
                 return !this.model.is_edit && !this.model.is_delete && !this.model.is_add;
             },
             index: function () {
+                if(!this.model.parent){
+                    return false;
+                }
                 return this.model.parent.children.indexOf(this.model);
+            },
+            sortAble: function () {
+                if(!this.model.parent){
+                    return {
+                        upAble: false,
+                        downAble: false
+                    }
+                }
+                var upable = true;
+                var downable = true;
+                var index = this.model.parent.children.indexOf(this.model);
+                var len = this.model.parent.children.length;
+                if (index === 0) {
+                    upable = false;
+                }else if(index >= len-1){
+                    downable = false;
+                }
+                return {
+                    upAble: upable,
+                    downAble: downable
+                }
             }
         },
         methods: {

@@ -1,15 +1,16 @@
 
-.bold {
-    overflow-x: hidden;
-    font-weight: bold;
-}
-
 #xTreeDemo {
     display: inline-block;
     min-width: 200px;
     max-width: 300px;
     font-size: 14px;
     border: 1px solid #5CD;
+}
+
+
+.bold {
+    overflow-x: hidden;
+    font-weight: bold;
 }
 
 .button {
@@ -20,6 +21,10 @@
     width: 60px;
     height: 20px;
     cursor: pointer;
+}
+
+.footer {
+    height: 300px;
 }
 
 

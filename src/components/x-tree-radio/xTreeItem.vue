@@ -1,6 +1,6 @@
 <template>
     <div class="x-tree-item">
-        <div class="x-tree-item-self" v-show="model.level">
+        <div class="x-tree-item-self" v-show="model.level" @mouseleave="hideEditorFn">
             <i class="x-tree-item-expand fa" v-if="hasChildren"
                :class="model.expand ? 'fa-caret-down' : 'fa-caret-right'" @click="expandFn"></i>
             <span class="icon-blank" v-else></span>
@@ -64,18 +64,21 @@
             expandFn: function () {
                 if (this.hasChildren) {
                     this.model.expand = !this.model.expand;
+                    this.options.onExpand(this.model);
                 }
             },
+
             checkFn: function () {
                 this.fn._changeItem(this.model, !this.model.is_check);
+                this.options.onCheck(this.model);
             },
 
             nameFn: function () {
-                console.log("this", this);
-                this.options.onName(this.model);
+                this.options.onClick(this.model);
             },
+
             nameFnn: function () {
-                console.log("this", this);
+
             },
 
             showEditorFn: function () {
@@ -128,15 +131,16 @@
                     item.parent.children.push(item);
                 }
             },
+
             sortFn: function (type) {
-                var index = this.model.parent.children.indexOf(this.model);
                 if (type) {
-                    this.options.onSort(this.model, this.model.parent.children[index - 1], this.upFnn);
+                    this.options.onSort(this.model, this.upFnn);
                 } else {
-                    this.options.onSort(this.model, this.model.parent.children[index + 1], this.downFnn);
+                    this.options.onSort(this.model, this.downFnn);
                 }
                 this.showEditor = false;
             },
+
             upFnn: function (item, result) {
                 var index = this.model.parent.children.indexOf(this.model);
                 if (result) {
@@ -144,6 +148,7 @@
                     item.parent.children.splice(index - 1, 0, item);
                 }
             },
+
             downFnn: function (item, result) {
                 var index = this.model.parent.children.indexOf(this.model);
                 if (result) {
@@ -152,6 +157,7 @@
                 }
             }
         },
+
         created() {
 //            if(this.tree.accordion) {
 //                this.$on('el-tree-node-expand', function (node) {

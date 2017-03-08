@@ -614,19 +614,20 @@ exports.default = {
         expandFn: function expandFn() {
             if (this.hasChildren) {
                 this.model.expand = !this.model.expand;
+                this.options.onExpand(this.model);
             }
         },
+
         checkFn: function checkFn() {
             this.fn._changeItem(this.model, !this.model.is_check);
+            this.options.onCheck(this.model);
         },
 
         nameFn: function nameFn() {
-            console.log("this", this);
-            this.options.onName(this.model);
+            this.options.onClick(this.model);
         },
-        nameFnn: function nameFnn() {
-            console.log("this", this);
-        },
+
+        nameFnn: function nameFnn() {},
 
         showEditorFn: function showEditorFn() {
             this.showEditor = !this.showEditor;
@@ -676,15 +677,16 @@ exports.default = {
                 item.parent.children.push(item);
             }
         },
+
         sortFn: function sortFn(type) {
-            var index = this.model.parent.children.indexOf(this.model);
             if (type) {
-                this.options.onSort(this.model, this.model.parent.children[index - 1], this.upFnn);
+                this.options.onSort(this.model, this.upFnn);
             } else {
-                this.options.onSort(this.model, this.model.parent.children[index + 1], this.downFnn);
+                this.options.onSort(this.model, this.downFnn);
             }
             this.showEditor = false;
         },
+
         upFnn: function upFnn(item, result) {
             var index = this.model.parent.children.indexOf(this.model);
             if (result) {
@@ -692,6 +694,7 @@ exports.default = {
                 item.parent.children.splice(index - 1, 0, item);
             }
         },
+
         downFnn: function downFnn(item, result) {
             var index = this.model.parent.children.indexOf(this.model);
             if (result) {
@@ -700,6 +703,7 @@ exports.default = {
             }
         }
     },
+
     created: function created() {
         //            if(this.tree.accordion) {
         //                this.$on('el-tree-node-expand', function (node) {
@@ -739,13 +743,19 @@ function _mergeOptions(options) {
         maxHeight: 300,
         data: [], //{id:1,name:'xx',nodeId:'0',is_node:true,is_check:false},
         sel_ids: '',
-        onInit: function onInit() {},
-        onBeforeOpen: function onBeforeOpen() {},
-        onOpen: function onOpen() {},
+        checkbox: false,
+        onExpand: function onExpand() {},
+        onClick: function onClick() {},
+
         onCheck: function onCheck() {},
-        onCancel: function onCancel() {},
-        onChange: function onChange() {},
-        onClose: function onClose() {}
+
+        onEdit: function onEdit() {},
+
+        onDelete: function onDelete() {},
+
+        onAddChild: function onAddChild() {},
+
+        onSort: function onSort() {}
     };
     var opt = Object.assign({}, defOpt, options);
     return opt;
@@ -1055,7 +1065,7 @@ exports = module.exports = __webpack_require__(0)();
 
 
 // module
-exports.push([module.i, "\n.x-tree-wrapper[data-v-68d3a8da] {\n    position: relative;\n    cursor: pointer;\n    font-size: 1em;\n    line-height: 1.8em;\n    overflow: hidden;\n    text-overflow: ellipsis;\n    white-space: nowrap;\n}\n", ""]);
+exports.push([module.i, "\n.x-tree-wrapper[data-v-68d3a8da] {\n    position: relative;\n    cursor: pointer;\n    font-size: 1em;\n    line-height: 1.8em;\n    white-space: nowrap;\n}\n", ""]);
 
 // exports
 
@@ -1154,7 +1164,10 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       value: (_vm.model.level),
       expression: "model.level"
     }],
-    staticClass: "x-tree-item-self"
+    staticClass: "x-tree-item-self",
+    on: {
+      "mouseleave": _vm.hideEditorFn
+    }
   }, [(_vm.hasChildren) ? _c('i', {
     staticClass: "x-tree-item-expand fa",
     class: _vm.model.expand ? 'fa-caret-down' : 'fa-caret-right',

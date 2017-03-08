@@ -19,16 +19,25 @@
 <div class="button button-sort">sort</div>
 <div class="button button-sortn">sortn</div>
 
-<div>footer</div>
+<div class="footer">footer</div>
 
 <script>
     var treeOptions = {
         checkbox: false,
         sel_ids: '3,11,12,13,30,31,32,33',
         expand: true,
-        onName: function (item) {
+        onExpand: function (item) {
+            console.log("expand item", item, item.name);
+        },
+
+        onCheck: function (item) {
+            console.log("check item", item, item.name);
+        },
+
+        onClick: function (item) {
             console.log("click item", item, item.name);
         },
+
         onEdit: function (item) {
             console.log("edit item", item, item.name);
             popUpEditor(item);
@@ -43,7 +52,8 @@
             popUpAddor(newChild);
         },
 
-        onSort: function (item, item2, callback) {
+        onSort: function (item, callback) {
+            console.log("sort item", item, item.name);
             sortTempFn(item, callback);
         },
     };

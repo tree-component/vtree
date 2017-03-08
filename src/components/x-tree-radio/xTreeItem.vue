@@ -7,13 +7,13 @@
             <i class="x-tree-item-checkbox fa" :class="options.checkbox ? checkboxIcon :'fa-folder-o' "
                @click="checkFn"></i>
             <span class="x-tree-item-name" @click="nameFn">{{model.name}}</span>
-            <i class="x-tree-item-list fa fa-caret-square-o-down" @click.stop="showEditorFn"></i>
-            <div class="x-tree-item-editor" v-show="showEditor">
+            <i class="x-tree-item-edit fa fa-caret-square-o-down" v-if="options.editable" @click.stop="showEditorFn"></i>
+            <div class="x-tree-item-editor" v-if="options.editable" v-show="showEditor">
                 <span class="x-tree-item-editor-item" v-show="model.is_edit" @click="editFn">修改部门</span>
                 <span class="x-tree-item-editor-item" v-show="model.is_delete" @click="deleteFn">删除部门</span>
                 <span class="x-tree-item-editor-item" v-show="model.is_add" @click="addChildFn">添加子部门</span>
-                <span class="x-tree-item-editor-item" v-show="sortAble.upAble" @click="sortFn(true)">上移</span>
-                <span class="x-tree-item-editor-item" v-show="sortAble.downAble" @click="sortFn(false)">下移</span>
+                <span class="x-tree-item-editor-item" v-show="sortable.upAble" @click="sortFn(true)">上移</span>
+                <span class="x-tree-item-editor-item" v-show="sortable.downAble" @click="sortFn(false)">下移</span>
                 <span class="x-tree-item-editor-item" v-show="cantEdit">无法操作</span>
             </div>
         </div>
@@ -62,8 +62,8 @@
                 }
                 return this.model.parent.children.indexOf(this.model);
             },
-            sortAble: function () {
-                if(!this.model.parent){
+            sortable: function () {
+                if(!this.model.parent || this.model.parent.children.length==1){
                     return {
                         upAble: false,
                         downAble: false
@@ -242,14 +242,14 @@
         white-space: nowrap;
     }
 
-    .x-tree-item-list {
+    .x-tree-item-edit {
         display: none;
         position: absolute;
         top: 0.36em;
         right: 0.27em;
     }
 
-    .x-tree-item-self:hover .x-tree-item-list {
+    .x-tree-item-self:hover .x-tree-item-edit {
         display: block;
     }
 

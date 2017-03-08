@@ -612,8 +612,8 @@ exports.default = {
             }
             return this.model.parent.children.indexOf(this.model);
         },
-        sortAble: function sortAble() {
-            if (!this.model.parent) {
+        sortable: function sortable() {
+            if (!this.model.parent || this.model.parent.children.length == 1) {
                 return {
                     upAble: false,
                     downAble: false
@@ -1104,7 +1104,7 @@ exports = module.exports = __webpack_require__(0)();
 
 
 // module
-exports.push([module.i, "\n.x-tree-item[data-v-fa2654e6] {\n    position: relative;\n    font-size: 14px;\n    -webkit-user-select: none;\n    -moz-user-select: none;\n    -ms-user-select: none;\n    user-select: none;\n}\n.x-tree-item-self[data-v-fa2654e6] {\n    padding: 0 2em 0 0.5em;\n}\n.x-tree-item-self[data-v-fa2654e6]:hover {\n    background: #E9EBEE;\n}\n.fa[data-v-fa2654e6] {\n    font-size: 14px;\n    width: 14px;\n    color: #999;\n}\n.icon-blank[data-v-fa2654e6] {\n    display: inline-block;\n    font-size: 14px;\n    width: 1em;\n}\n.x-tree-item-expand[data-v-fa2654e6] {\n}\n.x-tree-item-checkbox[data-v-fa2654e6] {\n}\n.x-tree-item-name[data-v-fa2654e6] {\n    display: inline-block;\n    vertical-align: bottom;\n    padding: 0 1em 0 0.2em;\n    width: calc(100% - 40px);\n    overflow: hidden;\n    text-overflow: ellipsis;\n    white-space: nowrap;\n}\n.x-tree-item-list[data-v-fa2654e6] {\n    display: none;\n    position: absolute;\n    top: 0.36em;\n    right: 0.27em;\n}\n.x-tree-item-self:hover .x-tree-item-list[data-v-fa2654e6] {\n    display: block;\n}\n.x-tree-item-editor[data-v-fa2654e6] {\n    display: block;\n    position: absolute;\n    right: 0;\n    width: 120px;\n    z-index: 99;\n    box-shadow: 0 1px 4px #999;\n    background: #fff;\n}\n.x-tree-item-editor-item[data-v-fa2654e6] {\n    display: block;\n    padding: 2px 35px 2px 15px;\n}\n.x-tree-item-editor-item[data-v-fa2654e6]:hover {\n    background: #E9EBEE;\n}\n.x-tree-item-children[data-v-fa2654e6] {\n    padding-left: 1.5em;\n}\n.padding-left-0[data-v-fa2654e6] {\n    padding-left: 0;\n}\n", ""]);
+exports.push([module.i, "\n.x-tree-item[data-v-fa2654e6] {\n    position: relative;\n    font-size: 14px;\n    -webkit-user-select: none;\n    -moz-user-select: none;\n    -ms-user-select: none;\n    user-select: none;\n}\n.x-tree-item-self[data-v-fa2654e6] {\n    padding: 0 2em 0 0.5em;\n}\n.x-tree-item-self[data-v-fa2654e6]:hover {\n    background: #E9EBEE;\n}\n.fa[data-v-fa2654e6] {\n    font-size: 14px;\n    width: 14px;\n    color: #999;\n}\n.icon-blank[data-v-fa2654e6] {\n    display: inline-block;\n    font-size: 14px;\n    width: 1em;\n}\n.x-tree-item-expand[data-v-fa2654e6] {\n}\n.x-tree-item-checkbox[data-v-fa2654e6] {\n}\n.x-tree-item-name[data-v-fa2654e6] {\n    display: inline-block;\n    vertical-align: bottom;\n    padding: 0 1em 0 0.2em;\n    width: calc(100% - 40px);\n    overflow: hidden;\n    text-overflow: ellipsis;\n    white-space: nowrap;\n}\n.x-tree-item-edit[data-v-fa2654e6] {\n    display: none;\n    position: absolute;\n    top: 0.36em;\n    right: 0.27em;\n}\n.x-tree-item-self:hover .x-tree-item-edit[data-v-fa2654e6] {\n    display: block;\n}\n.x-tree-item-editor[data-v-fa2654e6] {\n    display: block;\n    position: absolute;\n    right: 0;\n    width: 120px;\n    z-index: 99;\n    box-shadow: 0 1px 4px #999;\n    background: #fff;\n}\n.x-tree-item-editor-item[data-v-fa2654e6] {\n    display: block;\n    padding: 2px 35px 2px 15px;\n}\n.x-tree-item-editor-item[data-v-fa2654e6]:hover {\n    background: #E9EBEE;\n}\n.x-tree-item-children[data-v-fa2654e6] {\n    padding-left: 1.5em;\n}\n.padding-left-0[data-v-fa2654e6] {\n    padding-left: 0;\n}\n", ""]);
 
 // exports
 
@@ -1211,15 +1211,15 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     on: {
       "click": _vm.nameFn
     }
-  }, [_vm._v(_vm._s(_vm.model.name))]), _vm._v(" "), _c('i', {
-    staticClass: "x-tree-item-list fa fa-caret-square-o-down",
+  }, [_vm._v(_vm._s(_vm.model.name))]), _vm._v(" "), (_vm.options.editable) ? _c('i', {
+    staticClass: "x-tree-item-edit fa fa-caret-square-o-down",
     on: {
       "click": function($event) {
         $event.stopPropagation();
         _vm.showEditorFn($event)
       }
     }
-  }), _vm._v(" "), _c('div', {
+  }) : _vm._e(), _vm._v(" "), (_vm.options.editable) ? _c('div', {
     directives: [{
       name: "show",
       rawName: "v-show",
@@ -1264,8 +1264,8 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     directives: [{
       name: "show",
       rawName: "v-show",
-      value: (_vm.sortAble.upAble),
-      expression: "sortAble.upAble"
+      value: (_vm.sortable.upAble),
+      expression: "sortable.upAble"
     }],
     staticClass: "x-tree-item-editor-item",
     on: {
@@ -1277,8 +1277,8 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     directives: [{
       name: "show",
       rawName: "v-show",
-      value: (_vm.sortAble.downAble),
-      expression: "sortAble.downAble"
+      value: (_vm.sortable.downAble),
+      expression: "sortable.downAble"
     }],
     staticClass: "x-tree-item-editor-item",
     on: {
@@ -1294,7 +1294,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       expression: "cantEdit"
     }],
     staticClass: "x-tree-item-editor-item"
-  }, [_vm._v("无法操作")])])]), _vm._v(" "), (_vm.hasChildren) ? _c('div', {
+  }, [_vm._v("无法操作")])]) : _vm._e()]), _vm._v(" "), (_vm.hasChildren) ? _c('div', {
     directives: [{
       name: "show",
       rawName: "v-show",

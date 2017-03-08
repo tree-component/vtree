@@ -41,8 +41,6 @@
         cursor: pointer;
         font-size: 1em;
         line-height: 1.8em;
-        overflow: hidden;
-        text-overflow: ellipsis;
         white-space: nowrap;
     }
 </style>

@@ -14,19 +14,25 @@ function _mergeOptions(options) {
         maxHeight: 300,
         data: [],//{id:1,name:'xx',nodeId:'0',is_node:true,is_check:false},
         sel_ids: '',
-        onInit: function () {
+        checkbox: false,
+        onExpand: function () {
         },
-        onBeforeOpen: function () {
+        onClick: function () {
         },
-        onOpen: function () {
-        },
+
         onCheck: function () {
         },
-        onCancel: function () {
+
+        onEdit: function () {
         },
-        onChange: function () {
+
+        onDelete: function () {
         },
-        onClose: function () {
+
+        onAddChild: function () {
+        },
+
+        onSort: function () {
         },
     };
     var opt = Object.assign({}, defOpt, options);

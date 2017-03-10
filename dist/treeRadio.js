@@ -676,7 +676,7 @@ exports.default = {
         deleteFnn: function deleteFnn(item, result) {
             var index = this.model.parent.children.indexOf(this.model);
             if (result) {
-                item.parent.children.splice(index, 1);
+                this.model.parent.children.splice(index, 1);
             }
         },
 
@@ -703,10 +703,14 @@ exports.default = {
         },
 
         sortFn: function sortFn(type) {
+            var index = this.model.parent.children.indexOf(this.model);
+            var brother;
             if (type) {
-                this.options.onSort(this.model, this.upFnn);
+                brother = this.model.parent.children[index - 1];
+                this.options.onSort(this.model, brother, this.upFnn);
             } else {
-                this.options.onSort(this.model, this.downFnn);
+                brother = this.model.parent.children[index + 1];
+                this.options.onSort(this.model, brother, this.downFnn);
             }
             this.showEditor = false;
         },
@@ -714,16 +718,16 @@ exports.default = {
         upFnn: function upFnn(item, result) {
             var index = this.model.parent.children.indexOf(this.model);
             if (result) {
-                item.parent.children.splice(index, 1);
-                item.parent.children.splice(index - 1, 0, item);
+                this.model.parent.children.splice(index, 1);
+                this.model.parent.children.splice(index - 1, 0, this.model);
             }
         },
 
         downFnn: function downFnn(item, result) {
             var index = this.model.parent.children.indexOf(this.model);
             if (result) {
-                item.parent.children.splice(index, 1);
-                item.parent.children.splice(index + 1, 0, item);
+                this.model.parent.children.splice(index, 1);
+                this.model.parent.children.splice(index + 1, 0, this.model);
             }
         }
     },

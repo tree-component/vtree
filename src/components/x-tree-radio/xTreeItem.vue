@@ -7,7 +7,8 @@
             <i class="x-tree-item-checkbox fa" :class="options.checkbox ? checkboxIcon :'fa-folder-o' "
                @click="checkFn"></i>
             <span class="x-tree-item-name" @click="nameFn">{{model.name}}</span>
-            <i class="x-tree-item-edit fa fa-caret-square-o-down" v-if="options.editable" @click.stop="showEditorFn"></i>
+            <i class="x-tree-item-edit fa fa-caret-square-o-down" v-if="options.editable"
+               @click.stop="showEditorFn"></i>
             <div class="x-tree-item-editor" v-if="options.editable" v-show="showEditor">
                 <span class="x-tree-item-editor-item" v-show="model.is_edit" @click="editFn">修改部门</span>
                 <span class="x-tree-item-editor-item" v-show="model.is_delete" @click="deleteFn">删除部门</span>
@@ -57,13 +58,13 @@
                 return !this.model.is_edit && !this.model.is_delete && !this.model.is_add;
             },
             index: function () {
-                if(!this.model.parent){
+                if (!this.model.parent) {
                     return false;
                 }
                 return this.model.parent.children.indexOf(this.model);
             },
             sortable: function () {
-                if(!this.model.parent || this.model.parent.children.length==1){
+                if (!this.model.parent || this.model.parent.children.length == 1) {
                     return {
                         upAble: false,
                         downAble: false
@@ -75,7 +76,7 @@
                 var len = this.model.parent.children.length;
                 if (index === 0) {
                     upable = false;
-                }else if(index >= len-1){
+                } else if (index >= len - 1) {
                     downable = false;
                 }
                 return {
@@ -130,7 +131,7 @@
             deleteFnn: function (item, result) {
                 var index = this.model.parent.children.indexOf(this.model);
                 if (result) {
-                    item.parent.children.splice(index, 1);
+                    this.model.parent.children.splice(index, 1);
                 }
             },
 
@@ -157,10 +158,14 @@
             },
 
             sortFn: function (type) {
+                var index = this.model.parent.children.indexOf(this.model);
+                var brother;
                 if (type) {
-                    this.options.onSort(this.model, this.upFnn);
+                    brother = this.model.parent.children[index - 1];
+                    this.options.onSort(this.model, brother, this.upFnn);
                 } else {
-                    this.options.onSort(this.model, this.downFnn);
+                    brother = this.model.parent.children[index + 1];
+                    this.options.onSort(this.model, brother, this.downFnn);
                 }
                 this.showEditor = false;
             },
@@ -168,16 +173,16 @@
             upFnn: function (item, result) {
                 var index = this.model.parent.children.indexOf(this.model);
                 if (result) {
-                    item.parent.children.splice(index, 1);
-                    item.parent.children.splice(index - 1, 0, item);
+                    this.model.parent.children.splice(index, 1);
+                    this.model.parent.children.splice(index - 1, 0, this.model);
                 }
             },
 
             downFnn: function (item, result) {
                 var index = this.model.parent.children.indexOf(this.model);
                 if (result) {
-                    item.parent.children.splice(index, 1);
-                    item.parent.children.splice(index + 1, 0, item);
+                    this.model.parent.children.splice(index, 1);
+                    this.model.parent.children.splice(index + 1, 0, this.model);
                 }
             }
         },

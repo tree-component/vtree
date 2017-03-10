@@ -522,7 +522,7 @@ exports.default = {
         options: Object
     },
     data: function data() {
-        var opt = _methods2.default._mergeOptions(this.options);
+        var opt = _methods2.default._initOptions(this.options);
 
         var treeTemp = _methods2.default._arrayToTree(this.data, opt);
 
@@ -604,7 +604,7 @@ exports.default = {
             return faIcon;
         },
         cantEdit: function cantEdit() {
-            return !this.model.is_edit && !this.model.is_delete && !this.model.is_add;
+            return !this.model.is_edit && !this.model.is_delete && !this.model.is_add && !this.sortable.upAble && !this.sortable.downAble;
         },
         index: function index() {
             if (!this.model.parent) {
@@ -755,23 +755,20 @@ exports.default = {
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-function _mergeOptions(options) {
-    var defOpt = {
-        dom: '', //jqueryDom
+function _initOptions(options) {
+    var defOptions = {
+        zIndex: 9,
         is_trigger: false, //是否需要触发? 否则直接显示
         has_search: false,
         only_child: true, //是否结果只要 child
         node_merge: true, //结果只显示最上层  比如   中国被选中  四川,成都则不会显示  否则 每个被勾选的节点都显示
-        zIndex: 1,
-        choose: false, //哪些是选中的？优先级高于data  {nodeId:[1,2,3],id:[1,2,3]}
-        // node_first:false,//是否需要节点排在前面  否则按照data的顺序
         is_multi: true, //是否多选
         expand: true, //是否展开，false、true、num,(0、1、false,都展开一级。true,完全展开。num>=2时，展开到对应级）
         width: null,
         maxHeight: 300,
-        data: [], //{id:1,name:'xx',nodeId:'0',is_node:true,is_check:false},
         sel_ids: '',
         checkbox: false,
+        editable: true,
         onExpand: function onExpand() {},
         onClick: function onClick() {},
 
@@ -785,7 +782,7 @@ function _mergeOptions(options) {
 
         onSort: function onSort() {}
     };
-    var opt = Object.assign({}, defOpt, options);
+    var opt = Object.assign({}, defOptions, options);
     return opt;
 }
 
@@ -1053,7 +1050,7 @@ function getNameFn(item, name) {
 }
 
 var fn = {
-    _mergeOptions: _mergeOptions,
+    _initOptions: _initOptions,
 
     _arrayToTree: _arrayToTree,
 
@@ -1200,7 +1197,10 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     staticClass: "x-tree-item-expand fa",
     class: _vm.model.expand ? 'fa-caret-down' : 'fa-caret-right',
     on: {
-      "click": _vm.expandFn
+      "click": function($event) {
+        $event.stopPropagation();
+        _vm.expandFn($event)
+      }
     }
   }) : _c('span', {
     staticClass: "icon-blank"
@@ -1240,7 +1240,10 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     }],
     staticClass: "x-tree-item-editor-item",
     on: {
-      "click": _vm.editFn
+      "click": function($event) {
+        $event.stopPropagation();
+        _vm.editFn($event)
+      }
     }
   }, [_vm._v("修改部门")]), _vm._v(" "), _c('span', {
     directives: [{
@@ -1251,7 +1254,10 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     }],
     staticClass: "x-tree-item-editor-item",
     on: {
-      "click": _vm.deleteFn
+      "click": function($event) {
+        $event.stopPropagation();
+        _vm.deleteFn($event)
+      }
     }
   }, [_vm._v("删除部门")]), _vm._v(" "), _c('span', {
     directives: [{
@@ -1262,7 +1268,10 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     }],
     staticClass: "x-tree-item-editor-item",
     on: {
-      "click": _vm.addChildFn
+      "click": function($event) {
+        $event.stopPropagation();
+        _vm.addChildFn($event)
+      }
     }
   }, [_vm._v("添加子部门")]), _vm._v(" "), _c('span', {
     directives: [{
@@ -1274,6 +1283,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     staticClass: "x-tree-item-editor-item",
     on: {
       "click": function($event) {
+        $event.stopPropagation();
         _vm.sortFn(true)
       }
     }
@@ -1287,6 +1297,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     staticClass: "x-tree-item-editor-item",
     on: {
       "click": function($event) {
+        $event.stopPropagation();
         _vm.sortFn(false)
       }
     }

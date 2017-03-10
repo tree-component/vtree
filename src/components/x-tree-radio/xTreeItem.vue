@@ -2,19 +2,18 @@
     <div class="x-tree-item">
         <div class="x-tree-item-self" v-show="model.level" @mouseleave="hideEditorFn">
             <i class="x-tree-item-expand fa" v-if="hasChildren"
-               :class="model.expand ? 'fa-caret-down' : 'fa-caret-right'" @click="expandFn"></i>
+               :class="model.expand ? 'fa-caret-down' : 'fa-caret-right'" @click.stop="expandFn"></i>
             <span class="icon-blank" v-else></span>
             <i class="x-tree-item-checkbox fa" :class="options.checkbox ? checkboxIcon :'fa-folder-o' "
                @click="checkFn"></i>
             <span class="x-tree-item-name" @click="nameFn">{{model.name}}</span>
-            <i class="x-tree-item-edit fa fa-caret-square-o-down" v-if="options.editable"
-               @click.stop="showEditorFn"></i>
+            <i class="x-tree-item-edit fa fa-caret-square-o-down" v-if="options.editable" @click.stop="showEditorFn"></i>
             <div class="x-tree-item-editor" v-if="options.editable" v-show="showEditor">
-                <span class="x-tree-item-editor-item" v-show="model.is_edit" @click="editFn">修改部门</span>
-                <span class="x-tree-item-editor-item" v-show="model.is_delete" @click="deleteFn">删除部门</span>
-                <span class="x-tree-item-editor-item" v-show="model.is_add" @click="addChildFn">添加子部门</span>
-                <span class="x-tree-item-editor-item" v-show="sortable.upAble" @click="sortFn(true)">上移</span>
-                <span class="x-tree-item-editor-item" v-show="sortable.downAble" @click="sortFn(false)">下移</span>
+                <span class="x-tree-item-editor-item" v-show="model.is_edit" @click.stop="editFn">修改部门</span>
+                <span class="x-tree-item-editor-item" v-show="model.is_delete" @click.stop="deleteFn">删除部门</span>
+                <span class="x-tree-item-editor-item" v-show="model.is_add" @click.stop="addChildFn">添加子部门</span>
+                <span class="x-tree-item-editor-item" v-show="sortable.upAble" @click.stop="sortFn(true)">上移</span>
+                <span class="x-tree-item-editor-item" v-show="sortable.downAble" @click.stop="sortFn(false)">下移</span>
                 <span class="x-tree-item-editor-item" v-show="cantEdit">无法操作</span>
             </div>
         </div>
@@ -55,7 +54,7 @@
                 return faIcon;
             },
             cantEdit: function () {
-                return !this.model.is_edit && !this.model.is_delete && !this.model.is_add;
+                return !this.model.is_edit && !this.model.is_delete && !this.model.is_add && !this.sortable.upAble && !this.sortable.downAble;
             },
             index: function () {
                 if (!this.model.parent) {

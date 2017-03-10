@@ -14,6 +14,7 @@
 </div>
 
 <div class="button button-edit">edit</div>
+<div class="button button-delete">delete</div>
 <div class="button button-add">add</div>
 <div class="button button-cancel">cancel</div>
 <div class="button button-sort">sort</div>
@@ -27,30 +28,31 @@
         sel_ids: '3,11,12,13,30,31,32,33',
         expand: true,
         editable: true,
-        onExpand: function (item) {
+        onExpand: function (item,callback) {
             console.log("expand item", item, item.name);
         },
 
-        onCheck: function (item) {
+        onCheck: function (item,callback) {
             console.log("check item", item, item.name);
         },
 
-        onClick: function (item) {
+        onClick: function (item,callback) {
             console.log("click item", item, item.name);
         },
 
-        onEdit: function (item) {
+        onEdit: function (item,callback) {
             console.log("edit item", item, item.name);
-            popUpEditor(item);
+            popUpEditor(item,callback);
         },
 
-        onDelete: function (item) {
+        onDelete: function (item,callback) {
             console.log("delete item", item, item.name, "item.parent", item.parent);
+            popUpdelete(item,callback);
         },
 
-        onAddChild: function (newChild) {
+        onAddChild: function (newChild,callback) {
             console.log("add child, parent is", newChild.parent, newChild.parent.name);
-            popUpAddor(newChild);
+            popUpAddor(newChild,callback);
         },
 
         onSort: function (item1, item2, callback) {
@@ -107,23 +109,43 @@
     });
     console.log("new Vue(), xTree1 is ", xTree1);
 
+    /*---------------- deleteItem ----------------*/
+    var deleteFn = function () {
+        
+    };
+    var deleteTemp;
+    function popUpdelete(item,callback) {
+        deleteTemp = item;
+        deleteFn = callback;
+        console.log("deleteTemp",deleteTemp);
+        console.log("deleteFn",deleteFn);
+    }
+    function deleteItem() {
+        console.log("before delete", deleteTemp, deleteTemp.name);
+        deleteFn(deleteTemp,true);
+        console.log("deleted", deleteTemp, deleteTemp.name);
 
+    }
+    var deleteEl = document.querySelector('.button-delete');
+    deleteEl.addEventListener('click', deleteItem);
+
+    /*---------------- sortItem ----------------*/
     var sortTemp = {};
-    window.sortFn = function () {
+    var sortFn = function () {
     };
 
     function sortTempFn(item, callback) {
         sortTemp = item;
-        window.sortFn = callback;
+        sortFn = callback;
     }
 
     function sort() {
         console.log("sort");
-        window.sortFn(sortTemp, true);
+        sortFn(sortTemp, true);
     }
     function sortn() {
         console.log("sortn");
-        window.sortFn(sortTemp, false);
+        sortFn(sortTemp, false);
     }
 
     var sortEl = document.querySelector('.button-sort');
@@ -132,15 +154,17 @@
     var sortnEl = document.querySelector('.button-sortn');
     sortnEl.addEventListener('click', sortn);
 
-    // editItem
+    /*---------------- editItem ----------------*/
     var editTemp = {};
     function popUpEditor(item) {
         editTemp = item;
     }
+    var cntEdit = 0;
     function editItem() {
         console.log("editTempBefore", editTemp, editTemp.name);
+        cntEdit++;
         editTemp.id = 666;
-        editTemp.name = "edit";
+        editTemp.name = "edit" + cntEdit;
         editTemp.is_check = false;
         editTemp.is_node = true;
         console.log("editTempAfter", editTemp, editTemp.name);
@@ -149,15 +173,17 @@
     var editEl = document.querySelector('.button-edit');
     editEl.addEventListener('click', editItem);
 
-    // addChild()
+    /*---------------- addItem ----------------*/
     var addTemp = {};
     function popUpAddor(item) {
         addTemp = item;
     }
+    var cntAdd = 0;
     function addItem() {
         console.log("addTempBefore", addTemp, addTemp.name);
+        cntAdd++;
         addTemp.id = 777;
-        addTemp.name = "add";
+        addTemp.name = "add" + cntAdd;
         addTemp.is_check = true;
         addTemp.is_node = false;
 
@@ -178,6 +204,9 @@
 
     var cancelEl = document.querySelector('.button-cancel');
     cancelEl.addEventListener('click', cancelAdd);
+
+    /*---------------- end ----------------*/
+
 </script>
 
 </body>

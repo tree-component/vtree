@@ -18,7 +18,7 @@
             options: Object
         },
         data: function () {
-            var opt = Fn._mergeOptions(this.options);
+            var opt = Fn._initOptions(this.options);
 
             var treeTemp = Fn._arrayToTree(this.data, opt);
 

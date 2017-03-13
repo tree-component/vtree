@@ -1,6 +1,6 @@
 <template>
     <div class="x-tree-wrapper">
-        <x-tree-item class="x-tree-root" :model="model" :options="opt" :fn="fn"></x-tree-item>
+        <x-tree-item class="x-tree-root" :model="tree" :tree="tree" :options="opt" :fn="fn"></x-tree-item>
     </div>
 </template>
 
@@ -27,7 +27,7 @@
             return {
                 opt: opt,
                 fn: Fn,
-                model: treeChecked
+                tree: treeChecked
             };
         },
         computed: {},

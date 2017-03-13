@@ -4,8 +4,7 @@
             <i class="x-tree-item-expand fa" v-if="hasChildren"
                :class="model.expand ? 'fa-caret-down' : 'fa-caret-right'" @click.stop="expandFn"></i>
             <span class="icon-blank" v-else></span>
-            <i class="x-tree-item-checkbox fa" :class="options.checkbox ? checkboxIcon :'fa-folder-o' "
-               @click="checkFn"></i>
+            <i class="x-tree-item-checkbox fa" :class="options.checkbox ? checkboxIcon :'fa-folder-o' " @click="checkFn"></i>
             <span class="x-tree-item-name" @click="nameFn">{{model.name}}</span>
             <i class="x-tree-item-edit fa fa-caret-square-o-down" v-if="options.editable" @click.stop="showEditorFn"></i>
             <div class="x-tree-item-editor" v-if="options.editable" v-show="showEditor">
@@ -17,9 +16,8 @@
                 <span class="x-tree-item-editor-item" v-show="cantEdit">无法操作</span>
             </div>
         </div>
-        <div class='x-tree-item-children' v-if="hasChildren" v-show="model.expand"
-             :class="model.level ?  '' : 'padding-left-0' ">
-            <x-tree-item v-for="model in model.children" :model="model" :options="options" :fn="fn">
+        <div class='x-tree-item-children' v-if="hasChildren" v-show="model.expand" :class="model.level ? '' : 'padding-left-0' ">
+            <x-tree-item v-for="model in model.children" :model="model" :tree="tree" :options="options" :fn="fn">
             </x-tree-item>
         </div>
     </div>
@@ -31,7 +29,8 @@
         props: {
             model: Object,
             options: Object,
-            fn: Object
+            fn: Object,
+            tree: Object
         },
         data: function () {
             return {
@@ -118,8 +117,13 @@
                 this.showEditor = false;
             },
 
-            editFnn: function (item, result) {
-
+            editFnn: function (item, pid, result) {
+                if(result && this.model.parent.id != pid){
+                    var index = this.model.parent.children.indexOf(this.model);
+                    this.model.parent.children.splice(index, 1);
+                    var parent = this.fn.getItemById(this.tree,pid);
+                    parent.children.push(this.model);
+                }
             },
 
             deleteFn: function () {

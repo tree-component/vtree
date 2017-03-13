@@ -108,17 +108,17 @@ function _getSubTree(arrayIn, parent, opt) {
             //     is_node: arrayIn[i].is_node,
             //     is_check: arrayIn[i].is_check
             // }; //copy
-            temp = Object.assign({},arrayIn[i]);
+            temp = Object.assign({}, arrayIn[i]);
             temp.parent = parent;
             temp.level = parent.level + 1;
 
-            if(opt.expand === true){
+            if (opt.expand === true) {
                 temp.expand = true;
-            }else if (opt.expand === false && temp.level <= 0){
+            } else if (opt.expand === false && temp.level <= 0) {
                 temp.expand = true;
-            }else if(temp.level <= opt.expand){
+            } else if (temp.level <= opt.expand) {
                 temp.expand = true;
-            }else {
+            } else {
                 temp.expand = false;
             }
 
@@ -300,6 +300,25 @@ function getNameFn(item, name) {
 }
 
 
+function getItemById(tree, id) {
+    if (!tree || id == undefined || id == null) {
+        return false;
+    }
+    if (tree.id == id) {
+        return tree;
+    }
+    if (tree.children && tree.children.length) {
+        for (let i = 0; i < tree.children.length; i++) {
+            let item = getItemById(tree.children[i], id);
+            if (item) {
+                return item;
+            }
+        }
+    }
+    return false;
+}
+
+
 var fn = {
     _initOptions: _initOptions,
 
@@ -326,6 +345,8 @@ var fn = {
     getName: getName,
 
     getNameFn: getNameFn,
+
+    getItemById: getItemById,
 };
 
 export default fn;

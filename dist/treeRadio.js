@@ -531,7 +531,7 @@ exports.default = {
         return {
             opt: opt,
             fn: _methods2.default,
-            model: treeChecked
+            tree: treeChecked
         };
     },
     computed: {},
@@ -573,15 +573,14 @@ Object.defineProperty(exports, "__esModule", {
 //
 //
 //
-//
-//
 
 exports.default = {
     name: 'x-tree-item',
     props: {
         model: Object,
         options: Object,
-        fn: Object
+        fn: Object,
+        tree: Object
     },
     data: function data() {
         return {
@@ -666,7 +665,14 @@ exports.default = {
             this.showEditor = false;
         },
 
-        editFnn: function editFnn(item, result) {},
+        editFnn: function editFnn(item, pid, result) {
+            if (result && this.model.parent.id != pid) {
+                var index = this.model.parent.children.indexOf(this.model);
+                this.model.parent.children.splice(index, 1);
+                var parent = this.fn.getItemById(this.tree, pid);
+                parent.children.push(this.model);
+            }
+        },
 
         deleteFn: function deleteFn() {
             this.options.onDelete(this.model, this.deleteFnn);
@@ -1049,6 +1055,24 @@ function getNameFn(item, name) {
     };
 }
 
+function getItemById(tree, id) {
+    if (!tree || id == undefined || id == null) {
+        return false;
+    }
+    if (tree.id == id) {
+        return tree;
+    }
+    if (tree.children && tree.children.length) {
+        for (var i = 0; i < tree.children.length; i++) {
+            var item = getItemById(tree.children[i], id);
+            if (item) {
+                return item;
+            }
+        }
+    }
+    return false;
+}
+
 var fn = {
     _initOptions: _initOptions,
 
@@ -1074,7 +1098,9 @@ var fn = {
 
     getName: getName,
 
-    getNameFn: getNameFn
+    getNameFn: getNameFn,
+
+    getItemById: getItemById
 };
 
 exports.default = fn;
@@ -1160,7 +1186,8 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
   }, [_c('x-tree-item', {
     staticClass: "x-tree-root",
     attrs: {
-      "model": _vm.model,
+      "model": _vm.tree,
+      "tree": _vm.tree,
       "options": _vm.opt,
       "fn": _vm.fn
     }
@@ -1322,6 +1349,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     return _c('x-tree-item', {
       attrs: {
         "model": model,
+        "tree": _vm.tree,
         "options": _vm.options,
         "fn": _vm.fn
       }

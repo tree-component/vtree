@@ -156,8 +156,10 @@
 
     /*---------------- editItem ----------------*/
     var editTemp = {};
-    function popUpEditor(item) {
+    var editFn = function () {};
+    function popUpEditor(item,callback) {
         editTemp = item;
+        editFn = callback;
     }
     var cntEdit = 0;
     function editItem() {
@@ -167,6 +169,8 @@
         editTemp.name = "edit" + cntEdit;
         editTemp.is_check = false;
         editTemp.is_node = true;
+        editFn(editTemp,1,true);
+        console.log(editFn);
         console.log("editTempAfter", editTemp, editTemp.name);
         editTemp = {};
     }

@@ -669,7 +669,11 @@ exports.default = {
             if (result && this.model.parent.id != pid) {
                 var index = this.model.parent.children.indexOf(this.model);
                 this.model.parent.children.splice(index, 1);
+                console.log("this.tree", this.tree.children[0].children[0]);
                 var parent = this.fn.getItemById(this.tree, pid);
+                if (!parent || !parent.is_node) {
+                    return 'error : 修改节点(change parent), 新的parent不合法(1、不存在 2、is_node为false 3、当前节点本身或其后代)';
+                }
                 parent.children.push(this.model);
             }
         },

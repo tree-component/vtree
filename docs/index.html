@@ -28,31 +28,31 @@
         sel_ids: '3,11,12,13,30,31,32,33',
         expand: true,
         editable: true,
-        onExpand: function (item,callback) {
+        onExpand: function (item, callback) {
             console.log("expand item", item, item.name);
         },
 
-        onCheck: function (item,callback) {
+        onCheck: function (item, callback) {
             console.log("check item", item, item.name);
         },
 
-        onClick: function (item,callback) {
+        onClick: function (item, callback) {
             console.log("click item", item, item.name);
         },
 
-        onEdit: function (item,callback) {
+        onEdit: function (item, callback) {
             console.log("edit item", item, item.name);
-            popUpEditor(item,callback);
+            popUpEditor(item, callback);
         },
 
-        onDelete: function (item,callback) {
+        onDelete: function (item, callback) {
             console.log("delete item", item, item.name, "item.parent", item.parent);
-            popUpdelete(item,callback);
+            popUpdelete(item, callback);
         },
 
-        onAddChild: function (newChild,callback) {
+        onAddChild: function (newChild, callback) {
             console.log("add child, parent is", newChild.parent, newChild.parent.name);
-            popUpAddor(newChild,callback);
+            popUpAddor(newChild, callback);
         },
 
         onSort: function (item1, item2, callback) {
@@ -111,18 +111,18 @@
 
     /*---------------- deleteItem ----------------*/
     var deleteFn = function () {
-        
+
     };
     var deleteTemp;
-    function popUpdelete(item,callback) {
+    function popUpdelete(item, callback) {
         deleteTemp = item;
         deleteFn = callback;
-        console.log("deleteTemp",deleteTemp);
-        console.log("deleteFn",deleteFn);
+        console.log("deleteTemp", deleteTemp);
+        console.log("deleteFn", deleteFn);
     }
     function deleteItem() {
         console.log("before delete", deleteTemp, deleteTemp.name);
-        deleteFn(deleteTemp,true);
+        deleteFn(deleteTemp, true);
         console.log("deleted", deleteTemp, deleteTemp.name);
 
     }
@@ -156,8 +156,9 @@
 
     /*---------------- editItem ----------------*/
     var editTemp = {};
-    var editFn = function () {};
-    function popUpEditor(item,callback) {
+    var editFn = function () {
+    };
+    function popUpEditor(item, callback) {
         editTemp = item;
         editFn = callback;
     }
@@ -169,8 +170,7 @@
         editTemp.name = "edit" + cntEdit;
         editTemp.is_check = false;
         editTemp.is_node = true;
-        editFn(editTemp,1,true);
-        console.log(editFn);
+        editFn(editTemp, 1, true);
         console.log("editTempAfter", editTemp, editTemp.name);
         editTemp = {};
     }
@@ -210,6 +210,29 @@
     cancelEl.addEventListener('click', cancelAdd);
 
     /*---------------- end ----------------*/
+    //koa mongo node vue
+    var kmnv = ['m', 'n', 'k', 'v'];
+    wordify(kmnv);
+    function wordify(arrayIn) {
+        var word = '';
+        for (var i = 0; i < arrayIn.length; i++) {
+            word = arrayIn[i];
+            for (var j = 0; j < arrayIn.length; j++) {
+                if(i==j){break;}
+                word = arrayIn[i] + arrayIn[j];
+                for (var k = 0; k < arrayIn.length; j++) {
+                    if(i==k || j==k){break;}
+                    word = arrayIn[i] + arrayIn[j] + arrayIn[k];
+                    for (var m = 0; m < arrayIn.length; j++) {
+                        if(i==m || j==m || k==m){break;}
+                        word = arrayIn[i] + arrayIn[j] + arrayIn[k] + arrayIn[m];
+                        console.log('wordify', arrayIn, 'to', word);
+                    }
+                }
+            }
+
+        }
+    }
 
 </script>
 

@@ -210,29 +210,6 @@
     cancelEl.addEventListener('click', cancelAdd);
 
     /*---------------- end ----------------*/
-    //koa mongo node vue
-    var kmnv = ['m', 'n', 'k', 'v'];
-    wordify(kmnv);
-    function wordify(arrayIn) {
-        var word = '';
-        for (var i = 0; i < arrayIn.length; i++) {
-            word = arrayIn[i];
-            for (var j = 0; j < arrayIn.length; j++) {
-                if(i==j){break;}
-                word = arrayIn[i] + arrayIn[j];
-                for (var k = 0; k < arrayIn.length; j++) {
-                    if(i==k || j==k){break;}
-                    word = arrayIn[i] + arrayIn[j] + arrayIn[k];
-                    for (var m = 0; m < arrayIn.length; j++) {
-                        if(i==m || j==m || k==m){break;}
-                        word = arrayIn[i] + arrayIn[j] + arrayIn[k] + arrayIn[m];
-                        console.log('wordify', arrayIn, 'to', word);
-                    }
-                }
-            }
-
-        }
-    }
 
 </script>
 

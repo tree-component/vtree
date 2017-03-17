@@ -286,27 +286,6 @@ function addStylesToDom (styles /* Array<StyleObject> */) {
   }
 }
 
-function listToStyles (parentId, list) {
-  var styles = []
-  var newStyles = {}
-  for (var i = 0; i < list.length; i++) {
-    var item = list[i]
-    var id = item[0]
-    var css = item[1]
-    var media = item[2]
-    var sourceMap = item[3]
-    var part = { css: css, media: media, sourceMap: sourceMap }
-    if (!newStyles[id]) {
-      part.id = parentId + ':0'
-      styles.push(newStyles[id] = { id: id, parts: [part] })
-    } else {
-      part.id = parentId + ':' + newStyles[id].parts.length
-      newStyles[id].parts.push(part)
-    }
-  }
-  return styles
-}
-
 function createStyleElement () {
   var styleElement = document.createElement('style')
   styleElement.type = 'text/css'
@@ -317,12 +296,20 @@ function createStyleElement () {
 function addStyle (obj /* StyleObjectPart */) {
   var update, remove
   var styleElement = document.querySelector('style[data-vue-ssr-id~="' + obj.id + '"]')
-  var hasSSR = styleElement != null
 
-  // if in production mode and style is already provided by SSR,
-  // simply do nothing.
-  if (hasSSR && isProduction) {
-    return noop
+  if (styleElement) {
+    if (isProduction) {
+      // has SSR styles and in production mode.
+      // simply do nothing.
+      return noop
+    } else {
+      // has SSR styles but in dev mode.
+      // for some reason Chrome can't handle source map in server-rendered
+      // style tags - source maps in <style> only works if the style tag is
+      // created and inserted dynamically. So we remove the server rendered
+      // styles and inject new ones.
+      styleElement.parentNode.removeChild(styleElement)
+    }
   }
 
   if (isOldIE) {
@@ -333,16 +320,14 @@ function addStyle (obj /* StyleObjectPart */) {
     remove = applyToSingletonTag.bind(null, styleElement, styleIndex, true)
   } else {
     // use multi-style-tag mode in all other cases
-    styleElement = styleElement || createStyleElement()
+    styleElement = createStyleElement()
     update = applyToTag.bind(null, styleElement)
     remove = function () {
       styleElement.parentNode.removeChild(styleElement)
     }
   }
 
-  if (!hasSSR) {
-    update(obj)
-  }
+  update(obj)
 
   return function updateStyle (newObj /* StyleObjectPart */) {
     if (newObj) {
@@ -714,7 +699,7 @@ exports.default = {
 
         sortFn: function sortFn(type) {
             var index = this.model.parent.children.indexOf(this.model);
-            var brother;
+            var brother = void 0;
             if (type) {
                 brother = this.model.parent.children[index - 1];
                 this.options.onSort(this.model, brother, this.upFnn);
@@ -765,6 +750,9 @@ exports.default = {
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
 function _initOptions(options) {
     var defOptions = {
         zIndex: 9,
@@ -792,9 +780,41 @@ function _initOptions(options) {
 
         onSort: function onSort() {}
     };
-    var opt = Object.assign({}, defOptions, options);
+    var opt = extend({}, defOptions, options);
     return opt;
 }
+
+function extend(out) {
+    out = out || {};
+
+    for (var i = 1; i < arguments.length; i++) {
+        if (!arguments[i]) continue;
+
+        for (var key in arguments[i]) {
+            if (arguments[i].hasOwnProperty(key)) out[key] = arguments[i][key];
+        }
+    }
+
+    return out;
+};
+
+function deepExtend(out) {
+    out = out || {};
+
+    for (var i = 1; i < arguments.length; i++) {
+        var obj = arguments[i];
+
+        if (!obj) continue;
+
+        for (var key in obj) {
+            if (obj.hasOwnProperty(key)) {
+                if (_typeof(obj[key]) === 'object') out[key] = deepExtend(out[key], obj[key]);else out[key] = obj[key];
+            }
+        }
+    }
+
+    return out;
+};
 
 function _arrayToTree(arrayIn, opt) {
     var rootId = _getTreeRoot(arrayIn);
@@ -868,7 +888,7 @@ function _getSubTree(arrayIn, parent, opt) {
             //     is_node: arrayIn[i].is_node,
             //     is_check: arrayIn[i].is_check
             // }; //copy
-            temp = Object.assign({}, arrayIn[i]);
+            temp = extend({}, arrayIn[i]);
             temp.parent = parent;
             temp.level = parent.level + 1;
 

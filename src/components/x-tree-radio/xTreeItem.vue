@@ -42,7 +42,7 @@
                 return this.model.is_node && this.model.children && this.model.children.length
             },
             checkboxIcon: function () {
-                var faIcon = '';
+                let  faIcon = '';
                 if (this.model.checkState === true) {
                     faIcon = 'fa-check-square-o';
                 } else if (this.model.checkState === false) {
@@ -68,10 +68,10 @@
                         downAble: false
                     }
                 }
-                var upable = true;
-                var downable = true;
-                var index = this.model.parent.children.indexOf(this.model);
-                var len = this.model.parent.children.length;
+                let  upable = true;
+                let  downable = true;
+                let  index = this.model.parent.children.indexOf(this.model);
+                let  len = this.model.parent.children.length;
                 if (index === 0) {
                     upable = false;
                 } else if (index >= len - 1) {
@@ -119,10 +119,10 @@
 
             editFnn: function (item, pid, result) {
                 if(result && this.model.parent.id != pid){
-                    var index = this.model.parent.children.indexOf(this.model);
+                    let  index = this.model.parent.children.indexOf(this.model);
                     this.model.parent.children.splice(index, 1);
                     console.log("this.tree",this.tree.children[0].children[0]);
-                    var parent = this.fn.getItemById(this.tree,pid);
+                    let  parent = this.fn.getItemById(this.tree,pid);
                     if(!parent || !parent.is_node){
                         return 'error : 修改节点(change parent), 新的parent不合法(1、不存在 2、is_node为false 3、当前节点本身或其后代)';
                     }
@@ -136,14 +136,14 @@
             },
 
             deleteFnn: function (item, result) {
-                var index = this.model.parent.children.indexOf(this.model);
+                let  index = this.model.parent.children.indexOf(this.model);
                 if (result) {
                     this.model.parent.children.splice(index, 1);
                 }
             },
 
             addChildFn: function () {
-                var newChild = {
+                let  newChild = {
                     id: '',
                     name: '',
                     nodeId: this.model.id,
@@ -165,8 +165,8 @@
             },
 
             sortFn: function (type) {
-                var index = this.model.parent.children.indexOf(this.model);
-                var brother;
+                let  index = this.model.parent.children.indexOf(this.model);
+                let  brother;
                 if (type) {
                     brother = this.model.parent.children[index - 1];
                     this.options.onSort(this.model, brother, this.upFnn);
@@ -178,7 +178,7 @@
             },
 
             upFnn: function (item, result) {
-                var index = this.model.parent.children.indexOf(this.model);
+                let  index = this.model.parent.children.indexOf(this.model);
                 if (result) {
                     this.model.parent.children.splice(index, 1);
                     this.model.parent.children.splice(index - 1, 0, this.model);
@@ -186,7 +186,7 @@
             },
 
             downFnn: function (item, result) {
-                var index = this.model.parent.children.indexOf(this.model);
+                let  index = this.model.parent.children.indexOf(this.model);
                 if (result) {
                     this.model.parent.children.splice(index, 1);
                     this.model.parent.children.splice(index + 1, 0, this.model);

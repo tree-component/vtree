@@ -1,5 +1,5 @@
 function _initOptions(options) {
-    var defOptions = {
+    let defOptions = {
         zIndex: 9,
         is_trigger: false,  //是否需要触发? 否则直接显示
         has_search: false,
@@ -32,13 +32,51 @@ function _initOptions(options) {
         onSort: function () {
         },
     };
-    var opt = Object.assign({}, defOptions, options);
+    let opt = extend({}, defOptions, options);
     return opt;
 }
 
+function extend(out) {
+    out = out || {};
+
+    for (let i = 1; i < arguments.length; i++) {
+        if (!arguments[i])
+            continue;
+
+        for (let key in arguments[i]) {
+            if (arguments[i].hasOwnProperty(key))
+                out[key] = arguments[i][key];
+        }
+    }
+
+    return out;
+};
+
+function deepExtend(out) {
+    out = out || {};
+
+    for (let i = 1; i < arguments.length; i++) {
+        let obj = arguments[i];
+
+        if (!obj)
+            continue;
+
+        for (let key in obj) {
+            if (obj.hasOwnProperty(key)) {
+                if (typeof obj[key] === 'object')
+                    out[key] = deepExtend(out[key], obj[key]);
+                else
+                    out[key] = obj[key];
+            }
+        }
+    }
+
+    return out;
+};
+
 function _arrayToTree(arrayIn, opt) {
-    var rootId = _getTreeRoot(arrayIn);
-    var treeData = {
+    let rootId = _getTreeRoot(arrayIn);
+    let treeData = {
         id: rootId,
         name: 'ROOT',
         nodeId: null,
@@ -56,10 +94,10 @@ function _arrayToTree(arrayIn, opt) {
 }
 
 function _getTreeRoot(arrayIn) {
-    var rootId = [];
-    var clone = JSON.parse(JSON.stringify(arrayIn));
-    for (var i = 0, len = arrayIn.length; i < len; i++) {
-        for (var j = i; j < len; j++) {
+    let rootId = [];
+    let clone = JSON.parse(JSON.stringify(arrayIn));
+    for (let i = 0, len = arrayIn.length; i < len; i++) {
+        for (let j = i; j < len; j++) {
             if (arrayIn[i].id == arrayIn[j].nodeId) {
                 clone[j] = null;
             }
@@ -69,7 +107,7 @@ function _getTreeRoot(arrayIn) {
         }
     }
 
-    for (var k = 0; k < clone.length; k++) {
+    for (let k = 0; k < clone.length; k++) {
         if (clone[k]) {
             rootId.push(clone[k].nodeId);
         }
@@ -86,8 +124,8 @@ function _getTreeRoot(arrayIn) {
 }
 
 function _uniqueArray(arrayIn) {
-    var ua = [];
-    for (var i = 0; i < arrayIn.length; i++) {
+    let ua = [];
+    for (let i = 0; i < arrayIn.length; i++) {
         if (ua.indexOf(arrayIn[i]) == -1) {
             ua.push(arrayIn[i]);
         }
@@ -96,9 +134,9 @@ function _uniqueArray(arrayIn) {
 }
 
 function _getSubTree(arrayIn, parent, opt) {
-    var result = [];
-    var temp = {};
-    for (var i = 0; i < arrayIn.length; i++) {
+    let result = [];
+    let temp = {};
+    for (let i = 0; i < arrayIn.length; i++) {
         if (arrayIn[i].nodeId == parent.id) {
             // // temp = arrayIn[i];
             // temp = {
@@ -108,7 +146,7 @@ function _getSubTree(arrayIn, parent, opt) {
             //     is_node: arrayIn[i].is_node,
             //     is_check: arrayIn[i].is_check
             // }; //copy
-            temp = Object.assign({}, arrayIn[i]);
+            temp = extend({}, arrayIn[i]);
             temp.parent = parent;
             temp.level = parent.level + 1;
 
@@ -135,7 +173,7 @@ function _getSubTree(arrayIn, parent, opt) {
 }
 
 function _checkTreeByIds(tree, sel_ids) {
-    var ids = sel_ids.split(',');
+    let ids = sel_ids.split(',');
 
     _traverseTree(tree, _checkTreeByIdsFn, ids);
 
@@ -149,7 +187,7 @@ function _checkTreeByIdsFn(item, ids) {
             brother: false
         };
     }
-    for (var i = 0; i < ids.length; i++) {
+    for (let i = 0; i < ids.length; i++) {
         if (item.id == ids[i]) {
             _changeItem(item, true);
             ids.splice(i, 1);
@@ -166,10 +204,10 @@ function _traverseTree(tree, fn, input, output) {
     if (!tree) {
         return true;
     }
-    var _continue = fn(tree, input, output);//是否继续遍历
+    let _continue = fn(tree, input, output);//是否继续遍历
     if (_continue.children && tree.children) {
-        for (var i = 0; i < tree.children.length; i++) {
-            var brother = _traverseTree(tree.children[i], fn, input, output);
+        for (let i = 0; i < tree.children.length; i++) {
+            let brother = _traverseTree(tree.children[i], fn, input, output);
             if (!brother) {
                 break;
             }
@@ -198,7 +236,7 @@ function _changeChildrenState(children, change) {
     if (!children) {
         return false;
     }
-    for (var i = 0; i < children.length; i++) {
+    for (let i = 0; i < children.length; i++) {
         children[i].checkState = change;
         if (children[i].children) {
             _changeChildrenState(children[i].children, change);
@@ -211,7 +249,7 @@ function _changeChildren(children, change) {
     if (!children) {
         return false;
     }
-    for (var i = 0; i < children.length; i++) {
+    for (let i = 0; i < children.length; i++) {
         if (children[i].is_check !== change) {
             children[i].is_check = change;
             if (children[i].children) {
@@ -226,14 +264,14 @@ function _changeParentState(parent, change) {
     if (!parent) {
         return false;
     }
-    var old = parent.checkState;
-    var len = parent.children.length;
+    let old = parent.checkState;
+    let len = parent.children.length;
 
     if (change === "z") {
         parent.checkState = "z";
     } else if (change === true) {
-        var n = 0;
-        for (var i = 0; i < len; i++) {
+        let n = 0;
+        for (let i = 0; i < len; i++) {
             if (parent.children[i].checkState === true) {
                 n += 1;
             } else {
@@ -245,8 +283,8 @@ function _changeParentState(parent, change) {
             parent.checkState = true;
         }
     } else if (change === false) {
-        var m = 0;
-        for (var j = 0; j < len; j++) {
+        let m = 0;
+        for (let j = 0; j < len; j++) {
             if (parent.children[j].checkState === false) {
                 m += 1;
             } else {
@@ -270,7 +308,7 @@ function _changeParent(parent, change) {
         return false;
     }
     if (change) {
-        for (var i = 0; i < parent.children.length; i++) {
+        for (let i = 0; i < parent.children.length; i++) {
             if (!parent.children[i].is_check) {
                 return false;
             }
@@ -284,7 +322,7 @@ function _changeParent(parent, change) {
 }
 
 function getName(model) {
-    var name = [];
+    let name = [];
     _traverseTree(model, getNameFn, name);
     return name;
 }
@@ -319,7 +357,7 @@ function getItemById(tree, id) {
 }
 
 
-var fn = {
+let fn = {
     _initOptions: _initOptions,
 
     _arrayToTree: _arrayToTree,

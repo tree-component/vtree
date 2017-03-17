@@ -18,11 +18,11 @@
             options: Object
         },
         data: function () {
-            var opt = Fn._initOptions(this.options);
+            let opt = Fn._initOptions(this.options);
 
-            var treeTemp = Fn._arrayToTree(this.data, opt);
+            let treeTemp = Fn._arrayToTree(this.data, opt);
 
-            var treeChecked = Fn._checkTreeByIds(treeTemp, opt.sel_ids);
+            let treeChecked = Fn._checkTreeByIds(treeTemp, opt.sel_ids);
 
             return {
                 opt: opt,

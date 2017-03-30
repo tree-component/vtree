@@ -6,7 +6,7 @@
   "author": "gitjcc",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/gitjcc/xstrap.git"
+    "url": "git+https://github.com/gitjcc/tree-vue.git"
   },
   "license": "MIT",  
   "scripts": {

@@ -43,7 +43,7 @@
             },
             checkboxIcon: function () {
                 let  faIcon = '';
-                if(options.checkbox){
+                if(this.options.checkbox){
                     if (this.model.checkState === true) {
                         faIcon = 'fa-check-square-o';
                     } else if (this.model.checkState === false) {

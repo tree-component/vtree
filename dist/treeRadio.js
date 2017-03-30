@@ -1155,7 +1155,7 @@ exports = module.exports = __webpack_require__(0)();
 
 
 // module
-exports.push([module.i, "\n.x-tree-item[data-v-7cd6725f] {\n    position: relative;\n    font-size: 14px;\n    -webkit-user-select: none;\n    -moz-user-select: none;\n    -ms-user-select: none;\n    user-select: none;\n}\n.x-tree-item-self[data-v-7cd6725f] {\n    padding: 0 2em 0 0.5em;\n}\n.x-tree-item-self[data-v-7cd6725f]:hover {\n    background: #E9EBEE;\n}\n.fa[data-v-7cd6725f] {\n    font-size: 14px;\n    width: 14px;\n    color: #999;\n}\n.icon-blank[data-v-7cd6725f] {\n    display: inline-block;\n    font-size: 14px;\n    width: 1em;\n}\n.x-tree-item-expand[data-v-7cd6725f] {\n}\n.x-tree-item-checkbox[data-v-7cd6725f] {\n}\n.x-tree-item-name[data-v-7cd6725f] {\n    display: inline-block;\n    vertical-align: bottom;\n    padding: 0 1em 0 0em;\n    width: calc(100% - 40px);\n    overflow: hidden;\n    text-overflow: ellipsis;\n    white-space: nowrap;\n}\n.x-tree-item-edit[data-v-7cd6725f] {\n    display: none;\n    position: absolute;\n    top: 0.36em;\n    right: 0.27em;\n}\n.x-tree-item-self:hover .x-tree-item-edit[data-v-7cd6725f] {\n    display: block;\n}\n.x-tree-item-editor[data-v-7cd6725f] {\n    display: block;\n    position: absolute;\n    right: 0;\n    width: 120px;\n    z-index: 99;\n    box-shadow: 0 1px 4px #999;\n    background: #fff;\n}\n.x-tree-item-editor-item[data-v-7cd6725f] {\n    display: block;\n    padding: 2px 35px 2px 15px;\n}\n.x-tree-item-editor-item[data-v-7cd6725f]:hover {\n    background: #E9EBEE;\n}\n.x-tree-item-children[data-v-7cd6725f] {\n    padding-left: 1.3em;\n}\n.padding-left-0[data-v-7cd6725f] {\n    padding-left: 0;\n}\n", ""]);
+exports.push([module.i, "\n.x-tree-item[data-v-7cd6725f] {\n    position: relative;\n    font-size: 14px;\n    -webkit-user-select: none;\n    -moz-user-select: none;\n    -ms-user-select: none;\n    user-select: none;\n}\n.x-tree-item-self[data-v-7cd6725f] {\n    padding: 0 2em 0 0.5em;\n}\n.x-tree-item-self[data-v-7cd6725f]:hover {\n    background: #E9EBEE;\n}\n.fa[data-v-7cd6725f] {\n    font-size: 14px;\n    width: 14px;\n    color: #999;\n}\n.icon-blank[data-v-7cd6725f] {\n    display: inline-block;\n    font-size: 14px;\n    width: 1em;\n}\n.x-tree-item-expand[data-v-7cd6725f] {\n}\n.x-tree-item-checkbox[data-v-7cd6725f] {\n}\n.x-tree-item-name[data-v-7cd6725f] {\n    display: inline-block;\n    vertical-align: bottom;\n    padding: 0 1em 0 0em;\n    width: calc(100% - 40px);\n    overflow: hidden;\n    text-overflow: ellipsis;\n    white-space: nowrap;\n}\n.x-tree-item-edit[data-v-7cd6725f] {\n    display: none;\n    position: absolute;\n    top: 0.36em;\n    right: 0.27em;\n}\n.x-tree-item-self:hover .x-tree-item-edit[data-v-7cd6725f] {\n    display: block;\n}\n.x-tree-item-editor[data-v-7cd6725f] {\n    display: block;\n    position: absolute;\n    right: 0;\n    width: 120px;\n    z-index: 99;\n    box-shadow: 0 1px 4px #999;\n    background: #fff;\n}\n.x-tree-item-editor-item[data-v-7cd6725f] {\n    display: block;\n    padding: 2px 35px 2px 15px;\n}\n.x-tree-item-editor-item[data-v-7cd6725f]:hover {\n    background: #E9EBEE;\n}\n.x-tree-item-children[data-v-7cd6725f] {\n    padding-left: 1.3em;\n}\n.x-tree-root-children[data-v-7cd6725f] {\n    padding-left: 0;\n}\n.editable_false[data-v-7cd6725f] {\n    padding-right: 0;\n}\n.x-tree-node > .editable_false > .x-tree-item-name[data-v-7cd6725f]{\n    padding: 0;        \n    width: calc(100% - 37px);\n}\n.x-tree-leaf > .editable_false > .x-tree-item-name[data-v-7cd6725f]{\n    padding: 0; \n    width: calc(100% - 20px);\n}\n", ""]);
 
 // exports
 
@@ -1232,7 +1232,8 @@ if (false) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
   return _c('div', {
-    staticClass: "x-tree-item"
+    staticClass: "x-tree-item",
+    class: _vm.model.is_node ? 'x-tree-node' : 'x-tree-leaf'
   }, [_c('div', {
     directives: [{
       name: "show",
@@ -1241,6 +1242,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       expression: "model.level"
     }],
     staticClass: "x-tree-item-self",
+    class: _vm.options.editable ? '' : 'editable_false',
     on: {
       "mouseleave": _vm.hideEditorFn
     }
@@ -1368,7 +1370,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       expression: "model.expand"
     }],
     staticClass: "x-tree-item-children",
-    class: _vm.model.level ? '' : 'padding-left-0'
+    class: _vm.model.level ? '' : 'x-tree-root-children'
   }, _vm._l((_vm.model.children), function(model) {
     return _c('x-tree-item', {
       attrs: {

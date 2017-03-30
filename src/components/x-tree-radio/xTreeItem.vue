@@ -4,7 +4,7 @@
             <i class="x-tree-item-expand fa" v-if="hasChildren"
                :class="model.expand ? 'fa-caret-down' : 'fa-caret-right'" @click.stop="expandFn"></i>
             <span class="icon-blank" v-else></span>
-            <i class="x-tree-item-checkbox fa" :class="options.checkbox ? checkboxIcon :'fa-folder-o' " @click="checkFn"></i>
+            <i class="x-tree-item-checkbox fa" :class="checkboxIcon" @click="checkFn"></i>
             <span class="x-tree-item-name" @click="nameFn">{{model.name}}</span>
             <i class="x-tree-item-edit fa fa-caret-square-o-down" v-if="options.editable" @click.stop="showEditorFn"></i>
             <div class="x-tree-item-editor" v-if="options.editable" v-show="showEditor">
@@ -43,12 +43,16 @@
             },
             checkboxIcon: function () {
                 let  faIcon = '';
-                if (this.model.checkState === true) {
-                    faIcon = 'fa-check-square-o';
-                } else if (this.model.checkState === false) {
-                    faIcon = 'fa-square-o';
-                } else if (this.model.checkState === 'z') {
-                    faIcon = 'fa-minus-square-o';
+                if(options.checkbox){
+                    if (this.model.checkState === true) {
+                        faIcon = 'fa-check-square-o';
+                    } else if (this.model.checkState === false) {
+                        faIcon = 'fa-square-o';
+                    } else if (this.model.checkState === 'z') {
+                        faIcon = 'fa-minus-square-o';
+                    }
+                }else{
+                     faIcon = 'fa-folder-o' 
                 }
                 return faIcon;
             },

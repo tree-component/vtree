@@ -2,13 +2,19 @@
   "name": "vue-tree",
   "version": "0.0.1",
   "main": "index.js",
+  "description":"xstrap",
+  "author": "gitjcc",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gitjcc/xstrap.git"
+  },
+  "license": "MIT",  
   "scripts": {
     "build": "webpack --config ./build/webpack.prod.config.js",
     "dev": "webpack --config ./build/webpack.dev.config.js",
-    "server": "webpack-dev-server --inline --watch --progress --config ./build/webpack.prod.config.js --port 5399"
+    "start": "webpack-dev-server --inline --watch --progress --config ./build/webpack.prod.config.js --port 5399"
   },
   "dependencies": {
-    "lodash": "^4.17.4",
     "vue": "^2.2.1",
     "vue-router": "^2.2.0"
   },

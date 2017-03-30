@@ -4,7 +4,7 @@
             <i class="x-tree-item-expand fa" v-if="hasChildren"
                :class="model.expand ? 'fa-caret-down' : 'fa-caret-right'" @click.stop="expandFn"></i>
             <span class="icon-blank" v-else></span>
-            <i class="x-tree-item-checkbox fa" :class="checkboxIcon" @click="checkFn"></i>
+            <i class="x-tree-item-checkbox fa" v-if="model.is_node" :class="checkboxIcon" @click="checkFn"></i>
             <span class="x-tree-item-name" @click="nameFn">{{model.name}}</span>
             <i class="x-tree-item-edit fa fa-caret-square-o-down" v-if="options.editable" @click.stop="showEditorFn"></i>
             <div class="x-tree-item-editor" v-if="options.editable" v-show="showEditor">
@@ -95,33 +95,26 @@
                     this.options.onExpand(this.model);
                 }
             },
-
             checkFn: function () {
                 this.fn._changeItem(this.model, !this.model.is_check);
                 this.options.onCheck(this.model);
             },
-
             nameFn: function () {
                 this.options.onClick(this.model);
             },
-
             nameFnn: function () {
 
             },
-
             showEditorFn: function () {
                 this.showEditor = !this.showEditor;
             },
-
             hideEditorFn: function () {
                 this.showEditor = false;
             },
-
             editFn: function () {
                 this.options.onEdit(this.model, this.editFnn);
                 this.showEditor = false;
             },
-
             editFnn: function (item, pid, result) {
                 if(result && this.model.parent.id != pid){
                     let  index = this.model.parent.children.indexOf(this.model);
@@ -134,19 +127,16 @@
                     parent.children.push(this.model);
                 }
             },
-
             deleteFn: function () {
                 this.options.onDelete(this.model, this.deleteFnn);
                 this.showEditor = false;
             },
-
             deleteFnn: function (item, result) {
                 let  index = this.model.parent.children.indexOf(this.model);
                 if (result) {
                     this.model.parent.children.splice(index, 1);
                 }
             },
-
             addChildFn: function () {
                 let  newChild = {
                     id: '',
@@ -162,13 +152,11 @@
                 this.options.onAddChild(newChild, this.addChildFnn);
                 this.showEditor = false;
             },
-
             addChildFnn: function (item, result) {
                 if (result) {
                     item.parent.children.push(item);
                 }
             },
-
             sortFn: function (type) {
                 let  index = this.model.parent.children.indexOf(this.model);
                 let  brother;
@@ -181,7 +169,6 @@
                 }
                 this.showEditor = false;
             },
-
             upFnn: function (item, result) {
                 let  index = this.model.parent.children.indexOf(this.model);
                 if (result) {
@@ -189,7 +176,6 @@
                     this.model.parent.children.splice(index - 1, 0, this.model);
                 }
             },
-
             downFnn: function (item, result) {
                 let  index = this.model.parent.children.indexOf(this.model);
                 if (result) {
@@ -198,16 +184,6 @@
                 }
             }
         },
-
-        created() {
-//            if(this.tree.accordion) {
-//                this.$on('el-tree-node-expand', function (node) {
-//                    if(this.node !== node) {
-//                        this.node.collapse();
-//                    }
-//                });
-//            }
-        }
     }
 </script>
 
@@ -220,56 +196,46 @@
         -ms-user-select: none;
         user-select: none;
     }
-
     .x-tree-item-self {
         padding: 0 2em 0 0.5em;
     }
-
     .x-tree-item-self:hover {
         background: #E9EBEE;
     }
-
     .fa {
         font-size: 14px;
         width: 14px;
         color: #999;
     }
-
     .icon-blank {
         display: inline-block;
         font-size: 14px;
         width: 1em;
     }
-
     .x-tree-item-expand {
 
     }
-
     .x-tree-item-checkbox {
 
     }
-
     .x-tree-item-name {
         display: inline-block;
         vertical-align: bottom;
-        padding: 0 1em 0 0.2em;
+        padding: 0 1em 0 0em;
         width: calc(100% - 40px);
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
     }
-
     .x-tree-item-edit {
         display: none;
         position: absolute;
         top: 0.36em;
         right: 0.27em;
     }
-
     .x-tree-item-self:hover .x-tree-item-edit {
         display: block;
     }
-
     .x-tree-item-editor {
         display: block;
         position: absolute;
@@ -279,20 +245,16 @@
         box-shadow: 0 1px 4px #999;
         background: #fff;
     }
-
     .x-tree-item-editor-item {
         display: block;
         padding: 2px 35px 2px 15px;
     }
-
     .x-tree-item-editor-item:hover {
         background: #E9EBEE;
     }
-
     .x-tree-item-children {
-        padding-left: 1.5em;
+        padding-left: 1.3em;
     }
-
     .padding-left-0 {
         padding-left: 0;
     }

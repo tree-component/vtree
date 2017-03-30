@@ -633,31 +633,24 @@ exports.default = {
                 this.options.onExpand(this.model);
             }
         },
-
         checkFn: function checkFn() {
             this.fn._changeItem(this.model, !this.model.is_check);
             this.options.onCheck(this.model);
         },
-
         nameFn: function nameFn() {
             this.options.onClick(this.model);
         },
-
         nameFnn: function nameFnn() {},
-
         showEditorFn: function showEditorFn() {
             this.showEditor = !this.showEditor;
         },
-
         hideEditorFn: function hideEditorFn() {
             this.showEditor = false;
         },
-
         editFn: function editFn() {
             this.options.onEdit(this.model, this.editFnn);
             this.showEditor = false;
         },
-
         editFnn: function editFnn(item, pid, result) {
             if (result && this.model.parent.id != pid) {
                 var index = this.model.parent.children.indexOf(this.model);
@@ -670,19 +663,16 @@ exports.default = {
                 parent.children.push(this.model);
             }
         },
-
         deleteFn: function deleteFn() {
             this.options.onDelete(this.model, this.deleteFnn);
             this.showEditor = false;
         },
-
         deleteFnn: function deleteFnn(item, result) {
             var index = this.model.parent.children.indexOf(this.model);
             if (result) {
                 this.model.parent.children.splice(index, 1);
             }
         },
-
         addChildFn: function addChildFn() {
             var newChild = {
                 id: '',
@@ -698,13 +688,11 @@ exports.default = {
             this.options.onAddChild(newChild, this.addChildFnn);
             this.showEditor = false;
         },
-
         addChildFnn: function addChildFnn(item, result) {
             if (result) {
                 item.parent.children.push(item);
             }
         },
-
         sortFn: function sortFn(type) {
             var index = this.model.parent.children.indexOf(this.model);
             var brother = void 0;
@@ -717,7 +705,6 @@ exports.default = {
             }
             this.showEditor = false;
         },
-
         upFnn: function upFnn(item, result) {
             var index = this.model.parent.children.indexOf(this.model);
             if (result) {
@@ -725,7 +712,6 @@ exports.default = {
                 this.model.parent.children.splice(index - 1, 0, this.model);
             }
         },
-
         downFnn: function downFnn(item, result) {
             var index = this.model.parent.children.indexOf(this.model);
             if (result) {
@@ -733,16 +719,6 @@ exports.default = {
                 this.model.parent.children.splice(index + 1, 0, this.model);
             }
         }
-    },
-
-    created: function created() {
-        //            if(this.tree.accordion) {
-        //                this.$on('el-tree-node-expand', function (node) {
-        //                    if(this.node !== node) {
-        //                        this.node.collapse();
-        //                    }
-        //                });
-        //            }
     }
 };
 
@@ -1179,7 +1155,7 @@ exports = module.exports = __webpack_require__(0)();
 
 
 // module
-exports.push([module.i, "\n.x-tree-item[data-v-fa2654e6] {\n    position: relative;\n    font-size: 14px;\n    -webkit-user-select: none;\n    -moz-user-select: none;\n    -ms-user-select: none;\n    user-select: none;\n}\n.x-tree-item-self[data-v-fa2654e6] {\n    padding: 0 2em 0 0.5em;\n}\n.x-tree-item-self[data-v-fa2654e6]:hover {\n    background: #E9EBEE;\n}\n.fa[data-v-fa2654e6] {\n    font-size: 14px;\n    width: 14px;\n    color: #999;\n}\n.icon-blank[data-v-fa2654e6] {\n    display: inline-block;\n    font-size: 14px;\n    width: 1em;\n}\n.x-tree-item-expand[data-v-fa2654e6] {\n}\n.x-tree-item-checkbox[data-v-fa2654e6] {\n}\n.x-tree-item-name[data-v-fa2654e6] {\n    display: inline-block;\n    vertical-align: bottom;\n    padding: 0 1em 0 0.2em;\n    width: calc(100% - 40px);\n    overflow: hidden;\n    text-overflow: ellipsis;\n    white-space: nowrap;\n}\n.x-tree-item-edit[data-v-fa2654e6] {\n    display: none;\n    position: absolute;\n    top: 0.36em;\n    right: 0.27em;\n}\n.x-tree-item-self:hover .x-tree-item-edit[data-v-fa2654e6] {\n    display: block;\n}\n.x-tree-item-editor[data-v-fa2654e6] {\n    display: block;\n    position: absolute;\n    right: 0;\n    width: 120px;\n    z-index: 99;\n    box-shadow: 0 1px 4px #999;\n    background: #fff;\n}\n.x-tree-item-editor-item[data-v-fa2654e6] {\n    display: block;\n    padding: 2px 35px 2px 15px;\n}\n.x-tree-item-editor-item[data-v-fa2654e6]:hover {\n    background: #E9EBEE;\n}\n.x-tree-item-children[data-v-fa2654e6] {\n    padding-left: 1.5em;\n}\n.padding-left-0[data-v-fa2654e6] {\n    padding-left: 0;\n}\n", ""]);
+exports.push([module.i, "\n.x-tree-item[data-v-fa2654e6] {\n    position: relative;\n    font-size: 14px;\n    -webkit-user-select: none;\n    -moz-user-select: none;\n    -ms-user-select: none;\n    user-select: none;\n}\n.x-tree-item-self[data-v-fa2654e6] {\n    padding: 0 2em 0 0.5em;\n}\n.x-tree-item-self[data-v-fa2654e6]:hover {\n    background: #E9EBEE;\n}\n.fa[data-v-fa2654e6] {\n    font-size: 14px;\n    width: 14px;\n    color: #999;\n}\n.icon-blank[data-v-fa2654e6] {\n    display: inline-block;\n    font-size: 14px;\n    width: 1em;\n}\n.x-tree-item-expand[data-v-fa2654e6] {\n}\n.x-tree-item-checkbox[data-v-fa2654e6] {\n}\n.x-tree-item-name[data-v-fa2654e6] {\n    display: inline-block;\n    vertical-align: bottom;\n    padding: 0 1em 0 0em;\n    width: calc(100% - 40px);\n    overflow: hidden;\n    text-overflow: ellipsis;\n    white-space: nowrap;\n}\n.x-tree-item-edit[data-v-fa2654e6] {\n    display: none;\n    position: absolute;\n    top: 0.36em;\n    right: 0.27em;\n}\n.x-tree-item-self:hover .x-tree-item-edit[data-v-fa2654e6] {\n    display: block;\n}\n.x-tree-item-editor[data-v-fa2654e6] {\n    display: block;\n    position: absolute;\n    right: 0;\n    width: 120px;\n    z-index: 99;\n    box-shadow: 0 1px 4px #999;\n    background: #fff;\n}\n.x-tree-item-editor-item[data-v-fa2654e6] {\n    display: block;\n    padding: 2px 35px 2px 15px;\n}\n.x-tree-item-editor-item[data-v-fa2654e6]:hover {\n    background: #E9EBEE;\n}\n.x-tree-item-children[data-v-fa2654e6] {\n    padding-left: 1.3em;\n}\n.padding-left-0[data-v-fa2654e6] {\n    padding-left: 0;\n}\n", ""]);
 
 // exports
 
@@ -1279,13 +1255,13 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     }
   }) : _c('span', {
     staticClass: "icon-blank"
-  }), _vm._v(" "), _c('i', {
+  }), _vm._v(" "), (_vm.model.is_node) ? _c('i', {
     staticClass: "x-tree-item-checkbox fa",
     class: _vm.checkboxIcon,
     on: {
       "click": _vm.checkFn
     }
-  }), _vm._v(" "), _c('span', {
+  }) : _vm._e(), _vm._v(" "), _c('span', {
     staticClass: "x-tree-item-name",
     on: {
       "click": _vm.nameFn

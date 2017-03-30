@@ -581,6 +581,9 @@ exports.default = {
         },
         checkboxIcon: function checkboxIcon() {
             var faIcon = '';
+            if (this.model.is_node) {
+                faIcon = 'fa-folder-o';
+            }
             if (this.options.checkbox) {
                 if (this.model.checkState === true) {
                     faIcon = 'fa-check-square-o';
@@ -589,8 +592,6 @@ exports.default = {
                 } else if (this.model.checkState === 'z') {
                     faIcon = 'fa-minus-square-o';
                 }
-            } else {
-                faIcon = 'fa-folder-o';
             }
             return faIcon;
         },

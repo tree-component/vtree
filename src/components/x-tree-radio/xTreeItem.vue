@@ -1,6 +1,8 @@
 <template>
     <div class="x-tree-item" :class="model.is_node ? 'x-tree-node' : 'x-tree-leaf' ">
-        <div class="x-tree-item-self" v-show="model.level" :class="options.editable ? '' : 'editable_false' " @mouseleave="hideEditorFn">
+        <div class="x-tree-item-self" v-show="model.level" :class="options.editable ? '' : 'editable_false' " 
+        :style="{ 'padding-left': (model.level - 1) * 1.3 + 'em' }" 
+        @mouseleave="hideEditorFn">                           
             <i class="x-tree-item-expand fa" v-if="hasChildren"
                :class="model.expand ? 'fa-caret-down' : 'fa-caret-right'" @click.stop="expandFn"></i>
             <span class="icon-blank" v-else></span>
@@ -16,7 +18,7 @@
                 <span class="x-tree-item-editor-item" v-show="cantEdit">无法操作</span>
             </div>
         </div>
-        <div class='x-tree-item-children' v-if="hasChildren" v-show="model.expand" :class="model.level ? '' : 'x-tree-root-children' ">
+        <div class='x-tree-item-children' v-if="hasChildren" v-show="model.expand" >
             <x-tree-item v-for="model in model.children" :model="model" :tree="tree" :options="options" :fn="fn">
             </x-tree-item>
         </div>
@@ -253,10 +255,7 @@
         background: #E9EBEE;
     }
     .x-tree-item-children {
-        padding-left: 1.3em;
-    }
-    .x-tree-root-children {
-        padding-left: 0;
+        /*padding-left: 1.3em;*/
     }
     .editable_false {
         padding-right: 0;

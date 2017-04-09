@@ -149,17 +149,11 @@ function _getSubTree(arrayIn, parent, opt) {
             temp = extend({}, arrayIn[i]);
             temp.parent = parent;
             temp.level = parent.level + 1;
-
-            if (opt.expand === true) {
-                temp.expand = true;
-            } else if (opt.expand === false && temp.level <= 0) {
-                temp.expand = true;
-            } else if (temp.level <= opt.expand) {
-                temp.expand = true;
-            } else {
+            if(opt.expandId){
                 temp.expand = false;
+            }else{
+                temp.expand = expandLvl(opt,item);
             }
-
             temp.checkState = temp.is_check;
             if (temp.is_node) {
                 temp.children = _getSubTree(arrayIn, temp, opt);
@@ -170,6 +164,35 @@ function _getSubTree(arrayIn, parent, opt) {
         }
     }
     return result;
+}
+
+function expandLvl (opt){
+    if (opt.expand === true) {
+        return true;
+    } else if (opt.expand === false && temp.level <= 0) {
+        return true;
+    } else if (temp.level <= opt.expand) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+function expandItem (tree,opt){
+    if (!tree) {
+        return true;
+    }
+    if(tree.id = opt.expandId){
+
+    } else {
+        for (let i = 0; i < tree.children.length; i++) {
+            let brother = _traverseTree(tree.children[i], fn, input, output);
+            if (!brother) {
+                break;
+            }
+        }
+    }
+    return _continue.brother;
 }
 
 function _checkTreeByIds(tree, sel_ids) {
@@ -317,6 +340,24 @@ function _changeParent(parent, change) {
     parent.is_check = change;
     if (parent.parent) {
         _changeParent(parent.parent, change);
+    }
+    return true;
+}
+
+function _expandParent(parent, expand) {
+    if (!parent || parent.is_check == expand) {
+        return false;
+    }
+    if (expand) {
+        for (let i = 0; i < parent.children.length; i++) {
+            if (!parent.children[i].is_check) {
+                return false;
+            }
+        }
+    }
+    parent.is_check = expand;
+    if (parent.parent) {
+        _expandParent(parent.parent, expand);
     }
     return true;
 }

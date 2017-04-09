@@ -20,14 +20,16 @@
         data: function () {
             let opt = Fn._initOptions(this.options);
 
-            let treeTemp = Fn._arrayToTree(this.data, opt);
+            let treeTree = Fn._arrayToTree(this.data, opt);
 
-            let treeChecked = Fn._checkTreeByIds(treeTemp, opt.sel_ids);
+            let treeChecked = Fn._checkTreeByIds(treeTree, opt.sel_ids);
+
+            let treeExpand = Fn._expand(treeChecked,opt);
 
             return {
                 opt: opt,
                 fn: Fn,
-                tree: treeChecked
+                tree: treeExpand
             };
         },
         computed: {},

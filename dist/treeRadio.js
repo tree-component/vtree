@@ -890,14 +890,10 @@ function _getSubTree(arrayIn, parent, opt) {
             temp.parent = parent;
             temp.level = parent.level + 1;
 
-            if (opt.expand === true) {
-                temp.expand = true;
-            } else if (opt.expand === false && temp.level <= 0) {
-                temp.expand = true;
-            } else if (temp.level <= opt.expand) {
-                temp.expand = true;
+            if (opt.expandId) {
+                return false;
             } else {
-                temp.expand = false;
+                temp.expand = expandLvl(opt, item);
             }
 
             temp.checkState = temp.is_check;
@@ -910,6 +906,18 @@ function _getSubTree(arrayIn, parent, opt) {
         }
     }
     return result;
+}
+
+function expandLvl(opt) {
+    if (opt.expand === true) {
+        return true;
+    } else if (opt.expand === false && temp.level <= 0) {
+        return true;
+    } else if (temp.level <= opt.expand) {
+        return true;
+    } else {
+        return false;
+    }
 }
 
 function _checkTreeByIds(tree, sel_ids) {
@@ -1061,6 +1069,24 @@ function _changeParent(parent, change) {
     return true;
 }
 
+function _expandParent(parent, expand) {
+    if (!parent || parent.is_check == expand) {
+        return false;
+    }
+    if (expand) {
+        for (var i = 0; i < parent.children.length; i++) {
+            if (!parent.children[i].is_check) {
+                return false;
+            }
+        }
+    }
+    parent.is_check = expand;
+    if (parent.parent) {
+        _expandParent(parent.parent, expand);
+    }
+    return true;
+}
+
 function getName(model) {
     var name = [];
     _traverseTree(model, getNameFn, name);
@@ -1086,9 +1112,9 @@ function getItemById(tree, id) {
     }
     if (tree.children && tree.children.length) {
         for (var i = 0; i < tree.children.length; i++) {
-            var item = getItemById(tree.children[i], id);
-            if (item) {
-                return item;
+            var _item = getItemById(tree.children[i], id);
+            if (_item) {
+                return _item;
             }
         }
     }
@@ -1242,7 +1268,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     staticClass: "x-tree-item-self",
     class: _vm.options.editable ? '' : 'editable_false',
     style: ({
-      'padding-left': (_vm.model.level - 1) * 1.3 + 'em'
+      'padding-left': (_vm.model.level - 1) * 1.3 + 0.8 + 'em'
     }),
     on: {
       "mouseleave": _vm.hideEditorFn

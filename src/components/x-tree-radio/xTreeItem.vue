@@ -1,7 +1,7 @@
 <template>
     <div class="x-tree-item" :class="model.is_node ? 'x-tree-node' : 'x-tree-leaf' ">
         <div class="x-tree-item-self" v-show="model.level" :class="options.editable ? '' : 'editable_false' " 
-        :style="{ 'padding-left': (model.level - 1) * 1.3 + 'em' }" 
+        :style="{ 'padding-left': (model.level - 1) * 1.3 + 0.8 + 'em' }" 
         @mouseleave="hideEditorFn">                           
             <i class="x-tree-item-expand fa" v-if="hasChildren"
                :class="model.expand ? 'fa-caret-down' : 'fa-caret-right'" @click.stop="expandFn"></i>
@@ -185,7 +185,7 @@
                     this.model.parent.children.splice(index + 1, 0, this.model);
                 }
             }
-        },
+        }
     }
 </script>
 

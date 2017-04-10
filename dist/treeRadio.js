@@ -510,20 +510,16 @@ exports.default = {
         options: Object
     },
     data: function data() {
+        this.options.fn = _methods2.default;
         var opt = _methods2.default._initOptions(this.options);
-
         var treeTree = _methods2.default._arrayToTree(this.data, opt);
-
         var treeChecked = _methods2.default._checkTreeByIds(treeTree, opt.sel_ids);
-
         var treeExpand = void 0;
-
         if (opt.expandIds) {
             treeExpand = _methods2.default._expandTreeByIds(treeChecked, opt.expandIds);
         } else {
             treeExpand = treeChecked;
         }
-
         return {
             fn: _methods2.default,
             opt: opt,
@@ -574,9 +570,6 @@ Object.defineProperty(exports, "__esModule", {
 //
 //
 //
-//
-//
-//
 
 exports.default = {
     name: 'x-tree-item',
@@ -597,9 +590,6 @@ exports.default = {
         },
         checkboxIcon: function checkboxIcon() {
             var faIcon = '';
-            if (this.model.is_node) {
-                faIcon = 'fa-folder-o';
-            }
             if (this.options.checkbox) {
                 if (this.model.checkState === true) {
                     faIcon = 'fa-check-square-o';
@@ -671,7 +661,6 @@ exports.default = {
             if (result && this.model.parent.id != pid) {
                 var index = this.model.parent.children.indexOf(this.model);
                 this.model.parent.children.splice(index, 1);
-                console.log("this.tree", this.tree.children[0].children[0]);
                 var parent = this.fn.getItemById(this.tree, pid);
                 if (!parent || !parent.is_node) {
                     return 'error : 修改节点(change parent), 新的parent不合法(1、不存在 2、is_node为false 3、当前节点本身或其后代)';
@@ -786,8 +775,8 @@ function _initOptions(options) {
         style: {
             tree: {},
             item: {},
-            custom: {},
-            customSub: {}
+            children: {},
+            custom: {}
         },
         onExpand: function onExpand() {},
         onClick: function onClick() {},
@@ -923,12 +912,12 @@ function _getSubTree(arrayIn, parent, opt) {
     return result;
 }
 
-function expandLvl(opt) {
-    if (opt.expand === true) {
+function expandLvl(expand, temp) {
+    if (expand === true) {
         return true;
-    } else if (opt.expand === false && temp.level <= 0) {
+    } else if (expand === false && temp.level <= 0) {
         return true;
-    } else if (temp.level <= opt.expand) {
+    } else if (temp.level <= expand) {
         return true;
     } else {
         return false;
@@ -936,7 +925,14 @@ function expandLvl(opt) {
 }
 
 function _checkTreeByIds(tree, sel_ids) {
-    var ids = sel_ids.split(',');
+    var ids = [];
+    if (sel_ids.constructor == String) {
+        ids = sel_ids.split(',');
+    } else if (sel_ids.constructor == Array) {
+        ids = sel_ids;
+    } else {
+        console.warn('请检查 sel_ids 格式');
+    }
 
     _traverseTree(tree, _checkTreeByIdsFn, ids);
 
@@ -963,7 +959,15 @@ function _checkTreeByIdsFn(item, ids) {
     };
 }
 
-function _expandTreeByIds(tree, ids) {
+function _expandTreeByIds(tree, expand_ids) {
+    var ids = [];
+    if (expand_ids.constructor == String) {
+        ids = expand_ids.split(',');
+    } else if (expand_ids.constructor == Array) {
+        ids = expand_ids;
+    } else {
+        console.warn('请检查 expandIds 格式');
+    }
     _traverseTree(tree, _expandTreeByIdsFn, ids);
     return tree;
 }
@@ -1273,6 +1277,11 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       "tree": _vm.tree,
       "options": _vm.opt,
       "fn": _vm.fn
+    },
+    on: {
+      "click": function($event) {
+        $event.stopPropagation();
+      }
     }
   })], 1)
 },staticRenderFns: []}
@@ -1319,16 +1328,36 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     }
   }) : _c('span', {
     staticClass: "icon-blank"
-  }), _vm._v(" "), (_vm.model.is_node) ? _c('i', {
+  }), _vm._v(" "), _c('i', {
+    directives: [{
+      name: "show",
+      rawName: "v-show",
+      value: (_vm.options.checkbox),
+      expression: "options.checkbox"
+    }],
     staticClass: "x-tree-item-checkbox fa",
     class: _vm.checkboxIcon,
     on: {
-      "click": _vm.checkFn
+      "click": function($event) {
+        $event.stopPropagation();
+        _vm.checkFn($event)
+      }
     }
-  }) : _vm._e(), _vm._v(" "), _c('span', {
+  }), _vm._v(" "), _c('i', {
+    directives: [{
+      name: "show",
+      rawName: "v-show",
+      value: (_vm.model.is_node),
+      expression: "model.is_node"
+    }],
+    staticClass: "x-tree-item-folder fa fa-folder-o"
+  }), _vm._v(" "), _c('span', {
     staticClass: "x-tree-item-name",
     on: {
-      "click": _vm.nameFn
+      "click": function($event) {
+        $event.stopPropagation();
+        _vm.nameFn($event)
+      }
     }
   }, [_vm._v(_vm._s(_vm.model.name))]), _vm._v(" "), (_vm.options.editable) ? _c('i', {
     staticClass: "x-tree-item-edit fa fa-caret-square-o-down",
@@ -1432,25 +1461,19 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       expression: "model.level"
     }],
     staticClass: "x-tree-item-custom",
-    style: (_vm.options.style.custom)
-  }, [_c('span', {
-    style: (_vm.options.style.customSub)
-  }, [_vm._v(" " + _vm._s(_vm.model.id) + " ")]), _vm._v(" "), _c('span', {
-    style: (_vm.options.style.customSub)
-  }, [_vm._v(" " + _vm._s(_vm.model.name) + " ")]), _vm._v(" "), _c('span', {
-    style: (_vm.options.style.customSub)
-  }, [_vm._v(" " + _vm._s(_vm.model.expand) + " ")]), _vm._v(" "), _c('span', {
+    style: (_vm.options.style.custom),
     domProps: {
-      "innerHTML": _vm._s(_vm.options.customSub)
+      "innerHTML": _vm._s(_vm.model.custom)
     }
-  })]), _vm._v(" "), (_vm.hasChildren) ? _c('div', {
+  }), _vm._v(" "), (_vm.hasChildren) ? _c('div', {
     directives: [{
       name: "show",
       rawName: "v-show",
       value: (_vm.model.expand),
       expression: "model.expand"
     }],
-    staticClass: "x-tree-item-children"
+    staticClass: "x-tree-item-children",
+    style: (_vm.options.style.children)
   }, _vm._l((_vm.model.children), function(model) {
     return _c('x-tree-item', {
       attrs: {

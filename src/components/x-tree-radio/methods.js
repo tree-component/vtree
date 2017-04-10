@@ -18,10 +18,10 @@ function _initOptions(options) {
             },
             item:{
             },
+            children:{
+            },
             custom:{
             },
-            customSub: {
-            }
         },
         onExpand: function () {
         },
@@ -170,12 +170,12 @@ function _getSubTree(arrayIn, parent, opt) {
     return result;
 }
 
-function expandLvl (opt){
-    if (opt.expand === true) {
+function expandLvl (expand,temp){
+    if (expand === true) {
         return true;
-    } else if (opt.expand === false && temp.level <= 0) {
+    } else if (expand === false && temp.level <= 0) {
         return true;
-    } else if (temp.level <= opt.expand) {
+    } else if (temp.level <= expand) {
         return true;
     } else {
         return false;
@@ -183,7 +183,14 @@ function expandLvl (opt){
 }
 
 function _checkTreeByIds(tree, sel_ids) {
-    let ids = sel_ids.split(',');
+    let ids = [];
+    if(sel_ids.constructor == String){
+        ids = sel_ids.split(',');
+    }else if(sel_ids.constructor == Array){
+        ids = sel_ids;
+    }else{
+        console.warn('请检查 sel_ids 格式');
+    }
 
     _traverseTree(tree, _checkTreeByIdsFn, ids);
 
@@ -210,7 +217,15 @@ function _checkTreeByIdsFn(item, ids) {
     };
 }
 
-function _expandTreeByIds(tree, ids) {
+function _expandTreeByIds(tree, expand_ids) {
+    let ids=[];
+    if(expand_ids.constructor == String){
+        ids = expand_ids.split(',');
+    }else if(expand_ids.constructor == Array){
+        ids = expand_ids;
+    }else{
+        console.warn('请检查 expandIds 格式');
+    }
     _traverseTree(tree, _expandTreeByIdsFn, ids);
     return tree;
 }

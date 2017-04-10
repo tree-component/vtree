@@ -6,8 +6,9 @@
             <i class="x-tree-item-expand fa" v-if="hasChildren"
                :class="model.expand ? 'fa-caret-down' : 'fa-caret-right'" @click.stop="expandFn"></i>
             <span class="icon-blank" v-else></span>
-            <i class="x-tree-item-checkbox fa" v-if="model.is_node" :class="checkboxIcon" @click="checkFn"></i>
-            <span class="x-tree-item-name" @click="nameFn">{{model.name}}</span>
+            <i class="x-tree-item-checkbox fa" v-show="options.checkbox" :class="checkboxIcon" @click.stop="checkFn"></i>
+            <i class="x-tree-item-folder fa fa-folder-o" v-show="model.is_node"></i>
+            <span class="x-tree-item-name" @click.stop="nameFn">{{model.name}}</span>
             <i class="x-tree-item-edit fa fa-caret-square-o-down" v-if="options.editable" @click.stop="showEditorFn"></i>
             <div class="x-tree-item-editor" v-if="options.editable" v-show="showEditor">
                 <span class="x-tree-item-editor-item" v-show="model.is_edit" @click.stop="editFn">修改部门</span>
@@ -18,13 +19,9 @@
                 <span class="x-tree-item-editor-item" v-show="cantEdit">无法操作</span>
             </div>
         </div>
-        <div class='x-tree-item-custom' v-show="model.level" :style="options.style.custom">
-            <span :style="options.style.customSub"> {{model.id}} </span>
-            <span :style="options.style.customSub"> {{model.name}} </span>
-            <span :style="options.style.customSub"> {{model.expand}} </span>
-            <span v-html="options.customSub"></span>
+        <div class='x-tree-item-custom' v-show="model.level" v-html="model.custom" :style="options.style.custom">
         </div>
-        <div class='x-tree-item-children' v-if="hasChildren" v-show="model.expand" >
+        <div class='x-tree-item-children' v-if="hasChildren" v-show="model.expand" :style="options.style.children">
             <x-tree-item v-for="model in model.children" :model="model" :tree="tree" :options="options" :fn="fn">
             </x-tree-item>
         </div>
@@ -51,9 +48,6 @@
             },
             checkboxIcon: function () {
                 let  faIcon = '';
-                if(this.model.is_node){
-                    faIcon = 'fa-folder-o'
-                }
                 if(this.options.checkbox){
                     if (this.model.checkState === true) {
                         faIcon = 'fa-check-square-o';
@@ -127,7 +121,6 @@
                 if(result && this.model.parent.id != pid){
                     let  index = this.model.parent.children.indexOf(this.model);
                     this.model.parent.children.splice(index, 1);
-                    console.log("this.tree",this.tree.children[0].children[0]);
                     let  parent = this.fn.getItemById(this.tree,pid);
                     if(!parent || !parent.is_node){
                         return 'error : 修改节点(change parent), 新的parent不合法(1、不存在 2、is_node为false 3、当前节点本身或其后代)';

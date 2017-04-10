@@ -1,5 +1,5 @@
-
-function extend(out) {
+var extend = {};
+extend.extend = function (out) {
     out = out || {};
 
     for (let i = 1; i < arguments.length; i++) {
@@ -15,7 +15,7 @@ function extend(out) {
     return out;
 };
 
-function deepExtend(out) {
+extend.deepExtend = function (out) {
     out = out || {};
 
     for (let i = 1; i < arguments.length; i++) {
@@ -36,3 +36,5 @@ function deepExtend(out) {
 
     return out;
 };
+
+export default extend;

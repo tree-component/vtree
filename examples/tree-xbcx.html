@@ -10,7 +10,7 @@
 </head>
 <body>
 <div id="xTreeDemo">
-    <x-tree :data="data" :options="options"></x-tree>
+    <x-tree :data="data" :options="options" :fn="fn"></x-tree>
 </div>
 
 <div class="buttons">
@@ -117,6 +117,7 @@
             return {
                 data: treeData,
                 options: treeOptions,
+                fn:{}
             };
         }
     });

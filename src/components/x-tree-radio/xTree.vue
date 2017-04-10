@@ -24,11 +24,17 @@
 
             let treeChecked = Fn._checkTreeByIds(treeTree, opt.sel_ids);
 
-            let treeExpand = Fn._expand(treeChecked,opt);
+            let treeExpand;
+
+            if(opt.expandIds){
+                treeExpand = Fn._expandTreeByIds(treeChecked,opt.expandIds);
+            }else{
+                treeExpand = treeChecked;
+            }
 
             return {
-                opt: opt,
                 fn: Fn,
+                opt: opt,
                 tree: treeExpand
             };
         },

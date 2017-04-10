@@ -1,41 +1,41 @@
 /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
-
+/******/
 /******/ 	// The require function
 /******/ 	function __webpack_require__(moduleId) {
-
+/******/
 /******/ 		// Check if module is in cache
 /******/ 		if(installedModules[moduleId])
 /******/ 			return installedModules[moduleId].exports;
-
+/******/
 /******/ 		// Create a new module (and put it into the cache)
 /******/ 		var module = installedModules[moduleId] = {
 /******/ 			i: moduleId,
 /******/ 			l: false,
 /******/ 			exports: {}
 /******/ 		};
-
+/******/
 /******/ 		// Execute the module function
 /******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
-
+/******/
 /******/ 		// Flag the module as loaded
 /******/ 		module.l = true;
-
+/******/
 /******/ 		// Return the exports of the module
 /******/ 		return module.exports;
 /******/ 	}
-
-
+/******/
+/******/
 /******/ 	// expose the modules object (__webpack_modules__)
 /******/ 	__webpack_require__.m = modules;
-
+/******/
 /******/ 	// expose the module cache
 /******/ 	__webpack_require__.c = installedModules;
-
+/******/
 /******/ 	// identity function for calling harmony imports with the correct context
 /******/ 	__webpack_require__.i = function(value) { return value; };
-
+/******/
 /******/ 	// define getter function for harmony exports
 /******/ 	__webpack_require__.d = function(exports, name, getter) {
 /******/ 		if(!__webpack_require__.o(exports, name)) {
@@ -46,7 +46,7 @@
 /******/ 			});
 /******/ 		}
 /******/ 	};
-
+/******/
 /******/ 	// getDefaultExport function for compatibility with non-harmony modules
 /******/ 	__webpack_require__.n = function(module) {
 /******/ 		var getter = module && module.__esModule ?
@@ -55,15 +55,15 @@
 /******/ 		__webpack_require__.d(getter, 'a', getter);
 /******/ 		return getter;
 /******/ 	};
-
+/******/
 /******/ 	// Object.prototype.hasOwnProperty.call
 /******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
-
+/******/
 /******/ 	// __webpack_public_path__
 /******/ 	__webpack_require__.p = "";
-
+/******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 26);
+/******/ 	return __webpack_require__(__webpack_require__.s = 10);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -125,6 +125,9 @@ module.exports = function() {
 /***/ }),
 /* 1 */
 /***/ (function(module, exports) {
+
+// this module is a runtime utility for cleaner component module output and will
+// be included in the final webpack user bundle
 
 module.exports = function normalizeComponent (
   rawScriptExports,
@@ -286,27 +289,6 @@ function addStylesToDom (styles /* Array<StyleObject> */) {
   }
 }
 
-function listToStyles (parentId, list) {
-  var styles = []
-  var newStyles = {}
-  for (var i = 0; i < list.length; i++) {
-    var item = list[i]
-    var id = item[0]
-    var css = item[1]
-    var media = item[2]
-    var sourceMap = item[3]
-    var part = { css: css, media: media, sourceMap: sourceMap }
-    if (!newStyles[id]) {
-      part.id = parentId + ':0'
-      styles.push(newStyles[id] = { id: id, parts: [part] })
-    } else {
-      part.id = parentId + ':' + newStyles[id].parts.length
-      newStyles[id].parts.push(part)
-    }
-  }
-  return styles
-}
-
 function createStyleElement () {
   var styleElement = document.createElement('style')
   styleElement.type = 'text/css'
@@ -317,12 +299,20 @@ function createStyleElement () {
 function addStyle (obj /* StyleObjectPart */) {
   var update, remove
   var styleElement = document.querySelector('style[data-vue-ssr-id~="' + obj.id + '"]')
-  var hasSSR = styleElement != null
 
-  // if in production mode and style is already provided by SSR,
-  // simply do nothing.
-  if (hasSSR && isProduction) {
-    return noop
+  if (styleElement) {
+    if (isProduction) {
+      // has SSR styles and in production mode.
+      // simply do nothing.
+      return noop
+    } else {
+      // has SSR styles but in dev mode.
+      // for some reason Chrome can't handle source map in server-rendered
+      // style tags - source maps in <style> only works if the style tag is
+      // created and inserted dynamically. So we remove the server rendered
+      // styles and inject new ones.
+      styleElement.parentNode.removeChild(styleElement)
+    }
   }
 
   if (isOldIE) {
@@ -333,16 +323,14 @@ function addStyle (obj /* StyleObjectPart */) {
     remove = applyToSingletonTag.bind(null, styleElement, styleIndex, true)
   } else {
     // use multi-style-tag mode in all other cases
-    styleElement = styleElement || createStyleElement()
+    styleElement = createStyleElement()
     update = applyToTag.bind(null, styleElement)
     remove = function () {
       styleElement.parentNode.removeChild(styleElement)
     }
   }
 
-  if (!hasSSR) {
-    update(obj)
-  }
+  update(obj)
 
   return function updateStyle (newObj /* StyleObjectPart */) {
     if (newObj) {
@@ -451,13 +439,13 @@ module.exports = function listToStyles (parentId, list) {
 
 
 /* styles */
-__webpack_require__(23)
+__webpack_require__(25)
 
 var Component = __webpack_require__(1)(
   /* script */
   __webpack_require__(6),
   /* template */
-  __webpack_require__(19),
+  __webpack_require__(21),
   /* scopeId */
   "data-v-38bf02a8",
   /* cssModules */
@@ -495,11 +483,11 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _methods = __webpack_require__(10);
+var _methods = __webpack_require__(11);
 
 var _methods2 = _interopRequireDefault(_methods);
 
-var _xTreeItem = __webpack_require__(16);
+var _xTreeItem = __webpack_require__(18);
 
 var _xTreeItem2 = _interopRequireDefault(_xTreeItem);
 
@@ -524,14 +512,22 @@ exports.default = {
     data: function data() {
         var opt = _methods2.default._initOptions(this.options);
 
-        var treeTemp = _methods2.default._arrayToTree(this.data, opt);
+        var treeTree = _methods2.default._arrayToTree(this.data, opt);
 
-        var treeChecked = _methods2.default._checkTreeByIds(treeTemp, opt.sel_ids);
+        var treeChecked = _methods2.default._checkTreeByIds(treeTree, opt.sel_ids);
+
+        var treeExpand = void 0;
+
+        if (opt.expandIds) {
+            treeExpand = _methods2.default._expandTreeByIds(treeChecked, opt.expandIds);
+        } else {
+            treeExpand = treeChecked;
+        }
 
         return {
-            opt: opt,
             fn: _methods2.default,
-            tree: treeChecked
+            opt: opt,
+            tree: treeExpand
         };
     },
     computed: {},
@@ -745,6 +741,21 @@ exports.default = {
 "use strict";
 
 
+var _xTree = __webpack_require__(4);
+
+var _xTree2 = _interopRequireDefault(_xTree);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+Vue.component("x-tree", _xTree2.default);
+
+/***/ }),
+/* 11 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
@@ -878,24 +889,14 @@ function _getSubTree(arrayIn, parent, opt) {
     var temp = {};
     for (var i = 0; i < arrayIn.length; i++) {
         if (arrayIn[i].nodeId == parent.id) {
-            // // temp = arrayIn[i];
-            // temp = {
-            //     id: arrayIn[i].id,
-            //     name: arrayIn[i].name,
-            //     nodeId: arrayIn[i].nodeId,
-            //     is_node: arrayIn[i].is_node,
-            //     is_check: arrayIn[i].is_check
-            // }; //copy
             temp = extend({}, arrayIn[i]);
             temp.parent = parent;
             temp.level = parent.level + 1;
-
-            if (opt.expandId) {
-                return false;
+            if (opt.expandIds) {
+                temp.expand = false;
             } else {
-                temp.expand = expandLvl(opt, item);
+                temp.expand = expandLvl(opt, temp);
             }
-
             temp.checkState = temp.is_check;
             if (temp.is_node) {
                 temp.children = _getSubTree(arrayIn, temp, opt);
@@ -938,6 +939,34 @@ function _checkTreeByIdsFn(item, ids) {
     for (var i = 0; i < ids.length; i++) {
         if (item.id == ids[i]) {
             _changeItem(item, true);
+            ids.splice(i, 1);
+            break;
+        }
+    }
+    return {
+        children: ids.length,
+        brother: ids.length
+    };
+}
+
+function _expandTreeByIds(tree, expand_ids) {
+    var ids = expand_ids.split(',');
+
+    _traverseTree(tree, _expandTreeByIdsFn, ids);
+
+    return tree;
+}
+
+function _expandTreeByIdsFn(item, ids) {
+    if (!ids.length) {
+        return {
+            children: false,
+            brother: false
+        };
+    }
+    for (var i = 0; i < ids.length; i++) {
+        if (item.id == ids[i]) {
+            _expandParent(item.parent, true);
             ids.splice(i, 1);
             break;
         }
@@ -1070,17 +1099,7 @@ function _changeParent(parent, change) {
 }
 
 function _expandParent(parent, expand) {
-    if (!parent || parent.is_check == expand) {
-        return false;
-    }
-    if (expand) {
-        for (var i = 0; i < parent.children.length; i++) {
-            if (!parent.children[i].is_check) {
-                return false;
-            }
-        }
-    }
-    parent.is_check = expand;
+    parent.expand = expand;
     if (parent.parent) {
         _expandParent(parent.parent, expand);
     }
@@ -1112,9 +1131,9 @@ function getItemById(tree, id) {
     }
     if (tree.children && tree.children.length) {
         for (var i = 0; i < tree.children.length; i++) {
-            var _item = getItemById(tree.children[i], id);
-            if (_item) {
-                return _item;
+            var item = getItemById(tree.children[i], id);
+            if (item) {
+                return item;
             }
         }
     }
@@ -1136,6 +1155,10 @@ var fn = {
 
     _checkTreeByIdsFn: _checkTreeByIdsFn,
 
+    _expandTreeByIds: _expandTreeByIds,
+
+    _expandTreeByIdsFn: _expandTreeByIdsFn,
+
     _traverseTree: _traverseTree,
 
     _changeItem: _changeItem,
@@ -1154,9 +1177,10 @@ var fn = {
 exports.default = fn;
 
 /***/ }),
-/* 11 */,
 /* 12 */,
-/* 13 */
+/* 13 */,
+/* 14 */,
+/* 15 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(0)();
@@ -1170,8 +1194,8 @@ exports.push([module.i, "\n.x-tree-wrapper[data-v-38bf02a8] {\n    position: rel
 
 
 /***/ }),
-/* 14 */,
-/* 15 */
+/* 16 */,
+/* 17 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(0)();
@@ -1185,18 +1209,18 @@ exports.push([module.i, "\n.x-tree-item[data-v-7cd6725f] {\n    position: relati
 
 
 /***/ }),
-/* 16 */
+/* 18 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
 /* styles */
-__webpack_require__(25)
+__webpack_require__(27)
 
 var Component = __webpack_require__(1)(
   /* script */
   __webpack_require__(7),
   /* template */
-  __webpack_require__(21),
+  __webpack_require__(23),
   /* scopeId */
   "data-v-7cd6725f",
   /* cssModules */
@@ -1223,9 +1247,9 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 17 */,
-/* 18 */,
-/* 19 */
+/* 19 */,
+/* 20 */,
+/* 21 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -1250,8 +1274,8 @@ if (false) {
 }
 
 /***/ }),
-/* 20 */,
-/* 21 */
+/* 22 */,
+/* 23 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -1417,33 +1441,6 @@ if (false) {
 }
 
 /***/ }),
-/* 22 */,
-/* 23 */
-/***/ (function(module, exports, __webpack_require__) {
-
-// style-loader: Adds some css to the DOM by adding a <style> tag
-
-// load the styles
-var content = __webpack_require__(13);
-if(typeof content === 'string') content = [[module.i, content, '']];
-if(content.locals) module.exports = content.locals;
-// add the styles to the DOM
-var update = __webpack_require__(2)("30a226af", content, false);
-// Hot Module Replacement
-if(false) {
- // When the styles change, update the <style> tags
- if(!content.locals) {
-   module.hot.accept("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?{\"id\":\"data-v-38bf02a8\",\"scoped\":true,\"hasInlineConfig\":false}!../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./xTree.vue", function() {
-     var newContent = require("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?{\"id\":\"data-v-38bf02a8\",\"scoped\":true,\"hasInlineConfig\":false}!../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./xTree.vue");
-     if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
-     update(newContent);
-   });
- }
- // When the module is disposed, remove the <style> tags
- module.hot.dispose(function() { update(); });
-}
-
-/***/ }),
 /* 24 */,
 /* 25 */
 /***/ (function(module, exports, __webpack_require__) {
@@ -1455,13 +1452,13 @@ var content = __webpack_require__(15);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(2)("80c33c18", content, false);
+var update = __webpack_require__(2)("7f3c2ceb", content, false);
 // Hot Module Replacement
 if(false) {
  // When the styles change, update the <style> tags
  if(!content.locals) {
-   module.hot.accept("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?{\"id\":\"data-v-7cd6725f\",\"scoped\":true,\"hasInlineConfig\":false}!../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./xTreeItem.vue", function() {
-     var newContent = require("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-rewriter.js?{\"id\":\"data-v-7cd6725f\",\"scoped\":true,\"hasInlineConfig\":false}!../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./xTreeItem.vue");
+   module.hot.accept("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"id\":\"data-v-38bf02a8\",\"scoped\":true,\"hasInlineConfig\":false}!../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./xTree.vue", function() {
+     var newContent = require("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"id\":\"data-v-38bf02a8\",\"scoped\":true,\"hasInlineConfig\":false}!../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./xTree.vue");
      if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
      update(newContent);
    });
@@ -1471,19 +1468,31 @@ if(false) {
 }
 
 /***/ }),
-/* 26 */
+/* 26 */,
+/* 27 */
 /***/ (function(module, exports, __webpack_require__) {
 
-"use strict";
+// style-loader: Adds some css to the DOM by adding a <style> tag
 
-
-var _xTree = __webpack_require__(4);
-
-var _xTree2 = _interopRequireDefault(_xTree);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-Vue.component("x-tree", _xTree2.default);
+// load the styles
+var content = __webpack_require__(17);
+if(typeof content === 'string') content = [[module.i, content, '']];
+if(content.locals) module.exports = content.locals;
+// add the styles to the DOM
+var update = __webpack_require__(2)("edda2ba0", content, false);
+// Hot Module Replacement
+if(false) {
+ // When the styles change, update the <style> tags
+ if(!content.locals) {
+   module.hot.accept("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"id\":\"data-v-7cd6725f\",\"scoped\":true,\"hasInlineConfig\":false}!../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./xTreeItem.vue", function() {
+     var newContent = require("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"id\":\"data-v-7cd6725f\",\"scoped\":true,\"hasInlineConfig\":false}!../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./xTreeItem.vue");
+     if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+     update(newContent);
+   });
+ }
+ // When the module is disposed, remove the <style> tags
+ module.hot.dispose(function() { update(); });
+}
 
 /***/ })
 /******/ ]);

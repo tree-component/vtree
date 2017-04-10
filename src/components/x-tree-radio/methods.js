@@ -138,21 +138,13 @@ function _getSubTree(arrayIn, parent, opt) {
     let temp = {};
     for (let i = 0; i < arrayIn.length; i++) {
         if (arrayIn[i].nodeId == parent.id) {
-            // // temp = arrayIn[i];
-            // temp = {
-            //     id: arrayIn[i].id,
-            //     name: arrayIn[i].name,
-            //     nodeId: arrayIn[i].nodeId,
-            //     is_node: arrayIn[i].is_node,
-            //     is_check: arrayIn[i].is_check
-            // }; //copy
             temp = extend({}, arrayIn[i]);
             temp.parent = parent;
             temp.level = parent.level + 1;
-            if(opt.expandId){
+            if(opt.expandIds){
                 temp.expand = false;
             }else{
-                temp.expand = expandLvl(opt,item);
+                temp.expand = expandLvl(opt,temp);
             }
             temp.checkState = temp.is_check;
             if (temp.is_node) {
@@ -178,23 +170,6 @@ function expandLvl (opt){
     }
 }
 
-function expandItem (tree,opt){
-    if (!tree) {
-        return true;
-    }
-    if(tree.id = opt.expandId){
-
-    } else {
-        for (let i = 0; i < tree.children.length; i++) {
-            let brother = _traverseTree(tree.children[i], fn, input, output);
-            if (!brother) {
-                break;
-            }
-        }
-    }
-    return _continue.brother;
-}
-
 function _checkTreeByIds(tree, sel_ids) {
     let ids = sel_ids.split(',');
 
@@ -213,6 +188,34 @@ function _checkTreeByIdsFn(item, ids) {
     for (let i = 0; i < ids.length; i++) {
         if (item.id == ids[i]) {
             _changeItem(item, true);
+            ids.splice(i, 1);
+            break;
+        }
+    }
+    return {
+        children: ids.length,
+        brother: ids.length
+    };
+}
+
+function _expandTreeByIds(tree, expand_ids) {
+    let ids = expand_ids.split(',');
+
+    _traverseTree(tree, _expandTreeByIdsFn, ids);
+
+    return tree;
+}
+
+function _expandTreeByIdsFn(item, ids) {
+    if (!ids.length) {
+        return {
+            children: false,
+            brother: false
+        };
+    }
+    for (let i = 0; i < ids.length; i++) {
+        if (item.id == ids[i]) {
+            _expandParent(item.parent, true);
             ids.splice(i, 1);
             break;
         }
@@ -345,17 +348,7 @@ function _changeParent(parent, change) {
 }
 
 function _expandParent(parent, expand) {
-    if (!parent || parent.is_check == expand) {
-        return false;
-    }
-    if (expand) {
-        for (let i = 0; i < parent.children.length; i++) {
-            if (!parent.children[i].is_check) {
-                return false;
-            }
-        }
-    }
-    parent.is_check = expand;
+    parent.expand = expand;
     if (parent.parent) {
         _expandParent(parent.parent, expand);
     }
@@ -378,7 +371,6 @@ function getNameFn(item, name) {
     }
 }
 
-
 function getItemById(tree, id) {
     if (!tree || id == undefined || id == null) {
         return false;
@@ -397,7 +389,6 @@ function getItemById(tree, id) {
     return false;
 }
 
-
 let fn = {
     _initOptions: _initOptions,
 
@@ -412,6 +403,10 @@ let fn = {
     _checkTreeByIds: _checkTreeByIds,
 
     _checkTreeByIdsFn: _checkTreeByIdsFn,
+
+    _expandTreeByIds: _expandTreeByIds,
+
+    _expandTreeByIdsFn: _expandTreeByIdsFn,
 
     _traverseTree: _traverseTree,
 

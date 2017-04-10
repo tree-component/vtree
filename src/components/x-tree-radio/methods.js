@@ -1,3 +1,5 @@
+import extend from '../../utils/extend.js';
+
 function _initOptions(options) {
     let defOptions = {
         zIndex: 9,
@@ -8,13 +10,13 @@ function _initOptions(options) {
         is_multi: true,//是否多选
         expand: false, //是否展开，false、true、num,(0、1、false,都展开一级。true,完全展开。num>=2时，展开到对应级）
         expandIds: null,
-        width: null,
-        maxHeight: 300,
         sel_ids: '',
         checkbox: false,
         editable: true,
         style:{
             tree:{
+                width: null,
+                maxHeight: 300,
             },
             item:{
             },
@@ -43,48 +45,9 @@ function _initOptions(options) {
         onSort: function () {
         },
     };
-    let opt = extend({}, defOptions, options);
-    console.log('opt',opt);
+    let opt = extend.extend({}, defOptions, options);
     return opt;
 }
-
-function extend(out) {
-    out = out || {};
-
-    for (let i = 1; i < arguments.length; i++) {
-        if (!arguments[i])
-            continue;
-
-        for (let key in arguments[i]) {
-            if (arguments[i].hasOwnProperty(key))
-                out[key] = arguments[i][key];
-        }
-    }
-
-    return out;
-};
-
-function deepExtend(out) {
-    out = out || {};
-
-    for (let i = 1; i < arguments.length; i++) {
-        let obj = arguments[i];
-
-        if (!obj)
-            continue;
-
-        for (let key in obj) {
-            if (obj.hasOwnProperty(key)) {
-                if (typeof obj[key] === 'object')
-                    out[key] = deepExtend(out[key], obj[key]);
-                else
-                    out[key] = obj[key];
-            }
-        }
-    }
-
-    return out;
-};
 
 function _arrayToTree(arrayIn, opt) {
     let rootId = _getTreeRoot(arrayIn);
@@ -99,6 +62,7 @@ function _arrayToTree(arrayIn, opt) {
         level: 0,
         expand: true,
         options: opt,
+        originData: arrayIn,
         itemAmount: arrayIn.length,
     };
     treeData.children = _getSubTree(arrayIn, treeData, opt);
@@ -150,7 +114,7 @@ function _getSubTree(arrayIn, parent, opt) {
     let temp = {};
     for (let i = 0; i < arrayIn.length; i++) {
         if (arrayIn[i].nodeId == parent.id) {
-            temp = extend({}, arrayIn[i]);
+            temp = extend.extend({}, arrayIn[i]);
             temp.parent = parent;
             temp.level = parent.level + 1;
             if(opt.expandIds){

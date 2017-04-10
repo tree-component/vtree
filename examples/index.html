@@ -13,12 +13,14 @@
     <x-tree :data="data" :options="options"></x-tree>
 </div>
 
-<div class="button button-edit">edit</div>
-<div class="button button-delete">delete</div>
-<div class="button button-add">add</div>
-<div class="button button-cancel">cancel</div>
-<div class="button button-sort">sort</div>
-<div class="button button-sortn">sortn</div>
+<div class="buttons">
+    <div class="button button-edit">edit</div>
+    <div class="button button-delete">delete</div>
+    <div class="button button-add">add</div>
+    <div class="button button-cancel">cancel</div>
+    <div class="button button-sort">sort</div>
+    <div class="button button-sortn">sortn</div>
+</div>
 
 <div class="footer">footer</div>
 
@@ -29,7 +31,25 @@
         expand: true,
         expandIds: ['2','9','11'],
         editable: false,
-        z:{width:'222px'},
+        style:{
+            tree:{
+                width: '300px',
+            },
+            item:{
+                border: '1px solid blue'
+            },
+            custom:{
+                position:'absolute',
+                top: '0em',
+                left: '20em',
+                'border-bottom':'1px solid red'
+            },
+            customSub: {
+                display:'inline-block',
+                width: '100px',
+            }
+        },
+        custom: '<span style="color:red">v-html</span>',
         onExpand: function (item, callback) {
             console.log("expand item", item, item.name);
         },

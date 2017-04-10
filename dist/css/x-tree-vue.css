@@ -13,6 +13,10 @@
     font-weight: bold;
 }
 
+.buttons {
+    margin: 10px 0;
+}
+
 .button {
     display: inline-block;
     margin: 1px;

@@ -6,13 +6,23 @@ function _initOptions(options) {
         only_child: true,//是否结果只要 child
         node_merge: true,//结果只显示最上层  比如   中国被选中  四川,成都则不会显示  否则 每个被勾选的节点都显示
         is_multi: true,//是否多选
-        expand: true, //是否展开，false、true、num,(0、1、false,都展开一级。true,完全展开。num>=2时，展开到对应级）
+        expand: false, //是否展开，false、true、num,(0、1、false,都展开一级。true,完全展开。num>=2时，展开到对应级）
         expandIds: null,
         width: null,
         maxHeight: 300,
         sel_ids: '',
         checkbox: false,
         editable: true,
+        style:{
+            tree:{
+            },
+            item:{
+            },
+            custom:{
+            },
+            customSub: {
+            }
+        },
         onExpand: function () {
         },
         onClick: function () {
@@ -34,6 +44,7 @@ function _initOptions(options) {
         },
     };
     let opt = extend({}, defOptions, options);
+    console.log('opt',opt);
     return opt;
 }
 

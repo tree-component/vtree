@@ -576,6 +576,7 @@ Object.defineProperty(exports, "__esModule", {
 //
 //
 //
+//
 
 exports.default = {
     name: 'x-tree-item',
@@ -775,13 +776,19 @@ function _initOptions(options) {
         only_child: true, //是否结果只要 child
         node_merge: true, //结果只显示最上层  比如   中国被选中  四川,成都则不会显示  否则 每个被勾选的节点都显示
         is_multi: true, //是否多选
-        expand: true, //是否展开，false、true、num,(0、1、false,都展开一级。true,完全展开。num>=2时，展开到对应级）
+        expand: false, //是否展开，false、true、num,(0、1、false,都展开一级。true,完全展开。num>=2时，展开到对应级）
         expandIds: null,
         width: null,
         maxHeight: 300,
         sel_ids: '',
         checkbox: false,
         editable: true,
+        style: {
+            tree: {},
+            item: {},
+            custom: {},
+            customSub: {}
+        },
         onExpand: function onExpand() {},
         onClick: function onClick() {},
 
@@ -796,6 +803,7 @@ function _initOptions(options) {
         onSort: function onSort() {}
     };
     var opt = extend({}, defOptions, options);
+    console.log('opt', opt);
     return opt;
 }
 
@@ -1294,10 +1302,9 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     }],
     staticClass: "x-tree-item-self",
     class: _vm.options.editable ? '' : 'editable_false',
-    style: ({
-      'padding-left': (_vm.model.level - 1) * 1.3 + 0.8 + 'em',
-      'border-bottom': '1px solid blue'
-    }),
+    style: ([{
+      'padding-left': (_vm.model.level - 1) * 1.3 + 0.8 + 'em'
+    }, _vm.options.style.item]),
     on: {
       "mouseleave": _vm.hideEditorFn
     }
@@ -1424,31 +1431,19 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       value: (_vm.model.level),
       expression: "model.level"
     }],
-    staticClass: "x-tree-item-z",
-    style: ({
-      'position': 'absolute',
-      'top': '0em',
-      'left': '20em'
-    })
+    staticClass: "x-tree-item-custom",
+    style: (_vm.options.style.custom)
   }, [_c('span', {
-    style: ({
-      'width': _vm.options.z.width,
-      'padding-left': '2em',
-      'border-bottom': '1px solid red'
-    })
+    style: (_vm.options.style.customSub)
   }, [_vm._v(" " + _vm._s(_vm.model.id) + " ")]), _vm._v(" "), _c('span', {
-    style: ({
-      'width': _vm.options.z.width,
-      'padding-left': '2em',
-      'border-bottom': '1px solid red'
-    })
+    style: (_vm.options.style.customSub)
   }, [_vm._v(" " + _vm._s(_vm.model.name) + " ")]), _vm._v(" "), _c('span', {
-    style: ({
-      'width': _vm.options.z.width,
-      'padding-left': '2em',
-      'border-bottom': '1px solid red'
-    })
-  }, [_vm._v(" " + _vm._s(_vm.model.expand) + " ")])]), _vm._v(" "), (_vm.hasChildren) ? _c('div', {
+    style: (_vm.options.style.customSub)
+  }, [_vm._v(" " + _vm._s(_vm.model.expand) + " ")]), _vm._v(" "), _c('span', {
+    domProps: {
+      "innerHTML": _vm._s(_vm.options.customSub)
+    }
+  })]), _vm._v(" "), (_vm.hasChildren) ? _c('div', {
     directives: [{
       name: "show",
       rawName: "v-show",

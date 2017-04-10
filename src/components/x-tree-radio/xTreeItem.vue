@@ -1,7 +1,7 @@
 <template>
     <div class="x-tree-item" :class="model.is_node ? 'x-tree-node' : 'x-tree-leaf' ">
         <div class="x-tree-item-self" v-show="model.level" :class="options.editable ? '' : 'editable_false' " 
-        :style="{ 'padding-left': (model.level - 1) * 1.3 + 0.8 + 'em','border-bottom':'1px solid blue' }" 
+        :style="[{ 'padding-left': (model.level - 1) * 1.3 + 0.8 + 'em'}, options.style.item]" 
         @mouseleave="hideEditorFn">
             <i class="x-tree-item-expand fa" v-if="hasChildren"
                :class="model.expand ? 'fa-caret-down' : 'fa-caret-right'" @click.stop="expandFn"></i>
@@ -18,10 +18,11 @@
                 <span class="x-tree-item-editor-item" v-show="cantEdit">无法操作</span>
             </div>
         </div>
-        <div class='x-tree-item-z' v-show="model.level" :style="{'position':'absolute','top': '0em','left': '20em'}">
-            <span :style="{'width': options.z.width,'padding-left':'2em','border-bottom':'1px solid red'}"> {{model.id}} </span>
-            <span :style="{'width': options.z.width,'padding-left':'2em','border-bottom':'1px solid red'}"> {{model.name}} </span>
-            <span :style="{'width': options.z.width,'padding-left':'2em','border-bottom':'1px solid red'}"> {{model.expand}} </span>
+        <div class='x-tree-item-custom' v-show="model.level" :style="options.style.custom">
+            <span :style="options.style.customSub"> {{model.id}} </span>
+            <span :style="options.style.customSub"> {{model.name}} </span>
+            <span :style="options.style.customSub"> {{model.expand}} </span>
+            <span v-html="options.customSub"></span>
         </div>
         <div class='x-tree-item-children' v-if="hasChildren" v-show="model.expand" >
             <x-tree-item v-for="model in model.children" :model="model" :tree="tree" :options="options" :fn="fn">

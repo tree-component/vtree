@@ -571,6 +571,11 @@ Object.defineProperty(exports, "__esModule", {
 //
 //
 //
+//
+//
+//
+//
+//
 
 exports.default = {
     name: 'x-tree-item',
@@ -771,6 +776,7 @@ function _initOptions(options) {
         node_merge: true, //结果只显示最上层  比如   中国被选中  四川,成都则不会显示  否则 每个被勾选的节点都显示
         is_multi: true, //是否多选
         expand: true, //是否展开，false、true、num,(0、1、false,都展开一级。true,完全展开。num>=2时，展开到对应级）
+        expandIds: null,
         width: null,
         maxHeight: 300,
         sel_ids: '',
@@ -895,7 +901,7 @@ function _getSubTree(arrayIn, parent, opt) {
             if (opt.expandIds) {
                 temp.expand = false;
             } else {
-                temp.expand = expandLvl(opt, temp);
+                temp.expand = expandLvl(opt.expand, temp);
             }
             temp.checkState = temp.is_check;
             if (temp.is_node) {
@@ -949,11 +955,8 @@ function _checkTreeByIdsFn(item, ids) {
     };
 }
 
-function _expandTreeByIds(tree, expand_ids) {
-    var ids = expand_ids.split(',');
-
+function _expandTreeByIds(tree, ids) {
     _traverseTree(tree, _expandTreeByIdsFn, ids);
-
     return tree;
 }
 
@@ -1292,7 +1295,8 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     staticClass: "x-tree-item-self",
     class: _vm.options.editable ? '' : 'editable_false',
     style: ({
-      'padding-left': (_vm.model.level - 1) * 1.3 + 0.8 + 'em'
+      'padding-left': (_vm.model.level - 1) * 1.3 + 0.8 + 'em',
+      'border-bottom': '1px solid blue'
     }),
     on: {
       "mouseleave": _vm.hideEditorFn
@@ -1413,7 +1417,38 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       expression: "cantEdit"
     }],
     staticClass: "x-tree-item-editor-item"
-  }, [_vm._v("无法操作")])]) : _vm._e()]), _vm._v(" "), (_vm.hasChildren) ? _c('div', {
+  }, [_vm._v("无法操作")])]) : _vm._e()]), _vm._v(" "), _c('div', {
+    directives: [{
+      name: "show",
+      rawName: "v-show",
+      value: (_vm.model.level),
+      expression: "model.level"
+    }],
+    staticClass: "x-tree-item-z",
+    style: ({
+      'position': 'absolute',
+      'top': '0em',
+      'left': '20em'
+    })
+  }, [_c('span', {
+    style: ({
+      'width': _vm.options.z.width,
+      'padding-left': '2em',
+      'border-bottom': '1px solid red'
+    })
+  }, [_vm._v(" " + _vm._s(_vm.model.id) + " ")]), _vm._v(" "), _c('span', {
+    style: ({
+      'width': _vm.options.z.width,
+      'padding-left': '2em',
+      'border-bottom': '1px solid red'
+    })
+  }, [_vm._v(" " + _vm._s(_vm.model.name) + " ")]), _vm._v(" "), _c('span', {
+    style: ({
+      'width': _vm.options.z.width,
+      'padding-left': '2em',
+      'border-bottom': '1px solid red'
+    })
+  }, [_vm._v(" " + _vm._s(_vm.model.expand) + " ")])]), _vm._v(" "), (_vm.hasChildren) ? _c('div', {
     directives: [{
       name: "show",
       rawName: "v-show",

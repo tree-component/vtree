@@ -7,6 +7,7 @@ function _initOptions(options) {
         node_merge: true,//结果只显示最上层  比如   中国被选中  四川,成都则不会显示  否则 每个被勾选的节点都显示
         is_multi: true,//是否多选
         expand: true, //是否展开，false、true、num,(0、1、false,都展开一级。true,完全展开。num>=2时，展开到对应级）
+        expandIds: null,
         width: null,
         maxHeight: 300,
         sel_ids: '',
@@ -144,7 +145,7 @@ function _getSubTree(arrayIn, parent, opt) {
             if(opt.expandIds){
                 temp.expand = false;
             }else{
-                temp.expand = expandLvl(opt,temp);
+                temp.expand = expandLvl(opt.expand,temp);
             }
             temp.checkState = temp.is_check;
             if (temp.is_node) {
@@ -198,11 +199,8 @@ function _checkTreeByIdsFn(item, ids) {
     };
 }
 
-function _expandTreeByIds(tree, expand_ids) {
-    let ids = expand_ids.split(',');
-
+function _expandTreeByIds(tree, ids) {
     _traverseTree(tree, _expandTreeByIdsFn, ids);
-
     return tree;
 }
 

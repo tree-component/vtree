@@ -61,6 +61,7 @@ function _arrayToTree(arrayIn, opt) {
         parent: null,
         level: 0,
         expand: true,
+        custom: null,
         options: opt,
         originData: arrayIn,
         itemAmount: arrayIn.length,
@@ -116,6 +117,7 @@ function _getSubTree(arrayIn, parent, opt) {
         if (arrayIn[i].nodeId == parent.id) {
             temp = extend.extend({}, arrayIn[i]);
             temp.parent = parent;
+            temp.custom = null;
             temp.level = parent.level + 1;
             if(opt.expandIds){
                 temp.expand = false;

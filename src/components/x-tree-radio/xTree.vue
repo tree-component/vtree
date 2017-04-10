@@ -44,14 +44,7 @@
                 this.fn.setCustom = this.setCustom;
             },
             getItemById : function (id){
-                var item;
-                var data = this.data;
-                for (var index = 0; index < data.length; index++) {
-                     if (data[index].id == id) {
-                        item = data[index];
-                        break;
-                     }
-                }
+                var item = Fn.getItemById(this.tree,id);
                 return item;
             },
             setCustom :function (id,custom){

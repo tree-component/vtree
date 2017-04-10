@@ -592,14 +592,7 @@ exports.default = {
             this.fn.setCustom = this.setCustom;
         },
         getItemById: function getItemById(id) {
-            var item;
-            var data = this.data;
-            for (var index = 0; index < data.length; index++) {
-                if (data[index].id == id) {
-                    item = data[index];
-                    break;
-                }
-            }
+            var item = _methods2.default.getItemById(this.tree, id);
             return item;
         },
         setCustom: function setCustom(id, custom) {
@@ -886,6 +879,7 @@ function _arrayToTree(arrayIn, opt) {
         parent: null,
         level: 0,
         expand: true,
+        custom: null,
         options: opt,
         originData: arrayIn,
         itemAmount: arrayIn.length
@@ -941,6 +935,7 @@ function _getSubTree(arrayIn, parent, opt) {
         if (arrayIn[i].nodeId == parent.id) {
             temp = _extend2.default.extend({}, arrayIn[i]);
             temp.parent = parent;
+            temp.custom = null;
             temp.level = parent.level + 1;
             if (opt.expandIds) {
                 temp.expand = false;

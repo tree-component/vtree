@@ -23,7 +23,16 @@ function _initOptions(options) {
             children:{
             },
             custom:{
+                position:'absolute',
+                top: '0em',
+                left: null,
             },
+        },
+        class:{
+            tree:'',
+            item:'',
+            children:'',
+            custom:'',
         },
         onExpand: function () {
         },
@@ -45,7 +54,10 @@ function _initOptions(options) {
         onSort: function () {
         },
     };
-    let opt = extend.extend({}, defOptions, options);
+    if(options.style.tree.width){
+        defOptions.style.custom.left = options.style.tree.width;
+    }
+    let opt = extend.deepExtend({}, defOptions, options);
     return opt;
 }
 

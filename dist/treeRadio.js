@@ -876,7 +876,7 @@ function _initOptions(options) {
 
         onSort: function onSort() {}
     };
-    if (options.style.tree.width) {
+    if (options.style && options.style.tree && options.style.tree.width) {
         defOptions.style.custom.left = options.style.tree.width;
     }
     var opt = _extend2.default.deepExtend({}, defOptions, options);

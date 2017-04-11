@@ -54,7 +54,7 @@ function _initOptions(options) {
         onSort: function () {
         },
     };
-    if(options.style.tree.width){
+    if(options.style && options.style.tree && options.style.tree.width){
         defOptions.style.custom.left = options.style.tree.width;
     }
     let opt = extend.deepExtend({}, defOptions, options);

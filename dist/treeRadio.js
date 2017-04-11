@@ -650,6 +650,9 @@ exports.default = {
         tree: Object
     },
     data: function data() {
+        if (this.options.custom) {
+            this.model.custom = this.options.custom(this.model);
+        }
         return {
             showEditor: false
         };
@@ -836,14 +839,14 @@ function _initOptions(options) {
         zIndex: 9,
         is_trigger: false, //是否需要触发? 否则直接显示
         has_search: false,
-        only_child: true, //是否结果只要 child
-        node_merge: true, //结果只显示最上层  比如   中国被选中  四川,成都则不会显示  否则 每个被勾选的节点都显示
+        only_child: false, //是否结果只要 child
+        node_merge: false, //结果只显示最上层  比如   中国被选中  四川,成都则不会显示  否则 每个被勾选的节点都显示
         is_multi: true, //是否多选
         expand: false, //是否展开，false、true、num,(0、1、false,都展开一级。true,完全展开。num>=2时，展开到对应级）
         expandIds: null,
         sel_ids: '',
         checkbox: false,
-        editable: true,
+        editable: false,
         style: {
             tree: {
                 width: null,
@@ -853,8 +856,8 @@ function _initOptions(options) {
             children: {},
             custom: {
                 position: 'absolute',
-                top: '0em',
-                left: null
+                top: '0',
+                left: '0'
             }
         },
         class: {
@@ -880,6 +883,7 @@ function _initOptions(options) {
         defOptions.style.custom.left = options.style.tree.width;
     }
     var opt = _extend2.default.deepExtend({}, defOptions, options);
+    opt.originOptions = options;
     return opt;
 }
 

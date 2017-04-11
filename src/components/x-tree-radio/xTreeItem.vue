@@ -38,6 +38,9 @@
             tree: Object
         },
         data: function () {
+            if(this.options.custom){
+                this.model.custom = this.options.custom(this.model);
+            }
             return {
                 showEditor: false
             };

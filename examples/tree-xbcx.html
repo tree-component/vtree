@@ -30,16 +30,22 @@
         sel_ids: '3,11,12,13,30,31,32,33',
         expand: true,
         expandIds: '2,9,11',//优先级高于expand
-        editable: false,
-        // style:{
-        //     tree:{
-        //         width: '300px',
-        //     },
-        //     item:{
-        //         'border-bottom': '1px solid blue'
-        //     },
-        // },
-
+        editable: true,
+        style:{
+            tree:{
+                width: '300px',
+            },
+            item:{
+                'border-bottom': '1px solid red'
+            },
+            custom:{
+                'border-bottom': '1px solid blue'
+            },
+        },
+        custom : function(item){
+            var html = '<span>'+ item.id  + '</span><span>' + item.name + '</span><span>' + item.expand + '</span>';
+            return html
+        },
         onExpand: function (item, callback) {
             console.log("expand item", item, item.name);
         },

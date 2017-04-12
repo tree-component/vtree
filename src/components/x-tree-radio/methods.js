@@ -13,6 +13,14 @@ function _initOptions(options) {
         sel_ids: '',
         checkbox: false,
         editable: false,
+        editorText:{
+            edit:'修改部门',
+            delete:'删除部门',
+            add:'添加子部门',
+            up:'上移',
+            down:'下移',
+            unable:'无法操作',
+        },
         style:{
             tree:{
                 width: null,

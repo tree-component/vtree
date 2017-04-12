@@ -11,12 +11,12 @@
             <span class="x-tree-item-name" @click.stop="nameFn">{{model.name}}</span>
             <i class="x-tree-item-edit fa fa-caret-square-o-down" v-if="options.editable" @click.stop="showEditorFn"></i>
             <div class="x-tree-item-editor" v-if="options.editable" v-show="showEditor">
-                <span class="x-tree-item-editor-item" v-show="model.is_edit" @click.stop="editFn">修改部门</span>
-                <span class="x-tree-item-editor-item" v-show="model.is_delete" @click.stop="deleteFn">删除部门</span>
-                <span class="x-tree-item-editor-item" v-show="model.is_add" @click.stop="addChildFn">添加子部门</span>
-                <span class="x-tree-item-editor-item" v-show="sortable.upAble" @click.stop="sortFn(true)">上移</span>
-                <span class="x-tree-item-editor-item" v-show="sortable.downAble" @click.stop="sortFn(false)">下移</span>
-                <span class="x-tree-item-editor-item" v-show="cantEdit">无法操作</span>
+                <span class="x-tree-item-editor-item" v-show="model.is_edit" @click.stop="editFn">{{options.editorText.edit}}</span>
+                <span class="x-tree-item-editor-item" v-show="model.is_delete" @click.stop="deleteFn">{{options.editorText.delete}}</span>
+                <span class="x-tree-item-editor-item" v-show="model.is_add" @click.stop="addChildFn">{{options.editorText.add}}</span>
+                <span class="x-tree-item-editor-item" v-show="sortable.upAble" @click.stop="sortFn(true)">{{options.editorText.up}}</span>
+                <span class="x-tree-item-editor-item" v-show="sortable.downAble" @click.stop="sortFn(false)">{{options.editorText.down}}</span>
+                <span class="x-tree-item-editor-item" v-show="cantEdit">editorText.unable</span>
             </div>
         </div>
         <div class='x-tree-item-custom' v-show="model.level" v-html="model.custom" :style="options.style.custom">

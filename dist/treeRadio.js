@@ -847,6 +847,14 @@ function _initOptions(options) {
         sel_ids: '',
         checkbox: false,
         editable: false,
+        editorText: {
+            edit: '修改部门',
+            delete: '删除部门',
+            add: '添加子部门',
+            up: '上移',
+            down: '下移',
+            unable: '无法操作'
+        },
         style: {
             tree: {
                 width: null,
@@ -1451,7 +1459,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
         _vm.editFn($event)
       }
     }
-  }, [_vm._v("修改部门")]), _vm._v(" "), _c('span', {
+  }, [_vm._v(_vm._s(_vm.options.editorText.edit))]), _vm._v(" "), _c('span', {
     directives: [{
       name: "show",
       rawName: "v-show",
@@ -1465,7 +1473,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
         _vm.deleteFn($event)
       }
     }
-  }, [_vm._v("删除部门")]), _vm._v(" "), _c('span', {
+  }, [_vm._v(_vm._s(_vm.options.editorText.delete))]), _vm._v(" "), _c('span', {
     directives: [{
       name: "show",
       rawName: "v-show",
@@ -1479,7 +1487,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
         _vm.addChildFn($event)
       }
     }
-  }, [_vm._v("添加子部门")]), _vm._v(" "), _c('span', {
+  }, [_vm._v(_vm._s(_vm.options.editorText.add))]), _vm._v(" "), _c('span', {
     directives: [{
       name: "show",
       rawName: "v-show",
@@ -1493,7 +1501,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
         _vm.sortFn(true)
       }
     }
-  }, [_vm._v("上移")]), _vm._v(" "), _c('span', {
+  }, [_vm._v(_vm._s(_vm.options.editorText.up))]), _vm._v(" "), _c('span', {
     directives: [{
       name: "show",
       rawName: "v-show",
@@ -1507,7 +1515,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
         _vm.sortFn(false)
       }
     }
-  }, [_vm._v("下移")]), _vm._v(" "), _c('span', {
+  }, [_vm._v(_vm._s(_vm.options.editorText.down))]), _vm._v(" "), _c('span', {
     directives: [{
       name: "show",
       rawName: "v-show",
@@ -1515,7 +1523,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       expression: "cantEdit"
     }],
     staticClass: "x-tree-item-editor-item"
-  }, [_vm._v("无法操作")])]) : _vm._e()]), _vm._v(" "), _c('div', {
+  }, [_vm._v("editorText.unable")])]) : _vm._e()]), _vm._v(" "), _c('div', {
     directives: [{
       name: "show",
       rawName: "v-show",

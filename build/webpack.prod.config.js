@@ -6,8 +6,8 @@ const webpack = require("webpack");
 const config = {
     context: path.resolve(__dirname, '../'),
     entry: {
-        tree: "./src/components/x-tree/index.js",
-        treeRadio: "./src/components/x-tree-radio/index.js"
+        'tree-vue': "./src/components/tree-vue/index.js",
+        'tree-xbcx': "./src/components/tree-xbcx/index.js"
     },
     output: {
         path: path.resolve(__dirname, '../dist'),

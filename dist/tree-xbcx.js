@@ -434,7 +434,54 @@ module.exports = function listToStyles (parentId, list) {
 
 
 /***/ }),
-/* 4 */,
+/* 4 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+var extend = {};
+extend.extend = function (out) {
+    out = out || {};
+
+    for (var i = 1; i < arguments.length; i++) {
+        if (!arguments[i]) continue;
+
+        for (var key in arguments[i]) {
+            if (arguments[i].hasOwnProperty(key)) out[key] = arguments[i][key];
+        }
+    }
+
+    return out;
+};
+
+extend.deepExtend = function (out) {
+    out = out || {};
+
+    for (var i = 1; i < arguments.length; i++) {
+        var obj = arguments[i];
+
+        if (!obj) continue;
+
+        for (var key in obj) {
+            if (obj.hasOwnProperty(key)) {
+                if (_typeof(obj[key]) === 'object') out[key] = extend.deepExtend(out[key], obj[key]);else out[key] = obj[key];
+            }
+        }
+    }
+
+    return out;
+};
+
+exports.default = extend;
+
+/***/ }),
 /* 5 */,
 /* 6 */
 /***/ (function(module, exports, __webpack_require__) {
@@ -449,11 +496,11 @@ var Component = __webpack_require__(1)(
   /* template */
   __webpack_require__(21),
   /* scopeId */
-  "data-v-02b93904",
+  "data-v-273f1241",
   /* cssModules */
   null
 )
-Component.options.__file = "D:\\jcc\\tree-vue\\src\\components\\x-tree\\xTree.vue"
+Component.options.__file = "D:\\jcc\\tree-vue\\src\\components\\tree-xbcx\\xTree.vue"
 if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key !== "__esModule"})) {console.error("named exports are not supported in *.vue files.")}
 if (Component.options.functional) {console.error("[vue-loader] xTree.vue: functional components are not supported with templates, they should use render functions.")}
 
@@ -464,9 +511,9 @@ if (false) {(function () {
   if (!hotAPI.compatible) return
   module.hot.accept()
   if (!module.hot.data) {
-    hotAPI.createRecord("data-v-02b93904", Component.options)
+    hotAPI.createRecord("data-v-273f1241", Component.options)
   } else {
-    hotAPI.reload("data-v-02b93904", Component.options)
+    hotAPI.reload("data-v-273f1241", Component.options)
   }
 })()}
 
@@ -486,6 +533,10 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
+var _extend = __webpack_require__(4);
+
+var _extend2 = _interopRequireDefault(_extend);
+
 var _methods = __webpack_require__(14);
 
 var _methods2 = _interopRequireDefault(_methods);
@@ -496,13 +547,6 @@ var _xTreeItem2 = _interopRequireDefault(_xTreeItem);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-//
-//
-//
-//
-//
-//
-
 exports.default = {
     name: "x-tree",
     components: {
@@ -510,24 +554,75 @@ exports.default = {
     },
     props: {
         data: Array,
-        options: Object
+        options: Object,
+        fn: Object
     },
     data: function data() {
-        var opt = _methods2.default._mergeOptions(this.options);
-
-        var treeTemp = _methods2.default._arrayToTree(this.data, opt);
-
-        var treeChecked = _methods2.default._checkTreeByIds(treeTemp, opt.sel_ids);
-
+        this.exportFn();
+        var treeOptions = this.initOptions(this.options);
+        var treeData = this.initData(this.data, this.options);
         return {
-            opt: opt,
-            fn: _methods2.default,
-            model: treeChecked
+            fnfn: _methods2.default,
+            opt: treeOptions,
+            tree: treeData
         };
     },
     computed: {},
-    methods: {}
-};
+    methods: {
+        initData: function initData(data, options) {
+            var treeTree = _methods2.default._arrayToTree(data, options);
+            var treeChecked = _methods2.default._checkTreeByIds(treeTree, options.sel_ids);
+            var treeExpand = void 0;
+            if (options.expandIds) {
+                treeExpand = _methods2.default._expandTreeByIds(treeChecked, options.expandIds);
+            } else {
+                treeExpand = treeChecked;
+            }
+            return treeExpand;
+        },
+        initOptions: function initOptions(options) {
+            var opt = _methods2.default._initOptions(options);
+            return opt;
+        },
+        exportFn: function exportFn() {
+            _extend2.default.extend(this.fn, _methods2.default);
+            this.fn.getItemById = this.getItemById;
+            this.fn.locateItem = this.locateItem;
+            this.fn.locateItems = this.locateItems;
+            this.fn.setCustom = this.setCustom;
+        },
+        getItemById: function getItemById(id) {
+            var item = _methods2.default.getItemById(this.tree, id);
+            return item;
+        },
+        locateItem: function locateItem(id) {
+            var item = _methods2.default.getItemById(this.tree, id);
+            item.expand = true;
+            item.class = this.opt.class.active;
+            _methods2.default._expandParent(item.parent, true);
+            return item;
+        },
+        locateItems: function locateItems(ids) {
+            var tree = _methods2.default._expandTreeByIds(this.tree, ids);
+            return tree;
+        },
+        setCustom: function setCustom(id, custom) {
+            var item = this.getItemById(id);
+            if (item) {
+                item.custom = custom;
+            } else {
+                console.warn('未找到item, 请检查id是否正确');
+            }
+            return item;
+        }
+
+    }
+}; //
+//
+//
+//
+//
+//
 
 /***/ }),
 /* 10 */
@@ -563,15 +658,25 @@ Object.defineProperty(exports, "__esModule", {
 //
 //
 //
+//
+//
+//
+//
+//
+//
 
 exports.default = {
     name: 'x-tree-item',
     props: {
         model: Object,
         options: Object,
-        fn: Object
+        fn: Object,
+        tree: Object
     },
     data: function data() {
+        if (this.options.custom) {
+            this.model.custom = this.options.custom(this.model);
+        }
         return {
             showEditor: false
         };
@@ -582,55 +687,94 @@ exports.default = {
         },
         checkboxIcon: function checkboxIcon() {
             var faIcon = '';
-            if (this.model.checkState === true) {
-                faIcon = 'fa-check-square-o';
-            } else if (this.model.checkState === false) {
-                faIcon = 'fa-square-o';
-            } else if (this.model.checkState === 'z') {
-                faIcon = 'fa-minus-square-o';
+            if (this.options.checkbox) {
+                if (this.model.checkState === true) {
+                    faIcon = 'fa-check-square-o';
+                } else if (this.model.checkState === false) {
+                    faIcon = 'fa-square-o';
+                } else if (this.model.checkState === 'z') {
+                    faIcon = 'fa-minus-square-o';
+                }
             }
             return faIcon;
         },
         cantEdit: function cantEdit() {
-            return !this.model.is_edit && !this.model.is_delete && !this.model.is_add;
+            return !this.model.is_edit && !this.model.is_delete && !this.model.is_add && !this.sortable.upAble && !this.sortable.downAble;
+        },
+        index: function index() {
+            if (!this.model.parent) {
+                return false;
+            }
+            return this.model.parent.children.indexOf(this.model);
+        },
+        sortable: function sortable() {
+            if (!this.model.parent || this.model.parent.children.length == 1) {
+                return {
+                    upAble: false,
+                    downAble: false
+                };
+            }
+            var upable = true;
+            var downable = true;
+            var index = this.model.parent.children.indexOf(this.model);
+            var len = this.model.parent.children.length;
+            if (index === 0) {
+                upable = false;
+            } else if (index >= len - 1) {
+                downable = false;
+            }
+            return {
+                upAble: upable,
+                downAble: downable
+            };
         }
     },
     methods: {
         expandFn: function expandFn() {
             if (this.hasChildren) {
                 this.model.expand = !this.model.expand;
+                this.options.onExpand(this.model);
             }
         },
         checkFn: function checkFn() {
             this.fn._changeItem(this.model, !this.model.is_check);
+            this.options.onCheck(this.model);
         },
-
         nameFn: function nameFn() {
-            console.log("this", this);
-            this.options.onName(this.model);
+            this.options.onClick(this.model);
         },
-
-        hideEditorFn: function hideEditorFn() {
-            this.showEditor = false;
-        },
-
+        nameFnn: function nameFnn() {},
         showEditorFn: function showEditorFn() {
             this.showEditor = !this.showEditor;
         },
-
+        hideEditorFn: function hideEditorFn() {
+            this.showEditor = false;
+        },
         editFn: function editFn() {
-            this.options.onEdit(this.model);
-            this.showEditor = !this.showEditor;
+            this.options.onEdit(this.model, this.editFnn);
+            this.showEditor = false;
         },
-
+        editFnn: function editFnn(item, pid, result) {
+            if (result && this.model.parent.id != pid) {
+                var index = this.model.parent.children.indexOf(this.model);
+                this.model.parent.children.splice(index, 1);
+                var parent = this.fn.getItemById(this.tree, pid);
+                if (!parent || !parent.is_node) {
+                    return 'error : 修改节点(change parent), 新的parent不合法(1、不存在 2、is_node为false 3、当前节点本身或其后代)';
+                }
+                parent.children.push(this.model);
+            }
+        },
         deleteFn: function deleteFn() {
-            var index = this.model.parent.children.indexOf(this.model);
-
-            this.model.parent.children.splice(index, 1);
-            this.options.onDelete(this.model);
-            this.showEditor = !this.showEditor;
+            this.options.onDelete(this.model, this.deleteFnn);
+            this.showEditor = false;
         },
-
+        deleteFnn: function deleteFnn(item, result) {
+            var index = this.model.parent.children.indexOf(this.model);
+            if (result) {
+                this.model.parent.children.splice(index, 1);
+            }
+        },
         addChildFn: function addChildFn() {
             var newChild = {
                 id: '',
@@ -643,8 +787,39 @@ exports.default = {
                 parent: this.model,
                 children: []
             };
-            this.options.onAddChild(newChild);
-            this.showEditor = !this.showEditor;
+            this.options.onAddChild(newChild, this.addChildFnn);
+            this.showEditor = false;
+        },
+        addChildFnn: function addChildFnn(item, result) {
+            if (result) {
+                item.parent.children.push(item);
+            }
+        },
+        sortFn: function sortFn(type) {
+            var index = this.model.parent.children.indexOf(this.model);
+            var brother = void 0;
+            if (type) {
+                brother = this.model.parent.children[index - 1];
+                this.options.onSort(this.model, brother, this.upFnn);
+            } else {
+                brother = this.model.parent.children[index + 1];
+                this.options.onSort(this.model, brother, this.downFnn);
+            }
+            this.showEditor = false;
+        },
+        upFnn: function upFnn(item, result) {
+            var index = this.model.parent.children.indexOf(this.model);
+            if (result) {
+                this.model.parent.children.splice(index, 1);
+                this.model.parent.children.splice(index - 1, 0, this.model);
+            }
+        },
+        downFnn: function downFnn(item, result) {
+            var index = this.model.parent.children.indexOf(this.model);
+            if (result) {
+                this.model.parent.children.splice(index, 1);
+                this.model.parent.children.splice(index + 1, 0, this.model);
+            }
         }
     }
 };
@@ -676,31 +851,72 @@ Vue.component("x-tree", _xTree2.default);
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-function _mergeOptions(options) {
-    var defOpt = {
-        dom: '', //jqueryDom
+
+var _extend = __webpack_require__(4);
+
+var _extend2 = _interopRequireDefault(_extend);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _initOptions(options) {
+    var defOptions = {
+        zIndex: 9,
         is_trigger: false, //是否需要触发? 否则直接显示
         has_search: false,
-        only_child: true, //是否结果只要 child
-        node_merge: true, //结果只显示最上层  比如   中国被选中  四川,成都则不会显示  否则 每个被勾选的节点都显示
-        zIndex: 1,
-        choose: false, //哪些是选中的？优先级高于data  {nodeId:[1,2,3],id:[1,2,3]}
-        // node_first:false,//是否需要节点排在前面  否则按照data的顺序
+        only_child: false, //是否结果只要 child
+        node_merge: false, //结果只显示最上层  比如   中国被选中  四川,成都则不会显示  否则 每个被勾选的节点都显示
         is_multi: true, //是否多选
-        expand: true, //是否展开，false、true、num,(0、1、false,都展开一级。true,完全展开。num>=2时，展开到对应级）
-        width: null,
-        maxHeight: 300,
-        data: [], //{id:1,name:'xx',nodeId:'0',is_node:true,is_check:false},
+        expand: false, //是否展开，false、true、num,(0、1、false,都展开一级。true,完全展开。num>=2时，展开到对应级）
+        expandIds: null,
         sel_ids: '',
-        onInit: function onInit() {},
-        onBeforeOpen: function onBeforeOpen() {},
-        onOpen: function onOpen() {},
+        checkbox: false,
+        editable: false,
+        editorText: {
+            edit: '修改部门',
+            delete: '删除部门',
+            add: '添加子部门',
+            up: '上移',
+            down: '下移',
+            unable: '无法操作'
+        },
+        style: {
+            tree: {
+                width: null,
+                maxHeight: 300
+            },
+            item: {},
+            children: {},
+            custom: {
+                position: 'absolute',
+                top: '0',
+                left: '0'
+            }
+        },
+        class: {
+            tree: '',
+            item: '',
+            active: 'active',
+            children: '',
+            custom: ''
+        },
+        onExpand: function onExpand() {},
+        onClick: function onClick() {},
+
         onCheck: function onCheck() {},
-        onCancel: function onCancel() {},
-        onChange: function onChange() {},
-        onClose: function onClose() {}
+
+        onEdit: function onEdit() {},
+
+        onDelete: function onDelete() {},
+
+        onAddChild: function onAddChild() {},
+
+        onSort: function onSort() {}
     };
-    var opt = Object.assign({}, defOpt, options);
+    if (options.style && options.style.tree && options.style.tree.width) {
+        defOptions.style.custom.left = options.style.tree.width;
+    }
+    var opt = _extend2.default.deepExtend({}, defOptions, options);
+    opt.originOptions = options;
     return opt;
 }
 
@@ -716,7 +932,9 @@ function _arrayToTree(arrayIn, opt) {
         parent: null,
         level: 0,
         expand: true,
+        custom: null,
         options: opt,
+        originData: arrayIn,
         itemAmount: arrayIn.length
     };
     treeData.children = _getSubTree(arrayIn, treeData, opt);
@@ -768,28 +986,17 @@ function _getSubTree(arrayIn, parent, opt) {
     var temp = {};
     for (var i = 0; i < arrayIn.length; i++) {
         if (arrayIn[i].nodeId == parent.id) {
-            // // temp = arrayIn[i];
-            // temp = {
-            //     id: arrayIn[i].id,
-            //     name: arrayIn[i].name,
-            //     nodeId: arrayIn[i].nodeId,
-            //     is_node: arrayIn[i].is_node,
-            //     is_check: arrayIn[i].is_check
-            // }; //copy
-            temp = Object.assign({}, arrayIn[i]);
+            temp = _extend2.default.extend({}, arrayIn[i]);
             temp.parent = parent;
+            temp.custom = null;
+            temp.class = null;
+            temp.style = null;
             temp.level = parent.level + 1;
-
-            if (opt.expand === true) {
-                temp.expand = true;
-            } else if (opt.expand === false && temp.level <= 0) {
-                temp.expand = true;
-            } else if (temp.level <= opt.expand) {
-                temp.expand = true;
-            } else {
+            if (opt.expandIds) {
                 temp.expand = false;
+            } else {
+                temp.expand = expandLvl(opt.expand, temp);
             }
-
             temp.checkState = temp.is_check;
             if (temp.is_node) {
                 temp.children = _getSubTree(arrayIn, temp, opt);
@@ -802,8 +1009,27 @@ function _getSubTree(arrayIn, parent, opt) {
     return result;
 }
 
+function expandLvl(expand, temp) {
+    if (expand === true) {
+        return true;
+    } else if (expand === false && temp.level <= 0) {
+        return true;
+    } else if (temp.level <= expand) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
 function _checkTreeByIds(tree, sel_ids) {
-    var ids = sel_ids.split(',');
+    var ids = [];
+    if (sel_ids.constructor == String) {
+        ids = sel_ids.split(',');
+    } else if (sel_ids.constructor == Array) {
+        ids = sel_ids;
+    } else {
+        console.warn('请检查 sel_ids 格式');
+    }
 
     _traverseTree(tree, _checkTreeByIdsFn, ids);
 
@@ -820,6 +1046,39 @@ function _checkTreeByIdsFn(item, ids) {
     for (var i = 0; i < ids.length; i++) {
         if (item.id == ids[i]) {
             _changeItem(item, true);
+            ids.splice(i, 1);
+            break;
+        }
+    }
+    return {
+        children: ids.length,
+        brother: ids.length
+    };
+}
+
+function _expandTreeByIds(tree, expand_ids) {
+    var ids = [];
+    if (expand_ids.constructor == String) {
+        ids = expand_ids.split(',');
+    } else if (expand_ids.constructor == Array) {
+        ids = expand_ids;
+    } else {
+        console.warn('请检查 expandIds 格式');
+    }
+    _traverseTree(tree, _expandTreeByIdsFn, ids);
+    return tree;
+}
+
+function _expandTreeByIdsFn(item, ids) {
+    if (!ids.length) {
+        return {
+            children: false,
+            brother: false
+        };
+    }
+    for (var i = 0; i < ids.length; i++) {
+        if (item.id == ids[i]) {
+            _expandParent(item.parent, true);
             ids.splice(i, 1);
             break;
         }
@@ -951,6 +1210,14 @@ function _changeParent(parent, change) {
     return true;
 }
 
+function _expandParent(parent, expand) {
+    parent.expand = expand;
+    if (parent.parent) {
+        _expandParent(parent.parent, expand);
+    }
+    return true;
+}
+
 function getName(model) {
     var name = [];
     _traverseTree(model, getNameFn, name);
@@ -967,8 +1234,26 @@ function getNameFn(item, name) {
     };
 }
 
+function getItemById(tree, id) {
+    if (!tree || id == undefined || id == null) {
+        return false;
+    }
+    if (tree.id == id) {
+        return tree;
+    }
+    if (tree.children && tree.children.length) {
+        for (var i = 0; i < tree.children.length; i++) {
+            var item = getItemById(tree.children[i], id);
+            if (item) {
+                return item;
+            }
+        }
+    }
+    return false;
+}
+
 var fn = {
-    _mergeOptions: _mergeOptions,
+    _initOptions: _initOptions,
 
     _arrayToTree: _arrayToTree,
 
@@ -982,6 +1267,12 @@ var fn = {
 
     _checkTreeByIdsFn: _checkTreeByIdsFn,
 
+    _expandTreeByIds: _expandTreeByIds,
+
+    _expandTreeByIdsFn: _expandTreeByIdsFn,
+
+    _expandParent: _expandParent,
+
     _traverseTree: _traverseTree,
 
     _changeItem: _changeItem,
@@ -992,7 +1283,9 @@ var fn = {
 
     getName: getName,
 
-    getNameFn: getNameFn
+    getNameFn: getNameFn,
+
+    getItemById: getItemById
 };
 
 exports.default = fn;
@@ -1006,14 +1299,13 @@ exports = module.exports = __webpack_require__(0)();
 
 
 // module
-exports.push([module.i, "\n.x-tree-wrapper[data-v-02b93904] {\n    cursor: pointer;\n}\n", ""]);
+exports.push([module.i, "\n.x-tree-wrapper[data-v-273f1241] {\n    position: relative;\n    cursor: pointer;\n    font-size: 1em;\n    line-height: 1.8em;\n    white-space: nowrap;\n}\n", ""]);
 
 // exports
 
 
 /***/ }),
-/* 16 */,
-/* 17 */
+/* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(0)();
@@ -1021,12 +1313,13 @@ exports = module.exports = __webpack_require__(0)();
 
 
 // module
-exports.push([module.i, "\n.x-tree-item[data-v-4152c39e] {\n    position: relative;\n    font-size: 14px;\n    -webkit-user-select: none;\n    -moz-user-select: none;\n    -ms-user-select: none;\n    user-select: none;\n}\n.x-tree-item-body[data-v-4152c39e] {\n    padding: 0 2em 0 1.5em;\n    line-height: 2em;\n}\n.x-tree-item-body[data-v-4152c39e]:hover {\n    background: #E9EBEE;\n}\n.fa[data-v-4152c39e] {\n    font-size: 16px;\n    width: 16px;\n    color: #999;\n}\n.icon-blank[data-v-4152c39e] {\n    display: inline-block;\n    font-size: 16px;\n    width: 1em;\n}\n.fa[data-v-4152c39e] {\n}\n.x-tree-item-expand[data-v-4152c39e] {\n}\n.x-tree-item-checkbox[data-v-4152c39e] {\n}\n.x-tree-item-name[data-v-4152c39e] {\n    padding: 0 0.5em;\n}\n.x-tree-item-list[data-v-4152c39e] {\n    display: none;\n    position: absolute;\n    top: 0.27em;\n    right: 0.27em;\n}\n.x-tree-item-body:hover .x-tree-item-list[data-v-4152c39e] {\n    display: block;\n}\n.x-tree-item-editor[data-v-4152c39e] {\n    display: block;\n    position: absolute;\n    right: 0;\n    z-index: 99;\n    font-size: 14px;\n    box-shadow: 0 1px 4px #999;\n    background: #fff;\n}\n.x-tree-item-editor-item[data-v-4152c39e] {\n    display: block;\n    padding: 2px 35px 2px 15px;\n}\n.x-tree-item-editor-item[data-v-4152c39e]:hover {\n    background: #E9EBEE;\n}\n.x-tree-item-children[data-v-4152c39e] {\n    padding-left: 1.5em;\n    line-height: 1.5em;\n}\n\n", ""]);
+exports.push([module.i, "\n.x-tree-item[data-v-3db19918] {\n    position: relative;\n    font-size: 14px;\n    -webkit-user-select: none;\n    -moz-user-select: none;\n    -ms-user-select: none;\n    user-select: none;\n}\n.x-tree-item-self[data-v-3db19918] {\n    padding: 0 2em 0 0.5em;\n}\n.x-tree-item-self[data-v-3db19918]:hover {\n    background: #E9EBEE;\n}\n.fa[data-v-3db19918] {\n    font-size: 14px;\n    width: 14px;\n    color: #999;\n}\n.icon-blank[data-v-3db19918] {\n    display: inline-block;\n    font-size: 14px;\n    width: 1em;\n}\n.x-tree-item-expand[data-v-3db19918] {\n}\n.x-tree-item-checkbox[data-v-3db19918] {\n}\n.x-tree-item-name[data-v-3db19918] {\n    display: inline-block;\n    vertical-align: bottom;\n    padding: 0 1em 0 0em;\n    width: calc(100% - 40px);\n    overflow: hidden;\n    text-overflow: ellipsis;\n    white-space: nowrap;\n}\n.x-tree-item-edit[data-v-3db19918] {\n    display: none;\n    position: absolute;\n    top: 0.36em;\n    right: 0.27em;\n}\n.x-tree-item-self:hover .x-tree-item-edit[data-v-3db19918] {\n    display: block;\n}\n.x-tree-item-editor[data-v-3db19918] {\n    display: block;\n    position: absolute;\n    right: 0;\n    width: 120px;\n    z-index: 99;\n    box-shadow: 0 1px 4px #999;\n    background: #fff;\n}\n.x-tree-item-editor-item[data-v-3db19918] {\n    display: block;\n    padding: 2px 35px 2px 15px;\n}\n.x-tree-item-editor-item[data-v-3db19918]:hover {\n    background: #E9EBEE;\n}\n.x-tree-item-children[data-v-3db19918] {\n    /*padding-left: 1.3em;*/\n}\n.editable_false[data-v-3db19918] {\n    padding-right: 0;\n}\n.x-tree-node > .editable_false > .x-tree-item-name[data-v-3db19918]{\n    padding: 0;        \n    width: calc(100% - 37px);\n}\n.x-tree-leaf > .editable_false > .x-tree-item-name[data-v-3db19918]{\n    padding: 0; \n    width: calc(100% - 20px);\n}\n", ""]);
 
 // exports
 
 
 /***/ }),
+/* 17 */,
 /* 18 */,
 /* 19 */,
 /* 20 */
@@ -1034,19 +1327,19 @@ exports.push([module.i, "\n.x-tree-item[data-v-4152c39e] {\n    position: relati
 
 
 /* styles */
-__webpack_require__(27)
+__webpack_require__(26)
 
 var Component = __webpack_require__(1)(
   /* script */
   __webpack_require__(10),
   /* template */
-  __webpack_require__(23),
+  __webpack_require__(22),
   /* scopeId */
-  "data-v-4152c39e",
+  "data-v-3db19918",
   /* cssModules */
   null
 )
-Component.options.__file = "D:\\jcc\\tree-vue\\src\\components\\x-tree\\xTreeItem.vue"
+Component.options.__file = "D:\\jcc\\tree-vue\\src\\components\\tree-xbcx\\xTreeItem.vue"
 if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key !== "__esModule"})) {console.error("named exports are not supported in *.vue files.")}
 if (Component.options.functional) {console.error("[vue-loader] xTreeItem.vue: functional components are not supported with templates, they should use render functions.")}
 
@@ -1057,9 +1350,9 @@ if (false) {(function () {
   if (!hotAPI.compatible) return
   module.hot.accept()
   if (!module.hot.data) {
-    hotAPI.createRecord("data-v-4152c39e", Component.options)
+    hotAPI.createRecord("data-v-3db19918", Component.options)
   } else {
-    hotAPI.reload("data-v-4152c39e", Component.options)
+    hotAPI.reload("data-v-3db19918", Component.options)
   }
 })()}
 
@@ -1076,9 +1369,15 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
   }, [_c('x-tree-item', {
     staticClass: "x-tree-root",
     attrs: {
-      "model": _vm.model,
+      "model": _vm.tree,
+      "tree": _vm.tree,
       "options": _vm.opt,
-      "fn": _vm.fn
+      "fn": _vm.fnfn
+    },
+    on: {
+      "click": function($event) {
+        $event.stopPropagation();
+      }
     }
   })], 1)
 },staticRenderFns: []}
@@ -1086,18 +1385,18 @@ module.exports.render._withStripped = true
 if (false) {
   module.hot.accept()
   if (module.hot.data) {
-     require("vue-hot-reload-api").rerender("data-v-02b93904", module.exports)
+     require("vue-hot-reload-api").rerender("data-v-273f1241", module.exports)
   }
 }
 
 /***/ }),
-/* 22 */,
-/* 23 */
+/* 22 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
   return _c('div', {
-    staticClass: "x-tree-item"
+    staticClass: "x-tree-item",
+    class: _vm.model.is_node ? 'x-tree-node' : 'x-tree-leaf'
   }, [_c('div', {
     directives: [{
       name: "show",
@@ -1105,42 +1404,72 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       value: (_vm.model.level),
       expression: "model.level"
     }],
-    staticClass: "x-tree-item-body"
+    staticClass: "x-tree-item-self",
+    class: [_vm.options.editable ? '' : 'editable_false', _vm.model.class],
+    style: ([{
+      'padding-left': (_vm.model.level - 1) * 1.3 + 0.8 + 'em'
+    }, _vm.options.style.item, _vm.model.style]),
+    on: {
+      "mouseleave": _vm.hideEditorFn
+    }
   }, [(_vm.hasChildren) ? _c('i', {
     staticClass: "x-tree-item-expand fa",
     class: _vm.model.expand ? 'fa-caret-down' : 'fa-caret-right',
     on: {
-      "click": _vm.expandFn
+      "click": function($event) {
+        $event.stopPropagation();
+        _vm.expandFn($event)
+      }
     }
   }) : _c('span', {
     staticClass: "icon-blank"
   }), _vm._v(" "), _c('i', {
+    directives: [{
+      name: "show",
+      rawName: "v-show",
+      value: (_vm.options.checkbox),
+      expression: "options.checkbox"
+    }],
     staticClass: "x-tree-item-checkbox fa",
-    class: _vm.options.checkbox ? _vm.checkboxIcon : 'fa-folder-o',
+    class: _vm.checkboxIcon,
     on: {
-      "click": _vm.checkFn
+      "click": function($event) {
+        $event.stopPropagation();
+        _vm.checkFn($event)
+      }
     }
+  }), _vm._v(" "), _c('i', {
+    directives: [{
+      name: "show",
+      rawName: "v-show",
+      value: (_vm.model.is_node),
+      expression: "model.is_node"
+    }],
+    staticClass: "x-tree-item-folder fa fa-folder-o"
   }), _vm._v(" "), _c('span', {
     staticClass: "x-tree-item-name",
     on: {
-      "click": _vm.nameFn
+      "click": function($event) {
+        $event.stopPropagation();
+        _vm.nameFn($event)
+      }
     }
-  }, [_vm._v(_vm._s(_vm.model.name))]), _vm._v(" "), _c('i', {
-    staticClass: "x-tree-item-list fa fa-caret-square-o-down",
+  }, [_vm._v(_vm._s(_vm.model.name))]), _vm._v(" "), (_vm.options.editable) ? _c('i', {
+    staticClass: "x-tree-item-edit fa fa-caret-square-o-down",
     on: {
-      "click": _vm.showEditorFn
+      "click": function($event) {
+        $event.stopPropagation();
+        _vm.showEditorFn($event)
+      }
     }
-  }), _vm._v(" "), _c('div', {
+  }) : _vm._e(), _vm._v(" "), (_vm.options.editable) ? _c('div', {
     directives: [{
       name: "show",
       rawName: "v-show",
       value: (_vm.showEditor),
       expression: "showEditor"
     }],
-    staticClass: "x-tree-item-editor",
-    on: {
-      "mouseleave": _vm.hideEditorFn
-    }
+    staticClass: "x-tree-item-editor"
   }, [_c('span', {
     directives: [{
       name: "show",
@@ -1150,9 +1479,12 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     }],
     staticClass: "x-tree-item-editor-item",
     on: {
-      "click": _vm.editFn
+      "click": function($event) {
+        $event.stopPropagation();
+        _vm.editFn($event)
+      }
     }
-  }, [_vm._v("修改部门")]), _vm._v(" "), _c('span', {
+  }, [_vm._v(_vm._s(_vm.options.editorText.edit))]), _vm._v(" "), _c('span', {
     directives: [{
       name: "show",
       rawName: "v-show",
@@ -1161,9 +1493,12 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     }],
     staticClass: "x-tree-item-editor-item",
     on: {
-      "click": _vm.deleteFn
+      "click": function($event) {
+        $event.stopPropagation();
+        _vm.deleteFn($event)
+      }
     }
-  }, [_vm._v("删除部门")]), _vm._v(" "), _c('span', {
+  }, [_vm._v(_vm._s(_vm.options.editorText.delete))]), _vm._v(" "), _c('span', {
     directives: [{
       name: "show",
       rawName: "v-show",
@@ -1172,31 +1507,40 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     }],
     staticClass: "x-tree-item-editor-item",
     on: {
-      "click": _vm.addChildFn
+      "click": function($event) {
+        $event.stopPropagation();
+        _vm.addChildFn($event)
+      }
     }
-  }, [_vm._v("添加子部门")]), _vm._v(" "), _c('span', {
+  }, [_vm._v(_vm._s(_vm.options.editorText.add))]), _vm._v(" "), _c('span', {
     directives: [{
       name: "show",
       rawName: "v-show",
-      value: (_vm.model.is_add),
-      expression: "model.is_add"
+      value: (_vm.sortable.upAble),
+      expression: "sortable.upAble"
     }],
     staticClass: "x-tree-item-editor-item",
     on: {
-      "click": _vm.addChildFn
+      "click": function($event) {
+        $event.stopPropagation();
+        _vm.sortFn(true)
+      }
     }
-  }, [_vm._v("上移")]), _vm._v(" "), _c('span', {
+  }, [_vm._v(_vm._s(_vm.options.editorText.up))]), _vm._v(" "), _c('span', {
     directives: [{
       name: "show",
       rawName: "v-show",
-      value: (_vm.model.is_add),
-      expression: "model.is_add"
+      value: (_vm.sortable.downAble),
+      expression: "sortable.downAble"
     }],
     staticClass: "x-tree-item-editor-item",
     on: {
-      "click": _vm.addChildFn
+      "click": function($event) {
+        $event.stopPropagation();
+        _vm.sortFn(false)
+      }
     }
-  }, [_vm._v("下移")]), _vm._v(" "), _c('span', {
+  }, [_vm._v(_vm._s(_vm.options.editorText.down))]), _vm._v(" "), _c('span', {
     directives: [{
       name: "show",
       rawName: "v-show",
@@ -1204,18 +1548,32 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       expression: "cantEdit"
     }],
     staticClass: "x-tree-item-editor-item"
-  }, [_vm._v("无法操作")])])]), _vm._v(" "), (_vm.hasChildren) ? _c('div', {
+  }, [_vm._v("editorText.unable")])]) : _vm._e(), _vm._v(" "), _c('div', {
+    directives: [{
+      name: "show",
+      rawName: "v-show",
+      value: (_vm.model.level),
+      expression: "model.level"
+    }],
+    staticClass: "x-tree-item-custom",
+    style: (_vm.options.style.custom),
+    domProps: {
+      "innerHTML": _vm._s(_vm.model.custom)
+    }
+  })]), _vm._v(" "), (_vm.hasChildren) ? _c('div', {
     directives: [{
       name: "show",
       rawName: "v-show",
       value: (_vm.model.expand),
       expression: "model.expand"
     }],
-    staticClass: "x-tree-item-children"
+    staticClass: "x-tree-item-children",
+    style: (_vm.options.style.children)
   }, _vm._l((_vm.model.children), function(model) {
     return _c('x-tree-item', {
       attrs: {
         "model": model,
+        "tree": _vm.tree,
         "options": _vm.options,
         "fn": _vm.fn
       }
@@ -1226,11 +1584,12 @@ module.exports.render._withStripped = true
 if (false) {
   module.hot.accept()
   if (module.hot.data) {
-     require("vue-hot-reload-api").rerender("data-v-4152c39e", module.exports)
+     require("vue-hot-reload-api").rerender("data-v-3db19918", module.exports)
   }
 }
 
 /***/ }),
+/* 23 */,
 /* 24 */,
 /* 25 */
 /***/ (function(module, exports, __webpack_require__) {
@@ -1242,13 +1601,13 @@ var content = __webpack_require__(15);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(2)("ab51c1ac", content, false);
+var update = __webpack_require__(2)("2c58ae52", content, false);
 // Hot Module Replacement
 if(false) {
  // When the styles change, update the <style> tags
  if(!content.locals) {
-   module.hot.accept("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"id\":\"data-v-02b93904\",\"scoped\":true,\"hasInlineConfig\":false}!../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./xTree.vue", function() {
-     var newContent = require("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"id\":\"data-v-02b93904\",\"scoped\":true,\"hasInlineConfig\":false}!../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./xTree.vue");
+   module.hot.accept("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"id\":\"data-v-273f1241\",\"scoped\":true,\"hasInlineConfig\":false}!../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./xTree.vue", function() {
+     var newContent = require("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"id\":\"data-v-273f1241\",\"scoped\":true,\"hasInlineConfig\":false}!../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./xTree.vue");
      if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
      update(newContent);
    });
@@ -1258,24 +1617,23 @@ if(false) {
 }
 
 /***/ }),
-/* 26 */,
-/* 27 */
+/* 26 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(17);
+var content = __webpack_require__(16);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(2)("bd8952b8", content, false);
+var update = __webpack_require__(2)("b25e849a", content, false);
 // Hot Module Replacement
 if(false) {
  // When the styles change, update the <style> tags
  if(!content.locals) {
-   module.hot.accept("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"id\":\"data-v-4152c39e\",\"scoped\":true,\"hasInlineConfig\":false}!../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./xTreeItem.vue", function() {
-     var newContent = require("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"id\":\"data-v-4152c39e\",\"scoped\":true,\"hasInlineConfig\":false}!../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./xTreeItem.vue");
+   module.hot.accept("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"id\":\"data-v-3db19918\",\"scoped\":true,\"hasInlineConfig\":false}!../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./xTreeItem.vue", function() {
+     var newContent = require("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"id\":\"data-v-3db19918\",\"scoped\":true,\"hasInlineConfig\":false}!../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./xTreeItem.vue");
      if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
      update(newContent);
    });

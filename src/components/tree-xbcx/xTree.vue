@@ -54,22 +54,22 @@
                 this.fn.setCustom = this.setCustom;
             },
             getItemById : function (id){
-                var item = Fn.getItemById(this.tree,id);
+                let item = Fn.getItemById(this.tree,id);
                 return item;
             },
             locateItem : function (id){
-                var item = Fn.getItemById(this.tree,id);
+                let item = Fn.getItemById(this.tree,id);
                 item.expand = true;
                 item.class = this.opt.class.active
                 Fn._expandParent(item.parent,true);
                 return item;
             },
             locateItems : function (ids){
-                Fn._expandTreeByIds(this.tree, ids);
-                return item;
+                let tree = Fn._expandTreeByIds(this.tree, ids);
+                return tree;
             },
             setCustom :function (id,custom){
-                var item = this.getItemById(id);
+                let item = this.getItemById(id);
                 if(item){
                     item.custom = custom;
                 }else{

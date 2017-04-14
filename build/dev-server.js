@@ -4,8 +4,8 @@ var opn  = require('opn');
 var webpack = require('webpack');
 var webpackDevMiddleware = require("webpack-dev-middleware");
 var webpackHotMiddleware = require("webpack-hot-middleware");
-var express = require('express');
-var config = require('./server.config');
+var koa = require('koa');
+var config = require('./dev-server.config');
 var webpackConfig = require('./webpack.dev.config');
 
 

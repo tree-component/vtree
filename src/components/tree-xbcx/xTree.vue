@@ -33,13 +33,8 @@
         methods: {
             initData : function (data,options){
                 let treeTree = Fn._arrayToTree(data, options);
-                let treeChecked = Fn._checkTreeByIds(treeTree, options.sel_ids);
-                let treeExpand;
-                if(options.expandIds){
-                    treeExpand = Fn._expandTreeByIds(treeChecked, options.expandIds);
-                }else{
-                    treeExpand = treeChecked;
-                }
+                let treeChecked = options.sel_ids ? Fn._checkTreeByIds(treeTree, options.sel_ids) : treeTree;
+                let treeExpand = options.expandIds ? Fn._expandTreeByIds(treeChecked, options.expandIds) : treeChecked;
                 return treeExpand;
             },
             initOptions : function (options){
@@ -51,17 +46,49 @@
                 this.fn.getItemById = this.getItemById;
                 this.fn.locateItem = this.locateItem;
                 this.fn.locateItems = this.locateItems;
+                this.fn.activeItem = this.activeItem;
+                this.fn.clearActive = this.clearActive;
                 this.fn.setCustom = this.setCustom;
             },
             getItemById : function (id){
                 let item = Fn.getItemById(this.tree,id);
+                if(!item){
+                    console.warn('没有找到对应的item');
+                    return;
+                }
                 return item;
+            },
+            activeItem : function (item) {
+                item.class = this.opt.class.active;
+                this.tree.active.push(item);
+            },
+            clearActive : function (type,id) {
+                let array = this.tree.active;
+                if(type){
+                    for (var index = 0; index < array.length; index++) {
+                        array[index].class = '';
+                    }
+                    array.length = 0;
+                } else {
+                    for (var index = 0; index < array.length; index++) {
+                        if(array[index].id == id){
+                            array[index].class = '';
+                            array.splice();
+                            break;
+                        }
+                    }
+                }
+                return;
             },
             locateItem : function (id){
                 let item = Fn.getItemById(this.tree,id);
+                if(!item){
+                    console.warn('没有找到对应的item');
+                    return;
+                }
                 item.expand = true;
-                item.class = this.opt.class.active
                 Fn._expandParent(item.parent,true);
+                this.activeItem(item)
                 return item;
             },
             locateItems : function (ids){

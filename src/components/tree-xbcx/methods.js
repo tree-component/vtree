@@ -37,7 +37,7 @@ function _initOptions(options) {
         class: {
             tree: '',
             item: '',
-            active: 'active',
+            active: 'x-tree-item-active',
             children: '',
             custom: '',
         },
@@ -75,6 +75,7 @@ function _arrayToTree(arrayIn, opt) {
         level: 0,
         expand: true,
         custom: null,
+        active: [],
         options: opt,
         originData: arrayIn,
         itemAmount: arrayIn.length,

@@ -5,7 +5,7 @@ var webpack = require('webpack');
 var webpackDevMiddleware = require("webpack-dev-middleware");
 var webpackHotMiddleware = require("webpack-hot-middleware");
 var express = require('express');
-var config = require('./server.config');
+var config = require('./dev-server.config');
 var webpackConfig = require('./webpack.dev.config');
 
 
@@ -58,7 +58,7 @@ docsRouter.get('/:doc(/:html)', function(req, res){
 app.use('/docs/', docsRouter);
 
 app.get('/', function(req, res){
-	res.redirect('../docs/index.html');
+	res.redirect('../examples/tree-xbcx.html');
 });
 
 // var staticPath = path.posix.join(config.dev.assetsPublicPath, config.dev.assetsSubDirectory)

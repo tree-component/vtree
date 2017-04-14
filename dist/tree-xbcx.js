@@ -571,13 +571,8 @@ exports.default = {
     methods: {
         initData: function initData(data, options) {
             var treeTree = _methods2.default._arrayToTree(data, options);
-            var treeChecked = _methods2.default._checkTreeByIds(treeTree, options.sel_ids);
-            var treeExpand = void 0;
-            if (options.expandIds) {
-                treeExpand = _methods2.default._expandTreeByIds(treeChecked, options.expandIds);
-            } else {
-                treeExpand = treeChecked;
-            }
+            var treeChecked = options.sel_ids ? _methods2.default._checkTreeByIds(treeTree, options.sel_ids) : treeTree;
+            var treeExpand = options.expandIds ? _methods2.default._expandTreeByIds(treeChecked, options.expandIds) : treeChecked;
             return treeExpand;
         },
         initOptions: function initOptions(options) {
@@ -589,17 +584,49 @@ exports.default = {
             this.fn.getItemById = this.getItemById;
             this.fn.locateItem = this.locateItem;
             this.fn.locateItems = this.locateItems;
+            this.fn.activeItem = this.activeItem;
+            this.fn.clearActive = this.clearActive;
             this.fn.setCustom = this.setCustom;
         },
         getItemById: function getItemById(id) {
             var item = _methods2.default.getItemById(this.tree, id);
+            if (!item) {
+                console.warn('没有找到对应的item');
+                return;
+            }
             return item;
+        },
+        activeItem: function activeItem(item) {
+            item.class = this.opt.class.active;
+            this.tree.active.push(item);
+        },
+        clearActive: function clearActive(type, id) {
+            var array = this.tree.active;
+            if (type) {
+                for (var index = 0; index < array.length; index++) {
+                    array[index].class = '';
+                }
+                array.length = 0;
+            } else {
+                for (var index = 0; index < array.length; index++) {
+                    if (array[index].id == id) {
+                        array[index].class = '';
+                        array.splice();
+                        break;
+                    }
+                }
+            }
+            return;
         },
         locateItem: function locateItem(id) {
             var item = _methods2.default.getItemById(this.tree, id);
+            if (!item) {
+                console.warn('没有找到对应的item');
+                return;
+            }
             item.expand = true;
-            item.class = this.opt.class.active;
             _methods2.default._expandParent(item.parent, true);
+            this.activeItem(item);
             return item;
         },
         locateItems: function locateItems(ids) {
@@ -895,7 +922,7 @@ function _initOptions(options) {
         class: {
             tree: '',
             item: '',
-            active: 'active',
+            active: 'x-tree-item-active',
             children: '',
             custom: ''
         },
@@ -933,6 +960,7 @@ function _arrayToTree(arrayIn, opt) {
         level: 0,
         expand: true,
         custom: null,
+        active: [],
         options: opt,
         originData: arrayIn,
         itemAmount: arrayIn.length

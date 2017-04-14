@@ -3,66 +3,58 @@ import extend from '../../utils/extend.js';
 function _initOptions(options) {
     let defOptions = {
         zIndex: 9,
-        is_trigger: false,  //是否需要触发? 否则直接显示
+        is_trigger: false, //是否需要触发? 否则直接显示
         has_search: false,
-        only_child: false,//是否结果只要 child
-        node_merge: false,//结果只显示最上层  比如   中国被选中  四川,成都则不会显示  否则 每个被勾选的节点都显示
-        is_multi: true,//是否多选
+        only_child: false, //是否结果只要 child
+        node_merge: false, //结果只显示最上层  比如   中国被选中  四川,成都则不会显示  否则 每个被勾选的节点都显示
+        is_multi: true, //是否多选
         expand: false, //是否展开，false、true、num,(0、1、false,都展开一级。true,完全展开。num>=2时，展开到对应级）
         expandIds: null,
         sel_ids: '',
         checkbox: false,
         editable: false,
-        editorText:{
-            edit:'修改部门',
-            delete:'删除部门',
-            add:'添加子部门',
-            up:'上移',
-            down:'下移',
-            unable:'无法操作',
+        editorText: {
+            edit: '修改部门',
+            delete: '删除部门',
+            add: '添加子部门',
+            up: '上移',
+            down: '下移',
+            unable: '无法操作',
         },
-        style:{
-            tree:{
+        style: {
+            tree: {
                 width: null,
                 maxHeight: 300,
             },
-            item:{
-            },
-            children:{
-            },
-            custom:{
-                position:'absolute',
+            item: {},
+            children: {},
+            custom: {
+                position: 'absolute',
                 top: '0',
                 left: '0',
             },
         },
-        class:{
-            tree:'',
-            item:'',
-            children:'',
-            custom:'',
+        class: {
+            tree: '',
+            item: '',
+            active: 'active',
+            children: '',
+            custom: '',
         },
-        onExpand: function () {
-        },
-        onClick: function () {
-        },
+        onExpand: function () {},
+        onClick: function () {},
 
-        onCheck: function () {
-        },
+        onCheck: function () {},
 
-        onEdit: function () {
-        },
+        onEdit: function () {},
 
-        onDelete: function () {
-        },
+        onDelete: function () {},
 
-        onAddChild: function () {
-        },
+        onAddChild: function () {},
 
-        onSort: function () {
-        },
+        onSort: function () {},
     };
-    if(options.style && options.style.tree && options.style.tree.width){
+    if (options.style && options.style.tree && options.style.tree.width) {
         defOptions.style.custom.left = options.style.tree.width;
     }
     let opt = extend.deepExtend({}, defOptions, options);
@@ -139,11 +131,13 @@ function _getSubTree(arrayIn, parent, opt) {
             temp = extend.extend({}, arrayIn[i]);
             temp.parent = parent;
             temp.custom = null;
+            temp.class = null;
+            temp.style = null;
             temp.level = parent.level + 1;
-            if(opt.expandIds){
+            if (opt.expandIds) {
                 temp.expand = false;
-            }else{
-                temp.expand = expandLvl(opt.expand,temp);
+            } else {
+                temp.expand = expandLvl(opt.expand, temp);
             }
             temp.checkState = temp.is_check;
             if (temp.is_node) {
@@ -157,7 +151,7 @@ function _getSubTree(arrayIn, parent, opt) {
     return result;
 }
 
-function expandLvl (expand,temp){
+function expandLvl(expand, temp) {
     if (expand === true) {
         return true;
     } else if (expand === false && temp.level <= 0) {
@@ -171,11 +165,11 @@ function expandLvl (expand,temp){
 
 function _checkTreeByIds(tree, sel_ids) {
     let ids = [];
-    if(sel_ids.constructor == String){
+    if (sel_ids.constructor == String) {
         ids = sel_ids.split(',');
-    }else if(sel_ids.constructor == Array){
+    } else if (sel_ids.constructor == Array) {
         ids = sel_ids;
-    }else{
+    } else {
         console.warn('请检查 sel_ids 格式');
     }
 
@@ -205,12 +199,12 @@ function _checkTreeByIdsFn(item, ids) {
 }
 
 function _expandTreeByIds(tree, expand_ids) {
-    let ids=[];
-    if(expand_ids.constructor == String){
+    let ids = [];
+    if (expand_ids.constructor == String) {
         ids = expand_ids.split(',');
-    }else if(expand_ids.constructor == Array){
+    } else if (expand_ids.constructor == Array) {
         ids = expand_ids;
-    }else{
+    } else {
         console.warn('请检查 expandIds 格式');
     }
     _traverseTree(tree, _expandTreeByIdsFn, ids);
@@ -241,7 +235,7 @@ function _traverseTree(tree, fn, input, output) {
     if (!tree) {
         return true;
     }
-    let _continue = fn(tree, input, output);//是否继续遍历
+    let _continue = fn(tree, input, output); //是否继续遍历
     if (_continue.children && tree.children) {
         for (let i = 0; i < tree.children.length; i++) {
             let brother = _traverseTree(tree.children[i], fn, input, output);
@@ -419,6 +413,8 @@ let fn = {
 
     _expandTreeByIdsFn: _expandTreeByIdsFn,
 
+    _expandParent: _expandParent,
+
     _traverseTree: _traverseTree,
 
     _changeItem: _changeItem,
@@ -435,4 +431,3 @@ let fn = {
 };
 
 export default fn;
-

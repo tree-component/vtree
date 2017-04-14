@@ -557,30 +557,51 @@ exports.default = {
     },
     data: function data() {
         this.exportFn();
-        var opt = _methods2.default._initOptions(this.options);
-        var treeTree = _methods2.default._arrayToTree(this.data, opt);
-        var treeChecked = _methods2.default._checkTreeByIds(treeTree, opt.sel_ids);
-        var treeExpand = void 0;
-        if (opt.expandIds) {
-            treeExpand = _methods2.default._expandTreeByIds(treeChecked, opt.expandIds);
-        } else {
-            treeExpand = treeChecked;
-        }
+        var treeOptions = this.initOptions(this.options);
+        var treeData = this.initData(this.data, this.options);
         return {
             fnfn: _methods2.default,
-            opt: opt,
-            tree: treeExpand
+            opt: treeOptions,
+            tree: treeData
         };
     },
     computed: {},
     methods: {
+        initData: function initData(data, options) {
+            var treeTree = _methods2.default._arrayToTree(data, options);
+            var treeChecked = _methods2.default._checkTreeByIds(treeTree, options.sel_ids);
+            var treeExpand = void 0;
+            if (options.expandIds) {
+                treeExpand = _methods2.default._expandTreeByIds(treeChecked, options.expandIds);
+            } else {
+                treeExpand = treeChecked;
+            }
+            return treeExpand;
+        },
+        initOptions: function initOptions(options) {
+            var opt = _methods2.default._initOptions(options);
+            return opt;
+        },
         exportFn: function exportFn() {
             _extend2.default.extend(this.fn, _methods2.default);
             this.fn.getItemById = this.getItemById;
+            this.fn.locateItem = this.locateItem;
+            this.fn.locateItems = this.locateItems;
             this.fn.setCustom = this.setCustom;
         },
         getItemById: function getItemById(id) {
             var item = _methods2.default.getItemById(this.tree, id);
+            return item;
+        },
+        locateItem: function locateItem(id) {
+            var item = _methods2.default.getItemById(this.tree, id);
+            item.expand = true;
+            item.class = this.opt.class.active;
+            _methods2.default._expandParent(item.parent, true);
+            return item;
+        },
+        locateItems: function locateItems(ids) {
+            _methods2.default._expandTreeByIds(this.tree, ids);
             return item;
         },
         setCustom: function setCustom(id, custom) {
@@ -590,6 +611,7 @@ exports.default = {
             } else {
                 console.warn('未找到item, 请检查id是否正确');
             }
+            return item;
         }
 
     }
@@ -871,6 +893,7 @@ function _initOptions(options) {
         class: {
             tree: '',
             item: '',
+            active: 'active',
             children: '',
             custom: ''
         },
@@ -964,6 +987,8 @@ function _getSubTree(arrayIn, parent, opt) {
             temp = _extend2.default.extend({}, arrayIn[i]);
             temp.parent = parent;
             temp.custom = null;
+            temp.class = null;
+            temp.style = null;
             temp.level = parent.level + 1;
             if (opt.expandIds) {
                 temp.expand = false;
@@ -1244,6 +1269,8 @@ var fn = {
 
     _expandTreeByIdsFn: _expandTreeByIdsFn,
 
+    _expandParent: _expandParent,
+
     _traverseTree: _traverseTree,
 
     _changeItem: _changeItem,
@@ -1380,10 +1407,10 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       expression: "model.level"
     }],
     staticClass: "x-tree-item-self",
-    class: _vm.options.editable ? '' : 'editable_false',
+    class: [_vm.options.editable ? '' : 'editable_false', _vm.model.class],
     style: ([{
       'padding-left': (_vm.model.level - 1) * 1.3 + 0.8 + 'em'
-    }, _vm.options.style.item]),
+    }, _vm.options.style.item, _vm.model.style]),
     on: {
       "mouseleave": _vm.hideEditorFn
     }
@@ -1523,7 +1550,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       expression: "cantEdit"
     }],
     staticClass: "x-tree-item-editor-item"
-  }, [_vm._v("editorText.unable")])]) : _vm._e()]), _vm._v(" "), _c('div', {
+  }, [_vm._v("editorText.unable")])]) : _vm._e(), _vm._v(" "), _c('div', {
     directives: [{
       name: "show",
       rawName: "v-show",
@@ -1535,7 +1562,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     domProps: {
       "innerHTML": _vm._s(_vm.model.custom)
     }
-  }), _vm._v(" "), (_vm.hasChildren) ? _c('div', {
+  })]), _vm._v(" "), (_vm.hasChildren) ? _c('div', {
     directives: [{
       name: "show",
       rawName: "v-show",

@@ -1,6 +1,6 @@
 <template>
     <div class="x-tree-wrapper">
-        <x-tree-item class="x-tree-root" :model="tree" :tree="tree" :options="opt" :fn="fnfn" @click.stop=""></x-tree-item>
+        <x-tree-item class="x-tree-root" :class="" :style="" :model="tree" :tree="tree" :options="opt" :fn="fnfn" @click.stop=""></x-tree-item>
     </div>
 </template>
 
@@ -21,30 +21,51 @@
         },
         data: function () {
             this.exportFn();
-            let opt = Fn._initOptions(this.options);
-            let treeTree = Fn._arrayToTree(this.data, opt);
-            let treeChecked = Fn._checkTreeByIds(treeTree, opt.sel_ids);
-            let treeExpand;
-            if(opt.expandIds){
-                treeExpand = Fn._expandTreeByIds(treeChecked, opt.expandIds);
-            }else{
-                treeExpand = treeChecked;
-            }
+            let treeOptions = this.initOptions(this.options);
+            let treeData = this.initData(this.data,this.options);
             return {
                 fnfn: Fn,
-                opt: opt,
-                tree: treeExpand
+                opt: treeOptions,
+                tree: treeData
             };
         },
         computed: {},
         methods: {
+            initData : function (data,options){
+                let treeTree = Fn._arrayToTree(data, options);
+                let treeChecked = Fn._checkTreeByIds(treeTree, options.sel_ids);
+                let treeExpand;
+                if(options.expandIds){
+                    treeExpand = Fn._expandTreeByIds(treeChecked, options.expandIds);
+                }else{
+                    treeExpand = treeChecked;
+                }
+                return treeExpand;
+            },
+            initOptions : function (options){
+                let opt = Fn._initOptions(options);
+                return opt;
+            },
             exportFn : function (){
                 extend.extend(this.fn,Fn);
                 this.fn.getItemById = this.getItemById;
+                this.fn.locateItem = this.locateItem;
+                this.fn.locateItems = this.locateItems;
                 this.fn.setCustom = this.setCustom;
             },
             getItemById : function (id){
                 var item = Fn.getItemById(this.tree,id);
+                return item;
+            },
+            locateItem : function (id){
+                var item = Fn.getItemById(this.tree,id);
+                item.expand = true;
+                item.class = this.opt.class.active
+                Fn._expandParent(item.parent,true);
+                return item;
+            },
+            locateItems : function (ids){
+                Fn._expandTreeByIds(this.tree, ids);
                 return item;
             },
             setCustom :function (id,custom){
@@ -54,6 +75,7 @@
                 }else{
                     console.warn('未找到item, 请检查id是否正确');
                 }
+                return item;
             }
 
         }

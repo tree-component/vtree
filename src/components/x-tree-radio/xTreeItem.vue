@@ -1,7 +1,7 @@
 <template>
     <div class="x-tree-item" :class="model.is_node ? 'x-tree-node' : 'x-tree-leaf' ">
-        <div class="x-tree-item-self" v-show="model.level" :class="options.editable ? '' : 'editable_false' " 
-        :style="[{ 'padding-left': (model.level - 1) * 1.3 + 0.8 + 'em'}, options.style.item]" 
+        <div class="x-tree-item-self" v-show="model.level" :class="[options.editable ? '' : 'editable_false', model.class]"
+        :style="[{ 'padding-left': (model.level - 1) * 1.3 + 0.8 + 'em'}, options.style.item, model.style]" 
         @mouseleave="hideEditorFn">
             <i class="x-tree-item-expand fa" v-if="hasChildren"
                :class="model.expand ? 'fa-caret-down' : 'fa-caret-right'" @click.stop="expandFn"></i>
@@ -18,8 +18,8 @@
                 <span class="x-tree-item-editor-item" v-show="sortable.downAble" @click.stop="sortFn(false)">{{options.editorText.down}}</span>
                 <span class="x-tree-item-editor-item" v-show="cantEdit">editorText.unable</span>
             </div>
-        </div>
-        <div class='x-tree-item-custom' v-show="model.level" v-html="model.custom" :style="options.style.custom">
+            <div class='x-tree-item-custom' v-show="model.level" v-html="model.custom" :style="options.style.custom">
+            </div>
         </div>
         <div class='x-tree-item-children' v-if="hasChildren" v-show="model.expand" :style="options.style.children">
             <x-tree-item v-for="model in model.children" :model="model" :tree="tree" :options="options" :fn="fn">

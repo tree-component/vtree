@@ -1,238 +1,479 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="utf-8">
     <title>tree-title</title>
     <link rel="stylesheet" href="../dist/font-awesome-4.7.0/css/font-awesome.css">
-    <link rel="stylesheet" href="../dist/css/x-tree-vue.css">
+    <!--<link rel="stylesheet" href="../dist/css/x-tree-vue.css">-->
+    <style>
+        .buttons {
+            margin: 10px 0;
+        }
+        .button {
+            display: inline-block;
+            margin: 1px;
+            border: 1px solid deepskyblue;
+            padding: 1px;
+            width: 60px;
+            height: 20px;
+            cursor: pointer;
+        }
+        .footer {
+            height: 300px;
+        }
+        .active {
+            background: orangered;
+        }
+        .locate {
+            background: red;
+        }
+    </style>
     <script src="../dist/lib/vue.js"></script>
     <script src="../dist/treeRadio.js"></script>
 </head>
+
 <body>
-<div id="xTreeDemo">
-    <x-tree :data="data" :options="options" :fn="fn"></x-tree>
-</div>
+    <div id="xTreeDemo">
+        <x-tree :data="data" :options="options" :fn="fn"></x-tree>
+    </div>
 
-<div class="buttons">
-    <div class="button button-edit">edit</div>
-    <div class="button button-delete">delete</div>
-    <div class="button button-add">add</div>
-    <div class="button button-cancel">cancel</div>
-    <div class="button button-sort">sort</div>
-    <div class="button button-sortn">sortn</div>
-</div>
+    <div class="buttons">
+        <div class="button button-edit">edit</div>
+        <div class="button button-delete">delete</div>
+        <div class="button button-add">add</div>
+        <div class="button button-cancel">cancel</div>
+        <div class="button button-sort">sort</div>
+        <div class="button button-sortn">sortn</div>
+    </div>
 
-<div class="footer">footer</div>
+    <div class="footer">footer</div>
 
-<script>
-    var treeOptions = {
-        checkbox: false,
-        sel_ids: '3,11,12,13,30,31,32,33',
-        expand: true,
-        expandIds: '2,9,11',//优先级高于expand
-        editable: true,
-        editorText:{
-            edit:'edit',
-            delete:'delete',
-            add:'add',
-            up:'up',
-            down:'down',
-            unable:'unable',
-        },
-        style:{
-            tree:{
-                width: '300px',
+    <script>
+        var treeOptions = {
+            checkbox: false,
+            sel_ids: '3,11,12,13,30,31,32,33',
+            expand: true,
+            expandIds: '2,9,11', //优先级高于expand
+            editable: true,
+            editorText: {
+                edit: 'edit',
+                delete: 'delete',
+                add: 'add',
+                up: 'up',
+                down: 'down',
+                unable: 'unable',
             },
-            item:{
-                'border-bottom': '1px solid red'
+            style: {
+                tree: {
+                    width: '300px',
+                },
+                item: {
+                    'border-bottom': '1px solid red'
+                },
+                custom: {
+                    'border-bottom': '1px solid blue'
+                },
             },
-            custom:{
-                'border-bottom': '1px solid blue'
+            // class : {
+            //     active:'locate'
+            // },
+            custom: function (item) {
+                var html = '<span>' + item.id + '</span><span>' + item.name + '</span><span>' + item.expand +
+                    '</span>';
+                return html
             },
-        },
-        custom : function(item){
-            var html = '<span>'+ item.id  + '</span><span>' + item.name + '</span><span>' + item.expand + '</span>';
-            return html
-        },
-        onExpand: function (item, callback) {
-            console.log("expand item", item, item.name);
-        },
+            onExpand: function (item, callback) {
+                console.log("expand item", item, item.name);
+            },
 
-        onCheck: function (item, callback) {
-            console.log("check item", item, item.name);
-        },
+            onCheck: function (item, callback) {
+                console.log("check item", item, item.name);
+            },
 
-        onClick: function (item, callback) {
-            console.log("click item", item, item.name);
-        },
+            onClick: function (item, callback) {
+                console.log("click item", item, item.name);
+            },
 
-        onEdit: function (item, callback) {
-            console.log("edit item", item, item.name);
-            popUpEditor(item, callback);
-        },
+            onEdit: function (item, callback) {
+                console.log("edit item", item, item.name);
+                popUpEditor(item, callback);
+            },
 
-        onDelete: function (item, callback) {
-            console.log("delete item", item, item.name, "item.parent", item.parent);
-            popUpdelete(item, callback);
-        },
+            onDelete: function (item, callback) {
+                console.log("delete item", item, item.name, "item.parent", item.parent);
+                popUpdelete(item, callback);
+            },
 
-        onAddChild: function (newChild, callback) {
-            console.log("add child, parent is", newChild.parent, newChild.parent.name);
-            popUpAddor(newChild, callback);
-        },
+            onAddChild: function (newChild, callback) {
+                console.log("add child, parent is", newChild.parent, newChild.parent.name);
+                popUpAddor(newChild, callback);
+            },
 
-        onSort: function (item1, item2, callback) {
-            console.log("sort item", item1, item1.name);
-            sortTempFn(item1, callback);
-        },
-    };
+            onSort: function (item1, item2, callback) {
+                console.log("sort item", item1, item1.name);
+                sortTempFn(item1, callback);
+            },
+        };
 
-    var treeData = [
-        {id: 26, name: '成都', nodeId: 7, is_node: false, is_check: false, is_edit: true, is_delete: true, is_add: true},
-        {id: 27, name: '泸州', nodeId: 7, is_node: false, is_check: false, is_edit: true, is_delete: true, is_add: true},
-        {id: 28, name: '昆明', nodeId: 7, is_node: false, is_check: false, is_edit: true, is_delete: true, is_add: true},
-        {id: 29, name: '大理', nodeId: 7, is_node: true, is_check: false, is_edit: true, is_delete: true, is_add: true},
-        {id: 30, name: '贵阳', nodeId: 29, is_node: false, is_check: false, is_edit: true, is_delete: true, is_add: true},
-        {id: 31, name: '遵义', nodeId: 29, is_node: false, is_check: false, is_edit: true, is_delete: true, is_add: true},
-        {id: 32, name: '南宁', nodeId: 29, is_node: false, is_check: false, is_edit: true, is_delete: true, is_add: true},
-        {id: 33, name: '桂林', nodeId: 29, is_node: false, is_check: false, is_edit: true, is_delete: true, is_add: true},
+        var treeData = [{
+                id: 26,
+                name: '成都',
+                nodeId: 7,
+                is_node: false,
+                is_check: false,
+                is_edit: true,
+                is_delete: true,
+                is_add: true
+            },
+            {
+                id: 27,
+                name: '泸州',
+                nodeId: 7,
+                is_node: false,
+                is_check: false,
+                is_edit: true,
+                is_delete: true,
+                is_add: true
+            },
+            {
+                id: 28,
+                name: '昆明',
+                nodeId: 7,
+                is_node: false,
+                is_check: false,
+                is_edit: true,
+                is_delete: true,
+                is_add: true
+            },
+            {
+                id: 29,
+                name: '大理',
+                nodeId: 7,
+                is_node: true,
+                is_check: false,
+                is_edit: true,
+                is_delete: true,
+                is_add: true
+            },
+            {
+                id: 30,
+                name: '贵阳',
+                nodeId: 29,
+                is_node: false,
+                is_check: false,
+                is_edit: true,
+                is_delete: true,
+                is_add: true
+            },
+            {
+                id: 31,
+                name: '遵义',
+                nodeId: 29,
+                is_node: false,
+                is_check: false,
+                is_edit: true,
+                is_delete: true,
+                is_add: true
+            },
+            {
+                id: 32,
+                name: '南宁',
+                nodeId: 29,
+                is_node: false,
+                is_check: false,
+                is_edit: true,
+                is_delete: true,
+                is_add: true
+            },
+            {
+                id: 33,
+                name: '桂林',
+                nodeId: 29,
+                is_node: false,
+                is_check: false,
+                is_edit: true,
+                is_delete: true,
+                is_add: true
+            },
 
-        {id: 1, name: '中国', nodeId: 99, is_node: true, is_check: false, is_edit: true, is_delete: true, is_add: true},
-        {id: 110, name: '大陆', nodeId: 99, is_node: true, is_check: false, is_edit: true, is_delete: true, is_add: true},
-        {id: 111, name: '大陆',nodeId: 110,is_node: false,is_check: false,is_edit: true,is_delete: true,is_add: true},
+            {
+                id: 1,
+                name: '中国',
+                nodeId: 99,
+                is_node: true,
+                is_check: false,
+                is_edit: true,
+                is_delete: true,
+                is_add: true
+            },
+            {
+                id: 110,
+                name: '大陆',
+                nodeId: 99,
+                is_node: true,
+                is_check: false,
+                is_edit: true,
+                is_delete: true,
+                is_add: true
+            },
+            {
+                id: 111,
+                name: '大陆',
+                nodeId: 110,
+                is_node: false,
+                is_check: false,
+                is_edit: true,
+                is_delete: true,
+                is_add: true
+            },
 
-        {id: 2, name: '四川', nodeId: 1, is_node: true, is_check: false, is_edit: true, is_delete: true, is_add: true},
-        {id: 3, name: '云南', nodeId: 1, is_node: true, is_check: false, is_edit: true, is_delete: true, is_add: true},
-        {id: 4, name: '贵州', nodeId: 1, is_node: true, is_check: false, is_edit: true, is_delete: true, is_add: true},
-        {id: 5, name: '广西', nodeId: 1, is_node: true, is_check: false, is_edit: true, is_delete: true, is_add: true},
-        {id: 6, name: '成都', nodeId: 2, is_node: false, is_check: false, is_edit: true, is_delete: true, is_add: true},
-        {id: 7, name: '泸州', nodeId: 2, is_node: true, is_check: false, is_edit: true, is_delete: true, is_add: true},
-        {id: 8, name: '昆明', nodeId: 3, is_node: false, is_check: false, is_edit: true, is_delete: true, is_add: true},
-        {id: 9, name: '大理', nodeId: 3, is_node: false, is_check: false, is_edit: true, is_delete: true, is_add: true},
-        {id: 10, name: '贵阳', nodeId: 4, is_node: false, is_check: false, is_edit: true, is_delete: true, is_add: true},
-        {id: 11, name: '遵义', nodeId: 4, is_node: false, is_check: false, is_edit: true, is_delete: true, is_add: true},
-        {id: 12, name: '南宁', nodeId: 5, is_node: false, is_check: false, is_edit: true, is_delete: true, is_add: true},
-        {id: 13, name: '桂林', nodeId: 5, is_node: false, is_check: false, is_edit: true, is_delete: true, is_add: true},
-    ];
+            {
+                id: 2,
+                name: '四川',
+                nodeId: 1,
+                is_node: true,
+                is_check: false,
+                is_edit: true,
+                is_delete: true,
+                is_add: true
+            },
+            {
+                id: 3,
+                name: '云南',
+                nodeId: 1,
+                is_node: true,
+                is_check: false,
+                is_edit: true,
+                is_delete: true,
+                is_add: true
+            },
+            {
+                id: 4,
+                name: '贵州',
+                nodeId: 1,
+                is_node: true,
+                is_check: false,
+                is_edit: true,
+                is_delete: true,
+                is_add: true
+            },
+            {
+                id: 5,
+                name: '广西',
+                nodeId: 1,
+                is_node: true,
+                is_check: false,
+                is_edit: true,
+                is_delete: true,
+                is_add: true
+            },
+            {
+                id: 6,
+                name: '成都',
+                nodeId: 2,
+                is_node: false,
+                is_check: false,
+                is_edit: true,
+                is_delete: true,
+                is_add: true
+            },
+            {
+                id: 7,
+                name: '泸州',
+                nodeId: 2,
+                is_node: true,
+                is_check: false,
+                is_edit: true,
+                is_delete: true,
+                is_add: true
+            },
+            {
+                id: 8,
+                name: '昆明',
+                nodeId: 3,
+                is_node: false,
+                is_check: false,
+                is_edit: true,
+                is_delete: true,
+                is_add: true
+            },
+            {
+                id: 9,
+                name: '大理',
+                nodeId: 3,
+                is_node: false,
+                is_check: false,
+                is_edit: true,
+                is_delete: true,
+                is_add: true
+            },
+            {
+                id: 10,
+                name: '贵阳',
+                nodeId: 4,
+                is_node: false,
+                is_check: false,
+                is_edit: true,
+                is_delete: true,
+                is_add: true
+            },
+            {
+                id: 11,
+                name: '遵义',
+                nodeId: 4,
+                is_node: false,
+                is_check: false,
+                is_edit: true,
+                is_delete: true,
+                is_add: true
+            },
+            {
+                id: 12,
+                name: '南宁',
+                nodeId: 5,
+                is_node: false,
+                is_check: false,
+                is_edit: true,
+                is_delete: true,
+                is_add: true
+            },
+            {
+                id: 13,
+                name: '桂林',
+                nodeId: 5,
+                is_node: false,
+                is_check: false,
+                is_edit: true,
+                is_delete: true,
+                is_add: true
+            },
+        ];
 
-    var xTree1 = new Vue({
-        el: '#xTreeDemo',
-        data: function () {
-            return {
-                data: treeData,
-                options: treeOptions,
-                fn:{}
-            };
+        var xTree1 = new Vue({
+            el: '#xTreeDemo',
+            data: function () {
+                return {
+                    data: treeData,
+                    options: treeOptions,
+                    fn: {}
+                };
+            }
+        });
+        // xTree1.setCustom(id,function(item){
+        //     return '';
+        // });
+        console.log("new Vue(), xTree1 is ", xTree1);
+
+        /*---------------- deleteItem ----------------*/
+        var deleteFn = function () {
+
+        };
+        var deleteTemp;
+
+        function popUpdelete(item, callback) {
+            deleteTemp = item;
+            deleteFn = callback;
+            console.log("deleteTemp", deleteTemp);
+            console.log("deleteFn", deleteFn);
         }
-    });
-    // xTree1.setCustom(id,function(item){
-    //     return '';
-    // });
-    console.log("new Vue(), xTree1 is ", xTree1);
 
-    /*---------------- deleteItem ----------------*/
-    var deleteFn = function () {
+        function deleteItem() {
+            console.log("before delete", deleteTemp, deleteTemp.name);
+            deleteFn(deleteTemp, true);
+            console.log("deleted", deleteTemp, deleteTemp.name);
 
-    };
-    var deleteTemp;
-    function popUpdelete(item, callback) {
-        deleteTemp = item;
-        deleteFn = callback;
-        console.log("deleteTemp", deleteTemp);
-        console.log("deleteFn", deleteFn);
-    }
-    function deleteItem() {
-        console.log("before delete", deleteTemp, deleteTemp.name);
-        deleteFn(deleteTemp, true);
-        console.log("deleted", deleteTemp, deleteTemp.name);
-
-    }
-    var deleteEl = document.querySelector('.button-delete');
-    deleteEl.addEventListener('click', deleteItem);
-
-    /*---------------- sortItem ----------------*/
-    var sortTemp = {};
-    var sortFn = function () {
-    };
-
-    function sortTempFn(item, callback) {
-        sortTemp = item;
-        sortFn = callback;
-    }
-
-    function sort() {
-        console.log("sort");
-        sortFn(sortTemp, true);
-    }
-    function sortn() {
-        console.log("sortn");
-        sortFn(sortTemp, false);
-    }
-
-    var sortEl = document.querySelector('.button-sort');
-    sortEl.addEventListener('click', sort);
-
-    var sortnEl = document.querySelector('.button-sortn');
-    sortnEl.addEventListener('click', sortn);
-
-    /*---------------- editItem ----------------*/
-    var editTemp = {};
-    var editFn = function () {
-    };
-    function popUpEditor(item, callback) {
-        editTemp = item;
-        editFn = callback;
-    }
-    var cntEdit = 0;
-    function editItem() {
-        console.log("editTempBefore", editTemp, editTemp.name);
-        cntEdit++;
-        editTemp.id = 666;
-        editTemp.name = "edit" + cntEdit;
-        editTemp.is_check = false;
-        editTemp.is_node = true;
-        editFn(editTemp, 1, true);
-        console.log("editTempAfter", editTemp, editTemp.name);
-        editTemp = {};
-    }
-    var editEl = document.querySelector('.button-edit');
-    editEl.addEventListener('click', editItem);
-
-    /*---------------- addItem ----------------*/
-    var addTemp = {};
-    function popUpAddor(item) {
-        addTemp = item;
-    }
-    var cntAdd = 0;
-    function addItem() {
-        console.log("addTempBefore", addTemp, addTemp.name);
-        cntAdd++;
-        addTemp.id = 777;
-        addTemp.name = "add" + cntAdd;
-        addTemp.is_check = true;
-        addTemp.is_node = false;
-
-        if (!addTemp.parent.is_node) {
-            addTemp.parent.is_node = true;
-            addTemp.parent.children = [];
         }
-        addTemp.parent.expand = true;
-        addTemp.parent.children.push(addTemp);
-        console.log("addTempAfter", addTemp, addTemp.name);
-        addTemp = {};
-    }
-    function cancelAdd() {
-        console.log("add cancel");
-    }
-    var addEl = document.querySelector('.button-add');
-    addEl.addEventListener('click', addItem);
+        var deleteEl = document.querySelector('.button-delete');
+        deleteEl.addEventListener('click', deleteItem);
 
-    var cancelEl = document.querySelector('.button-cancel');
-    cancelEl.addEventListener('click', cancelAdd);
+        /*---------------- sortItem ----------------*/
+        var sortTemp = {};
+        var sortFn = function () {};
 
-    /*---------------- end ----------------*/
+        function sortTempFn(item, callback) {
+            sortTemp = item;
+            sortFn = callback;
+        }
 
-</script>
+        function sort() {
+            console.log("sort");
+            sortFn(sortTemp, true);
+        }
+
+        function sortn() {
+            console.log("sortn");
+            sortFn(sortTemp, false);
+        }
+
+        var sortEl = document.querySelector('.button-sort');
+        sortEl.addEventListener('click', sort);
+
+        var sortnEl = document.querySelector('.button-sortn');
+        sortnEl.addEventListener('click', sortn);
+
+        /*---------------- editItem ----------------*/
+        var editTemp = {};
+        var editFn = function () {};
+
+        function popUpEditor(item, callback) {
+            editTemp = item;
+            editFn = callback;
+        }
+        var cntEdit = 0;
+
+        function editItem() {
+            console.log("editTempBefore", editTemp, editTemp.name);
+            cntEdit++;
+            editTemp.id = 666;
+            editTemp.name = "edit" + cntEdit;
+            editTemp.is_check = false;
+            editTemp.is_node = true;
+            editFn(editTemp, 1, true);
+            console.log("editTempAfter", editTemp, editTemp.name);
+            editTemp = {};
+        }
+        var editEl = document.querySelector('.button-edit');
+        editEl.addEventListener('click', editItem);
+
+        /*---------------- addItem ----------------*/
+        var addTemp = {};
+
+        function popUpAddor(item) {
+            addTemp = item;
+        }
+        var cntAdd = 0;
+
+        function addItem() {
+            console.log("addTempBefore", addTemp, addTemp.name);
+            cntAdd++;
+            addTemp.id = 777;
+            addTemp.name = "add" + cntAdd;
+            addTemp.is_check = true;
+            addTemp.is_node = false;
+
+            if (!addTemp.parent.is_node) {
+                addTemp.parent.is_node = true;
+                addTemp.parent.children = [];
+            }
+            addTemp.parent.expand = true;
+            addTemp.parent.children.push(addTemp);
+            console.log("addTempAfter", addTemp, addTemp.name);
+            addTemp = {};
+        }
+
+        function cancelAdd() {
+            console.log("add cancel");
+        }
+        var addEl = document.querySelector('.button-add');
+        addEl.addEventListener('click', addItem);
+
+        var cancelEl = document.querySelector('.button-cancel');
+        cancelEl.addEventListener('click', cancelAdd);
+
+        /*---------------- end ----------------*/
+    </script>
 
 </body>
+
 </html>

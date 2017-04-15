@@ -12,7 +12,7 @@
   "scripts": {
     "build": "webpack --config ./build/webpack.prod.config.js",
     "dev": "webpack --config ./build/webpack.dev.config.js",
-    "start": "webpack-dev-server --inline --watch --progress --config ./build/webpack.prod.config.js --port 5399",
+    "dev-server": "webpack-dev-server --inline --watch --progress --config ./build/webpack.prod.config.js --port 5399",
     "express": "node ./build/dev-server-express.js",
     "koa": "node ./build/dev-server.js"
   },

@@ -8,18 +8,16 @@ var koa = require('koa');
 var config = require('./dev-server.config');
 var webpackConfig = require('./webpack.dev.config');
 
+const app = new Koa();
+// response
+app.use(ctx => {
+  ctx.body = 'Hello Koa';
+});
 
-var app = express();
+app.listen(3000);
+
 var compiler = webpack(webpackConfig);
 
-// Using the .html extension instead of having to name the views as *.ejs
-app.engine('.html', require('ejs').__express);
-
-// This avoids having to provide the extension to res.render()
-app.set('view engine', 'html');
-
-// Set the folder where the pages are kept
-app.set('views', __dirname + '../docs');
 
 var devMiddleware = webpackDevMiddleware(compiler, {
 	publicPath: webpackConfig.output.publicPath,
@@ -45,26 +43,6 @@ app.use(hotMiddleware); // enable hot-reload
 
 var baseUrl = 'http://localhost:' + config.port;
 
-var docsRouter = express.Router();
-
-docsRouter.get('/:doc(/:html)', function(req, res){
-	var url = req.params.docs + '/' + req.params.html;
-    res.render(url, {
-        // PLACEHOLDER
-        pageTitle: req.params.html
-    });
-});
-
-app.use('/docs/', docsRouter);
-
-app.get('/', function(req, res){
-	res.redirect('../docs/index.html');
-});
-
-// var staticPath = path.posix.join(config.dev.assetsPublicPath, config.dev.assetsSubDirectory)
-app.use(express.static('./'));
-
-// 在bundle可用的情况下 console.log出正在监听的url;
 devMiddleware.waitUntilValid(function () {
 	console.log('正在监听：' + baseUrl + '\n');
 	opn(baseUrl)

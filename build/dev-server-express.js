@@ -47,10 +47,9 @@ var baseUrl = 'http://localhost:' + config.port;
 
 var docsRouter = express.Router();
 
-docsRouter.get('/:doc(/:html)', function(req, res){
+docsRouter.get('/:docs(/:html)', function(req, res){
 	var url = req.params.docs + '/' + req.params.html;
     res.render(url, {
-        // PLACEHOLDER
         pageTitle: req.params.html
     });
 });

@@ -13,8 +13,8 @@
     "build": "webpack --config ./build/webpack.prod.config.js",
     "dev": "webpack --config ./build/webpack.dev.config.js",
     "dev-server": "webpack-dev-server --inline --watch --progress --config ./build/webpack.prod.config.js --port 5399",
-    "express": "node ./build/dev-server-express.js",
-    "koa": "node ./build/dev-server.js"
+    "express": "node ./server/dev-server-express.js",
+    "koa": "node ./server/dev-server.js"
   },
   "dependencies": {
     "vue": "^2.2.1",
@@ -71,6 +71,7 @@
     "koa-views": "^6.0.2",
     "lolex": "^1.5.2",
     "mocha": "^3.2.0",
+    "mongoose": "^4.9.5",
     "nightwatch": "^0.9.12",
     "node-sass": "^4.5.0",
     "opn": "^4.0.2",

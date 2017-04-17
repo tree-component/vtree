@@ -3,7 +3,7 @@ const opn = require('opn');
 const webpack = require('webpack');
 const webpackDevMiddleware = require("webpack-dev-middleware");
 const webpackHotMiddleware = require("webpack-hot-middleware");
-const config = require('../build/dev-server.config');
+const config = require('./dev-server.config');
 const webpackConfig = require('../build/webpack.dev.config');
 const Koa = require('koa');
 const Router = require('koa-router');
@@ -20,29 +20,25 @@ app.use(views(basePath, {
 }));
 
 //router
-const router = new Router();
-router
+const indexRouter = new Router();
+indexRouter
     .get('/', ctx => {
-        ctx.body = "Hello Koa!"
+        ctx.body = "Hello Koa2!"
     })
-    .get('/index', ctx => {
+    .get('index', ctx => {
         ctx.body = 'Hello index!'
     })
-    .get('/index/:name', ctx => {
+    .get('index/:name', ctx => {
         ctx.body = 'Hello ' + ctx.params.name + '!'
     })
-    .get('/query', ctx => {
+    .get('query', ctx => {
         let query = ctx.query;
         let querystring = ctx.querystring;
-        ctx.body = 'Hello ' + query.a + 'Hello ' + query.b + ' && ' + querystring + '!';
+        ctx.body = 'Hello ' + query.a + ' Hello ' + query.b + ' && ' + querystring + ' !';
     })
-app
-    .use(router.routes())
-    .use(router.allowedMethods())
-
 //docs router
 var docsRouter = new Router();
-docsRouter.prefix('/docs')
+// docsRouter.prefix('/docs')
 docsRouter.get('/:name', async(ctx) => {
     let url = 'docs/index';
     let title = 'Hello ' + ctx.params.name + '!';
@@ -50,9 +46,12 @@ docsRouter.get('/:name', async(ctx) => {
         title
     })
 })
-app
-    .use(docsRouter.routes())
-    .use(docsRouter.allowedMethods());
+// 装载所有子路由
+let router = new Router()
+router.use('/', indexRouter.routes(), indexRouter.allowedMethods())
+router.use('/docs', docsRouter.routes(), docsRouter.allowedMethods())
+// 加载路由中间件
+app.use(router.routes()).use(router.allowedMethods());
 
 
 var compiler = webpack(webpackConfig);

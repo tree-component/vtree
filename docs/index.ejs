@@ -5,10 +5,14 @@
   <title><%= title %></title>
 </head>
 <body>
-  <h1><%= title %></h1>
+  <h1 id="title"><%= title %></h1>
   <div>
     <%= title %>777
   </div>
   <p>Welcome to Koa2</p>
+  <script>
+    var title = document.getElementById('title').innerHTML
+    console.log(title);
+  </script>
 </body>
 </html>

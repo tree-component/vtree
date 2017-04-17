@@ -3,16 +3,15 @@ const opn = require('opn');
 const webpack = require('webpack');
 const webpackDevMiddleware = require("webpack-dev-middleware");
 const webpackHotMiddleware = require("webpack-hot-middleware");
-const config = require('./dev-server.config');
-const webpackConfig = require('./webpack.dev.config');
+const config = require('../build/dev-server.config');
+const webpackConfig = require('../build/webpack.dev.config');
 const Koa = require('koa');
 const Router = require('koa-router');
 
 const views = require('koa-views');
 
-
+//app
 const app = new Koa();
-const router = new Router();
 
 // 配置模板文件目录和后缀名
 const basePath = path.resolve(__dirname, '../');
@@ -20,6 +19,8 @@ app.use(views(basePath, {
     extension: 'ejs'
 }));
 
+//router
+const router = new Router();
 router
     .get('/', ctx => {
         ctx.body = "Hello Koa!"
@@ -35,17 +36,23 @@ router
         let querystring = ctx.querystring;
         ctx.body = 'Hello ' + query.a + 'Hello ' + query.b + ' && ' + querystring + '!';
     })
-    .get('/docs/:name', async(ctx) => {
-        let url = 'docs/index';
-        let title = 'Hello ' + ctx.params.name + '!';
-        await ctx.render(url, {
-            title
-        })
-    })
-
 app
     .use(router.routes())
-    .use(router.allowedMethods());
+    .use(router.allowedMethods())
+
+//docs router
+var docsRouter = new Router();
+docsRouter.prefix('/docs')
+docsRouter.get('/:name', async(ctx) => {
+    let url = 'docs/index';
+    let title = 'Hello ' + ctx.params.name + '!';
+    await ctx.render(url, {
+        title
+    })
+})
+app
+    .use(docsRouter.routes())
+    .use(docsRouter.allowedMethods());
 
 
 var compiler = webpack(webpackConfig);

@@ -36,10 +36,10 @@ function _initOptions(options) {
         },
         class: {
             tree: '',
-            item: '',
-            active: 'x-tree-item-active',
-            children: '',
-            custom: '',
+                item: '',
+                active: 'x-tree-item-active',
+                children: '',
+                custom: '',
         },
         onExpand: function () {},
         onClick: function () {},
@@ -232,6 +232,39 @@ function _expandTreeByIdsFn(item, ids) {
     };
 }
 
+function _activeTreeByIds(tree, expand_ids) {
+    let ids = [];
+    if (expand_ids.constructor == String) {
+        ids = expand_ids.split(',');
+    } else if (expand_ids.constructor == Array) {
+        ids = expand_ids;
+    } else {
+        console.warn('请检查 expandIds 格式');
+    }
+    _traverseTree(tree, _activeTreeByIdsFn, ids);
+    return tree;
+}
+
+function _activeTreeByIdsFn(item, ids) {
+    if (!ids.length) {
+        return {
+            children: false,
+            brother: false
+        };
+    }
+    for (let i = 0; i < ids.length; i++) {
+        if (item.id == ids[i]) {
+            _expandParent(item.parent, true);
+            ids.splice(i, 1);
+            break;
+        }
+    }
+    return {
+        children: ids.length,
+        brother: ids.length
+    };
+}
+
 function _traverseTree(tree, fn, input, output) {
     if (!tree) {
         return true;
@@ -395,40 +428,108 @@ function getItemById(tree, id) {
     return false;
 }
 
+function getItemByIds(tree, ids) {
+    if (!tree || !ids || !ids.length) {
+        return false;
+    }
+    let result = [];
+    let result2 = [];
+    for (let i = 0; i < ids.length; i++) {
+        if (tree.id == ids[i]) {
+            result.push(tree);
+            ids.splice(i, 1);
+        }
+    }
+    if (ids.length && tree.children && tree.children.length) {
+        for (let i = 0; i < tree.children.length; i++) {
+            let result2 = getItemByIds(tree.children[i], ids);
+            result = result.concat(result2);
+            if (!ids.length) {
+                break;
+            }
+        }
+    }
+    return result;
+}
+
+//tree:Object,key:String,value:Array
+function getItem(tree, key, value) {
+    if (!tree || !ids || !ids.length) {
+        return false;
+    }
+    let result = [];
+    let result2 = [];
+    for (let i = 0; i < ids.length; i++) {
+        if (tree.id == ids[i]) {
+            result.push(tree);
+            ids.splice(i, 1);
+        }
+    }
+    if (ids.length && tree.children && tree.children.length) {
+        for (let i = 0; i < tree.children.length; i++) {
+            let result2 = getItemByIds(tree.children[i], ids);
+            result = result.concat(result2);
+            if (!ids.length) {
+                break;
+            }
+        }
+    }
+    return result;
+}
+
+//item:Object,key:String,value:Array,fn:Function
+function changeItem(item, key, value, fn) {
+    if (!item || !ids || !ids.length) {
+        return false;
+    }
+    let result = [];
+    let result2 = [];
+    for (let i = 0; i < ids.length; i++) {
+        if (item.id == ids[i]) {
+            result.push(item);
+            ids.splice(i, 1);
+        }
+    }
+    if (ids.length && item.children && item.children.length) {
+        for (let i = 0; i < item.children.length; i++) {
+            let result2 = getItemByIds(item.children[i], ids);
+            result = result.concat(result2);
+            if (!ids.length) {
+                break;
+            }
+        }
+    }
+    return result;
+}
+
 let fn = {
     _initOptions: _initOptions,
 
     _arrayToTree: _arrayToTree,
-
     _getTreeRoot: _getTreeRoot,
-
     _uniqueArray: _uniqueArray,
-
     _getSubTree: _getSubTree,
 
     _checkTreeByIds: _checkTreeByIds,
-
     _checkTreeByIdsFn: _checkTreeByIdsFn,
 
     _expandTreeByIds: _expandTreeByIds,
-
     _expandTreeByIdsFn: _expandTreeByIdsFn,
-
     _expandParent: _expandParent,
+
+    _activeTreeByIds: _activeTreeByIds,
+    _activeTreeByIdsFn: _activeTreeByIdsFn,
 
     _traverseTree: _traverseTree,
 
     _changeItem: _changeItem,
-
     _changeChildren: _changeChildren,
-
     _changeParent: _changeParent,
 
     getName: getName,
-
     getNameFn: getNameFn,
-
     getItemById: getItemById,
+    getItemByIds: getItemByIds
 };
 
 export default fn;

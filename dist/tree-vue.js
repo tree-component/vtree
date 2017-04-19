@@ -440,13 +440,13 @@ module.exports = function listToStyles (parentId, list) {
 
 
 /* styles */
-__webpack_require__(27)
+__webpack_require__(28)
 
 var Component = __webpack_require__(1)(
   /* script */
   __webpack_require__(7),
   /* template */
-  __webpack_require__(23),
+  __webpack_require__(24),
   /* scopeId */
   "data-v-d71012fc",
   /* cssModules */
@@ -488,7 +488,7 @@ var _methods = __webpack_require__(12);
 
 var _methods2 = _interopRequireDefault(_methods);
 
-var _xTreeItem = __webpack_require__(19);
+var _xTreeItem = __webpack_require__(20);
 
 var _xTreeItem2 = _interopRequireDefault(_xTreeItem);
 
@@ -1000,7 +1000,8 @@ exports.default = fn;
 /* 14 */,
 /* 15 */,
 /* 16 */,
-/* 17 */
+/* 17 */,
+/* 18 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(0)();
@@ -1014,7 +1015,7 @@ exports.push([module.i, "\n.x-tree-wrapper[data-v-d71012fc] {\n    cursor: point
 
 
 /***/ }),
-/* 18 */
+/* 19 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(0)();
@@ -1028,18 +1029,18 @@ exports.push([module.i, "\n.x-tree-item[data-v-fa3be196] {\n    position: relati
 
 
 /***/ }),
-/* 19 */
+/* 20 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
 /* styles */
-__webpack_require__(28)
+__webpack_require__(29)
 
 var Component = __webpack_require__(1)(
   /* script */
   __webpack_require__(8),
   /* template */
-  __webpack_require__(24),
+  __webpack_require__(25),
   /* scopeId */
   "data-v-fa3be196",
   /* cssModules */
@@ -1066,10 +1067,10 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 20 */,
 /* 21 */,
 /* 22 */,
-/* 23 */
+/* 23 */,
+/* 24 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -1093,7 +1094,7 @@ if (false) {
 }
 
 /***/ }),
-/* 24 */
+/* 25 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -1232,15 +1233,15 @@ if (false) {
 }
 
 /***/ }),
-/* 25 */,
 /* 26 */,
-/* 27 */
+/* 27 */,
+/* 28 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(17);
+var content = __webpack_require__(18);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
@@ -1260,13 +1261,13 @@ if(false) {
 }
 
 /***/ }),
-/* 28 */
+/* 29 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(18);
+var content = __webpack_require__(19);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM

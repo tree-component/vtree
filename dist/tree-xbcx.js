@@ -488,13 +488,13 @@ exports.default = extend;
 
 
 /* styles */
-__webpack_require__(25)
+__webpack_require__(26)
 
 var Component = __webpack_require__(1)(
   /* script */
   __webpack_require__(9),
   /* template */
-  __webpack_require__(21),
+  __webpack_require__(22),
   /* scopeId */
   "data-v-273f1241",
   /* cssModules */
@@ -537,15 +537,26 @@ var _extend = __webpack_require__(4);
 
 var _extend2 = _interopRequireDefault(_extend);
 
+var _utils = __webpack_require__(15);
+
+var _utils2 = _interopRequireDefault(_utils);
+
 var _methods = __webpack_require__(14);
 
 var _methods2 = _interopRequireDefault(_methods);
 
-var _xTreeItem = __webpack_require__(20);
+var _xTreeItem = __webpack_require__(21);
 
 var _xTreeItem2 = _interopRequireDefault(_xTreeItem);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+//
+//
+//
+//
+//
+//
 
 exports.default = {
     name: "x-tree",
@@ -559,25 +570,35 @@ exports.default = {
     },
     data: function data() {
         this.exportFn();
-        var treeOptions = this.initOptions(this.options);
-        var treeData = this.initData(this.data, this.options);
+        this.opts = this.initOptions(this.options);
+        this.tree = this.fn._arrayToTree(this.data, this.opts);
+        this.tree = this.initTree(this.tree, this.opts);
+        this.tree.fn = this.fn;
+        this.tree.opts = this.opts;
         return {
-            fnfn: _methods2.default,
-            opt: treeOptions,
-            tree: treeData
+            tree: this.tree,
+            opts: this.opts,
+            fnfn: this.fn
         };
     },
     computed: {},
     methods: {
-        initData: function initData(data, options) {
-            var treeTree = _methods2.default._arrayToTree(data, options);
-            var treeChecked = options.sel_ids ? _methods2.default._checkTreeByIds(treeTree, options.sel_ids) : treeTree;
-            var treeExpand = options.expandIds ? _methods2.default._expandTreeByIds(treeChecked, options.expandIds) : treeChecked;
-            return treeExpand;
-        },
         initOptions: function initOptions(options) {
-            var opt = _methods2.default._initOptions(options);
-            return opt;
+            var opts = _methods2.default._initOptions(options);
+            return opts;
+        },
+        initTree: function initTree(tree, options) {
+            var treeChecked = options.sel_ids ? _methods2.default._checkTreeByIds(tree, options.sel_ids) : tree;
+            var treeExpand = options.expandIds ? _methods2.default._expandTreeByIds(treeChecked, options.expandIds) : treeChecked;
+
+            if (options.expandIds) {
+                var ids = _utils2.default.toArray(options.expandIds);
+                var items = _methods2.default.getItemByIds(tree, ids);
+                for (var i = 0; i < items.length; i++) {
+                    this.activeItem(items[i]);
+                }
+            }
+            return treeExpand;
         },
         exportFn: function exportFn() {
             _extend2.default.extend(this.fn, _methods2.default);
@@ -597,7 +618,7 @@ exports.default = {
             return item;
         },
         activeItem: function activeItem(item) {
-            item.class = this.opt.class.active;
+            item.class = this.opts.class.active;
             this.tree.active.push(item);
         },
         clearActive: function clearActive(type, id) {
@@ -608,9 +629,9 @@ exports.default = {
                 }
                 array.length = 0;
             } else {
-                for (var index = 0; index < array.length; index++) {
-                    if (array[index].id == id) {
-                        array[index].class = '';
+                for (var _index = 0; _index < array.length; _index++) {
+                    if (array[_index].id == id) {
+                        array[_index].class = '';
                         array.splice();
                         break;
                     }
@@ -644,12 +665,7 @@ exports.default = {
         }
 
     }
-}; //
-//
-//
-//
-//
-//
+};
 
 /***/ }),
 /* 10 */
@@ -1117,6 +1133,39 @@ function _expandTreeByIdsFn(item, ids) {
     };
 }
 
+function _activeTreeByIds(tree, expand_ids) {
+    var ids = [];
+    if (expand_ids.constructor == String) {
+        ids = expand_ids.split(',');
+    } else if (expand_ids.constructor == Array) {
+        ids = expand_ids;
+    } else {
+        console.warn('请检查 expandIds 格式');
+    }
+    _traverseTree(tree, _activeTreeByIdsFn, ids);
+    return tree;
+}
+
+function _activeTreeByIdsFn(item, ids) {
+    if (!ids.length) {
+        return {
+            children: false,
+            brother: false
+        };
+    }
+    for (var i = 0; i < ids.length; i++) {
+        if (item.id == ids[i]) {
+            _expandParent(item.parent, true);
+            ids.splice(i, 1);
+            break;
+        }
+    }
+    return {
+        children: ids.length,
+        brother: ids.length
+    };
+}
+
 function _traverseTree(tree, fn, input, output) {
     if (!tree) {
         return true;
@@ -1280,46 +1329,148 @@ function getItemById(tree, id) {
     return false;
 }
 
+function getItemByIds(tree, ids) {
+    if (!tree || !ids || !ids.length) {
+        return false;
+    }
+    var result = [];
+    var result2 = [];
+    for (var i = 0; i < ids.length; i++) {
+        if (tree.id == ids[i]) {
+            result.push(tree);
+            ids.splice(i, 1);
+        }
+    }
+    if (ids.length && tree.children && tree.children.length) {
+        for (var _i = 0; _i < tree.children.length; _i++) {
+            var _result = getItemByIds(tree.children[_i], ids);
+            result = result.concat(_result);
+            if (!ids.length) {
+                break;
+            }
+        }
+    }
+    return result;
+}
+
+//tree:Object,key:String,value:Array
+function getItem(tree, key, value) {
+    if (!tree || !ids || !ids.length) {
+        return false;
+    }
+    var result = [];
+    var result2 = [];
+    for (var i = 0; i < ids.length; i++) {
+        if (tree.id == ids[i]) {
+            result.push(tree);
+            ids.splice(i, 1);
+        }
+    }
+    if (ids.length && tree.children && tree.children.length) {
+        for (var _i2 = 0; _i2 < tree.children.length; _i2++) {
+            var _result2 = getItemByIds(tree.children[_i2], ids);
+            result = result.concat(_result2);
+            if (!ids.length) {
+                break;
+            }
+        }
+    }
+    return result;
+}
+
+//item:Object,key:String,value:Array,fn:Function
+function changeItem(item, key, value, fn) {
+    if (!item || !ids || !ids.length) {
+        return false;
+    }
+    var result = [];
+    var result2 = [];
+    for (var i = 0; i < ids.length; i++) {
+        if (item.id == ids[i]) {
+            result.push(item);
+            ids.splice(i, 1);
+        }
+    }
+    if (ids.length && item.children && item.children.length) {
+        for (var _i3 = 0; _i3 < item.children.length; _i3++) {
+            var _result3 = getItemByIds(item.children[_i3], ids);
+            result = result.concat(_result3);
+            if (!ids.length) {
+                break;
+            }
+        }
+    }
+    return result;
+}
+
 var fn = {
     _initOptions: _initOptions,
 
     _arrayToTree: _arrayToTree,
-
     _getTreeRoot: _getTreeRoot,
-
     _uniqueArray: _uniqueArray,
-
     _getSubTree: _getSubTree,
 
     _checkTreeByIds: _checkTreeByIds,
-
     _checkTreeByIdsFn: _checkTreeByIdsFn,
 
     _expandTreeByIds: _expandTreeByIds,
-
     _expandTreeByIdsFn: _expandTreeByIdsFn,
-
     _expandParent: _expandParent,
+
+    _activeTreeByIds: _activeTreeByIds,
+    _activeTreeByIdsFn: _activeTreeByIdsFn,
 
     _traverseTree: _traverseTree,
 
     _changeItem: _changeItem,
-
     _changeChildren: _changeChildren,
-
     _changeParent: _changeParent,
 
     getName: getName,
-
     getNameFn: getNameFn,
-
-    getItemById: getItemById
+    getItemById: getItemById,
+    getItemByIds: getItemByIds
 };
 
 exports.default = fn;
 
 /***/ }),
 /* 15 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+var utils = {};
+utils.toArray = function (params) {
+    var array = [];
+    if (params.constructor == String) {
+        array = params.split(',');
+    } else if (params.constructor == Array) {
+        array = params;
+    } else {
+        console.warn('请检查 参数 格式');
+    }
+    return array;
+};
+utils._uniqueArray = function (arrayIn) {
+    var ua = [];
+    for (var i = 0; i < arrayIn.length; i++) {
+        if (ua.indexOf(arrayIn[i]) == -1) {
+            ua.push(arrayIn[i]);
+        }
+    }
+    return ua;
+};
+
+exports.default = utils;
+
+/***/ }),
+/* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(0)();
@@ -1333,7 +1484,7 @@ exports.push([module.i, "\n.x-tree-wrapper[data-v-273f1241] {\n    position: rel
 
 
 /***/ }),
-/* 16 */
+/* 17 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(0)();
@@ -1347,21 +1498,21 @@ exports.push([module.i, "\n.x-tree-item[data-v-3db19918] {\n    position: relati
 
 
 /***/ }),
-/* 17 */,
 /* 18 */,
 /* 19 */,
-/* 20 */
+/* 20 */,
+/* 21 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
 /* styles */
-__webpack_require__(26)
+__webpack_require__(27)
 
 var Component = __webpack_require__(1)(
   /* script */
   __webpack_require__(10),
   /* template */
-  __webpack_require__(22),
+  __webpack_require__(23),
   /* scopeId */
   "data-v-3db19918",
   /* cssModules */
@@ -1388,7 +1539,7 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 21 */
+/* 22 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -1399,7 +1550,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     attrs: {
       "model": _vm.tree,
       "tree": _vm.tree,
-      "options": _vm.opt,
+      "options": _vm.opts,
       "fn": _vm.fnfn
     },
     on: {
@@ -1418,7 +1569,7 @@ if (false) {
 }
 
 /***/ }),
-/* 22 */
+/* 23 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -1617,15 +1768,15 @@ if (false) {
 }
 
 /***/ }),
-/* 23 */,
 /* 24 */,
-/* 25 */
+/* 25 */,
+/* 26 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(15);
+var content = __webpack_require__(16);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
@@ -1645,13 +1796,13 @@ if(false) {
 }
 
 /***/ }),
-/* 26 */
+/* 27 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(16);
+var content = __webpack_require__(17);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM

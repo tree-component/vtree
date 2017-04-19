@@ -13,7 +13,6 @@
     "build": "webpack --config ./build/webpack.prod.config.js",
     "dev": "webpack --config ./build/webpack.dev.config.js",
     "dev-server": "webpack-dev-server --inline --watch --progress --config ./build/webpack.prod.config.js --port 5399",
-    "express": "node ./server/dev-server-express.js",
     "koa": "node ./server/dev-server.js"
   },
   "dependencies": {

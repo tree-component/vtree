@@ -13,10 +13,10 @@
     "build": "webpack --config ./build/webpack.prod.config.js",
     "dev": "webpack --config ./build/webpack.dev.config.js",
     "dev-server": "webpack-dev-server --inline --watch --progress --config ./build/webpack.prod.config.js --port 5399",
-    "express": "node ./server/dev-server-express.js",
-    "koa": "node ./server/dev-server-koa.js",
-    "demo": "cross-env NODE_ENV=demo node ./server/dev-server-koa.js",
-    "docs": "cross-env NODE_ENV=docs node ./server/dev-server-koa.js"
+    "express": "node ./build/dev-server-express.js",
+    "koa": "node ./build/dev-server-koa.js",
+    "demo": "cross-env NODE_ENV=demo node ./build/dev-server-koa.js",
+    "docs": "cross-env NODE_ENV=docs node ./build/dev-server-koa.js"
   },
   "dependencies": {
     "vue": "^2.2.1",
@@ -30,6 +30,7 @@
     "babel-loader": "^6.2.10",
     "babel-plugin-istanbul": "^3.1.2",
     "babel-plugin-transform-runtime": "^6.22.0",
+    "babel-preset-env": "^1.4.0",
     "babel-preset-latest": "^6.22.0",
     "babel-preset-stage-2": "^6.22.0",
     "babel-register": "^6.22.0",

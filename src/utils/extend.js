@@ -1,40 +1,40 @@
-var extend = {};
+const extend = {};
 extend.extend = function (out) {
-    out = out || {};
+  out = out || {};
 
-    for (let i = 1; i < arguments.length; i++) {
-        if (!arguments[i])
-            continue;
+  for (let i = 1; i < arguments.length; i++) {
+    if (!arguments[i])
+          { continue; }
 
-        for (let key in arguments[i]) {
-            if (arguments[i].hasOwnProperty(key))
-                out[key] = arguments[i][key];
-        }
-    }
+    for (const key in arguments[i]) {
+        if (arguments[i].hasOwnProperty(key))
+              { out[key] = arguments[i][key]; }
+      }
+  }
 
-    return out;
+  return out;
 };
 
 extend.deepExtend = function (out) {
-    out = out || {};
+  out = out || {};
 
-    for (let i = 1; i < arguments.length; i++) {
-        let obj = arguments[i];
+  for (let i = 1; i < arguments.length; i++) {
+    const obj = arguments[i];
 
-        if (!obj)
-            continue;
+    if (!obj)
+          { continue; }
 
-        for (let key in obj) {
-            if (obj.hasOwnProperty(key)) {
-                if (typeof obj[key] === 'object')
-                    out[key] = extend.deepExtend(out[key], obj[key]);
-                else
-                    out[key] = obj[key];
-            }
-        }
-    }
+    for (const key in obj) {
+        if (obj.hasOwnProperty(key)) {
+            if (typeof obj[key] === 'object')
+                  { out[key] = extend.deepExtend(out[key], obj[key]); }
+            else
+                    { out[key] = obj[key]; }
+          }
+      }
+  }
 
-    return out;
+  return out;
 };
 
 export default extend;

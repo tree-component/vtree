@@ -6,10 +6,9 @@
       <span class="icon-blank" v-else></span>
       <i class="x-tree-item-checkbox fa" v-show="options.checkbox" :class="checkboxIcon" @click.stop="checkFn"></i>
       <i class="x-tree-item-folder fa fa-folder-o" v-show="model.is_node"></i>
-      <span class="x-tree-item-name" @mouseenter="nameTip(true)" @mouseleave="nameTip(false)" @click.stop="nameFn">
+      <span class="x-tree-item-name" :title="model.name" @click.stop="nameFn">
         {{model.name}}
       </span>
-      <span class="x-tree-item-name-tip" v-show="state.nameTip" :style="{ 'margin-left': (model.level - 1) * 1.3 + 3.3 + 'em'}">{{model.name}}</span>
       <i class="x-tree-item-edit fa fa-caret-square-o-down" v-if="options.editable" @click.stop="showEditorFn"></i>
       <div class="x-tree-item-editor" v-if="options.editable" v-show="showEditor">
         <span class="x-tree-item-editor-item" v-show="model.is_edit" @click.stop="editFn">{{options.editorText.edit}}</span>
@@ -45,7 +44,6 @@
       return {
         showEditor: false,
         state: {
-          nameTip: false
         }
       };
     },
@@ -108,13 +106,6 @@
       checkFn: function () {
         this.fn._changeItem(this.model, !this.model.is_check);
         this.options.onCheck(this.model);
-      },
-      nameTip: function (show) {
-        if (show === false) {
-          this.state.nameTip = show;
-        } else if (show === true) {
-          this.state.nameTip = show;
-        }
       },
       nameFn: function () {
         this.options.onClick(this.model);

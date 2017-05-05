@@ -1338,9 +1338,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     }
     return {
       showEditor: false,
-      state: {
-        nameTip: false
-      }
+      state: {}
     };
   },
   computed: {
@@ -1401,13 +1399,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     checkFn: function checkFn() {
       this.fn._changeItem(this.model, !this.model.is_check);
       this.options.onCheck(this.model);
-    },
-    nameTip: function nameTip(show) {
-      if (show === false) {
-        this.state.nameTip = show;
-      } else if (show === true) {
-        this.state.nameTip = show;
-      }
     },
     nameFn: function nameFn() {
       this.options.onClick(this.model);
@@ -2878,30 +2869,16 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     staticClass: "x-tree-item-folder fa fa-folder-o"
   }), _vm._v(" "), _c('span', {
     staticClass: "x-tree-item-name",
+    attrs: {
+      "title": _vm.model.name
+    },
     on: {
-      "mouseenter": function($event) {
-        _vm.nameTip(true)
-      },
-      "mouseleave": function($event) {
-        _vm.nameTip(false)
-      },
       "click": function($event) {
         $event.stopPropagation();
         _vm.nameFn($event)
       }
     }
-  }, [_vm._v("\n      " + _vm._s(_vm.model.name) + "\n    ")]), _vm._v(" "), _c('span', {
-    directives: [{
-      name: "show",
-      rawName: "v-show",
-      value: (_vm.state.nameTip),
-      expression: "state.nameTip"
-    }],
-    staticClass: "x-tree-item-name-tip",
-    style: ({
-      'margin-left': (_vm.model.level - 1) * 1.3 + 3.3 + 'em'
-    })
-  }, [_vm._v(_vm._s(_vm.model.name))]), _vm._v(" "), (_vm.options.editable) ? _c('i', {
+  }, [_vm._v("\n      " + _vm._s(_vm.model.name) + "\n    ")]), _vm._v(" "), (_vm.options.editable) ? _c('i', {
     staticClass: "x-tree-item-edit fa fa-caret-square-o-down",
     on: {
       "click": function($event) {

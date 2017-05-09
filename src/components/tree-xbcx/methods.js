@@ -552,7 +552,7 @@ function getIds(tree, type) {
   let ids = {}
   let items = getItems(tree, type);
 
-  for (key in items) {
+  for (let key in items) {
     ids[key] = [];
     if (items.hasOwnProperty(key) && items[key].length > 0) {
       items[key].forEach(function (element) {
@@ -560,6 +560,7 @@ function getIds(tree, type) {
       }, this);
     }
   }
+
   return ids;
 }
 
@@ -567,7 +568,7 @@ function getNames(tree, type) {
   let names = {};
   let items = getItems(tree, type);
 
-  for (key in items) {
+  for (let key in items) {
     names[key] = [];
     if (items.hasOwnProperty(key) && items[key].length > 0) {
       items[key].forEach(function (element) {

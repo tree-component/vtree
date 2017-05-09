@@ -2057,31 +2057,44 @@ function getItems(tree, typeIn) {
 }
 
 function getIds(tree, type) {
+  var _this = this;
+
   var ids = {};
   var items = getItems(tree, type);
 
-  for (key in items) {
+  var _loop = function _loop(key) {
     ids[key] = [];
     if (items.hasOwnProperty(key) && items[key].length > 0) {
       items[key].forEach(function (element) {
         ids[key].push(element.id);
-      }, this);
+      }, _this);
     }
+  };
+
+  for (var key in items) {
+    _loop(key);
   }
+
   return ids;
 }
 
 function getNames(tree, type) {
+  var _this2 = this;
+
   var names = {};
   var items = getItems(tree, type);
 
-  for (key in items) {
+  var _loop2 = function _loop2(key) {
     names[key] = [];
     if (items.hasOwnProperty(key) && items[key].length > 0) {
       items[key].forEach(function (element) {
         names[key].push(element.name);
-      }, this);
+      }, _this2);
     }
+  };
+
+  for (var key in items) {
+    _loop2(key);
   }
   return names;
 }

@@ -43,8 +43,7 @@
       }
       return {
         showEditor: false,
-        state: {
-        }
+        state: {}
       };
     },
     computed: {

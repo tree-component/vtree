@@ -36,10 +36,10 @@ function _initOptions(options) {
     },
     class: {
       tree: '',
-      item: '',
-      active: 'x-tree-item-active',
-      children: '',
-      custom: '',
+        item: '',
+        active: 'x-tree-item-active',
+        children: '',
+        custom: '',
     },
     onExpand() {},
     onClick() {},
@@ -130,6 +130,9 @@ function _getSubTree(arrayIn, parent, opt) {
   for (let i = 0; i < arrayIn.length; i++) {
     if (arrayIn[i].nodeId == parent.id) {
       temp = extend.extend({}, arrayIn[i]);
+      if (opt.checkbox && temp.is_check === undefined) {
+        temp.is_check = false;
+      }
       temp.parent = parent;
       temp.custom = null;
       temp.class = null;
@@ -158,8 +161,8 @@ function expandLvl(expand, temp) {
   } else if (expand === false && temp.level <= 0) {
     return true;
   } else if (temp.level <= expand) {
-      return true;
-    }
+    return true;
+  }
   return false;
 }
 
@@ -337,11 +340,11 @@ function _changeParentState(parent, change) {
     let n = 0;
     for (let i = 0; i < len; i++) {
       if (parent.children[i].checkState === true) {
-          n += 1;
-        } else {
-          parent.checkState = 'z';
-          break;
-        }
+        n += 1;
+      } else {
+        parent.checkState = 'z';
+        break;
+      }
     }
     if (n === len) {
       parent.checkState = true;
@@ -349,16 +352,16 @@ function _changeParentState(parent, change) {
   } else if (change === false) {
     let m = 0;
     for (let j = 0; j < len; j++) {
-        if (parent.children[j].checkState === false) {
-          m += 1;
-        } else {
-          parent.checkState = 'z';
-          break;
-        }
+      if (parent.children[j].checkState === false) {
+        m += 1;
+      } else {
+        parent.checkState = 'z';
+        break;
       }
+    }
     if (m === len) {
-        parent.checkState = false;
-      }
+      parent.checkState = false;
+    }
   }
 
   if (parent.parent && parent.checkState !== old) {
@@ -393,22 +396,6 @@ function _expandParent(parent, expand) {
   return true;
 }
 
-function getName(model) {
-  const name = [];
-  _traverseTree(model, getNameFn, name);
-  return name;
-}
-
-function getNameFn(item, name) {
-  if (item.is_check) {
-    name.push(item.name);
-  }
-  return {
-    children: true,
-    brother: true,
-  };
-}
-
 function getItemById(tree, id) {
   if (!tree || id == undefined || id == null) {
     return false;
@@ -432,32 +419,6 @@ function getItemByIds(tree, ids) {
     return false;
   }
   let result = [];
-  const result2 = [];
-  for (let i = 0; i < ids.length; i++) {
-    if (tree.id == ids[i]) {
-      result.push(tree);
-      ids.splice(i, 1);
-    }
-  }
-  if (ids.length && tree.children && tree.children.length) {
-    for (let i = 0; i < tree.children.length; i++) {
-      const result2 = getItemByIds(tree.children[i], ids);
-      result = result.concat(result2);
-      if (!ids.length) {
-        break;
-      }
-    }
-  }
-  return result;
-}
-
-// tree:Object,key:String,value:Array
-function getItem(tree, key, value) {
-  if (!tree || !ids || !ids.length) {
-    return false;
-  }
-  let result = [];
-  const result2 = [];
   for (let i = 0; i < ids.length; i++) {
     if (tree.id == ids[i]) {
       result.push(tree);
@@ -477,28 +438,163 @@ function getItem(tree, key, value) {
 }
 
 // item:Object,key:String,value:Array,fn:Function
-function changeItem(item, key, value, fn) {
-  if (!item || !ids || !ids.length) {
+function changeItemKeyValue(item, key, value) {
+  if (!item || !key) {
+    return false;
+  }
+  const temp = item;
+  temp[key] = value;
+  return true;
+}
+
+function getCheckedItems(tree) {
+  if (!tree) {
     return false;
   }
   let result = [];
-  const result2 = [];
-  for (let i = 0; i < ids.length; i++) {
-    if (item.id == ids[i]) {
-      result.push(item);
-      ids.splice(i, 1);
-    }
+  if (tree.is_check === true) {
+    result.push(tree);
   }
-  if (ids.length && item.children && item.children.length) {
-    for (let i = 0; i < item.children.length; i++) {
-      const result2 = getItemByIds(item.children[i], ids);
+  if (tree.children && tree.children.length) {
+    for (let i = 0; i < tree.children.length; i++) {
+      const result2 = getCheckedItems(tree.children[i]);
       result = result.concat(result2);
-      if (!ids.length) {
-        break;
-      }
     }
   }
   return result;
+}
+
+
+
+function getItems(tree, typeIn) {
+  if (!tree) {
+    return false;
+  }
+  //0、根据this.options
+  //'all'、全部；
+  //'merge'、合并到节点；
+  //'leaf'、仅叶子；
+  //'node'、仅节点；
+  let type
+  let leaf = [];
+  let node = [];
+  let data = getCheckedItems(tree);
+
+  if (!typeIn) {
+    type = 1;
+  } else {
+    type = typeIn;
+  }
+
+  switch (type) {
+    case 'node': //仅节点
+      data.forEach(function (n) {
+        if (n.is_check === true && n.is_node === true) {
+          node.push(n);
+        }
+      }, this);
+      break;
+
+    case 'leaf': //仅叶子
+      data.forEach(function (n) {
+        if (n.is_check === true && n.is_node === false) {
+          leaf.push(n);
+        }
+      }, this);
+      break;
+
+    case 'merge': //合并到节点
+      let nodeIds = [];
+      data.forEach(function (n) {
+        if (n.is_check === true && n.is_node === true && n.level !== 0) { //不要包括root节点
+          nodeIds.push(n.id);
+        }
+      }, this);
+      //节点合并
+      let clone = []; //直接赋值传的是引用
+      for (let index = 0; index < data.length; index++) {
+        clone[index] = extend.extend({}, data[index]);
+      }
+      //去除相应子节点
+      for (let index = 0; index < clone.length; index++) {
+        //父节点checked，自身未被checked，自身是root节点
+        if ((nodeIds.indexOf(clone[index].nodeId) != -1) || !clone[index].is_check || clone[index].level === 0) { 
+          clone[index] = null;
+        }
+      }
+      clone.forEach(function (n) {
+        if (n && n.is_node === true) {
+          node.push(n);
+        } else if (n && n.is_node === false) {
+          leaf.push(n);
+        }
+      }, this);
+      break;
+    case 'all':
+    default: //全部
+      data.forEach(function (n) {
+        if (n.is_check === true && n.is_node === true) {
+          node.push(n);
+        } else if (n.is_check === true && n.is_node === false) {
+          leaf.push(n);
+        }
+      }, this);
+      break;
+  }
+
+  return {
+    node: node,
+    leaf: leaf
+  };
+}
+
+function getIds(tree, type) {
+  let ids = {}
+  let items = getItems(tree, type);
+
+  for (key in items) {
+    ids[key] = [];
+    if (items.hasOwnProperty(key) && items[key].length > 0) {
+      items[key].forEach(function (element) {
+        ids[key].push(element.id);
+      }, this);
+    }
+  }
+  return ids;
+}
+
+function getNames(tree, type) {
+  let names = {};
+  let items = getItems(tree, type);
+
+  for (key in items) {
+    names[key] = [];
+    if (items.hasOwnProperty(key) && items[key].length > 0) {
+      items[key].forEach(function (element) {
+        names[key].push(element.name);
+      }, this);
+    }
+  }
+  return names;
+}
+
+
+function getItem(tree) {
+  let data = getItems(tree);
+  _traverseTree(model, getNameFn, name);
+  return name;
+}
+
+function getId(model) {
+  const name = [];
+  _traverseTree(model, getNameFn, name);
+  return name;
+}
+
+function getName(model) {
+  const name = [];
+  _traverseTree(model, getNameFn, name);
+  return name;
 }
 
 const fn = {
@@ -525,10 +621,15 @@ const fn = {
   _changeChildren,
   _changeParent,
 
-  getName,
-  getNameFn,
   getItemById,
   getItemByIds,
+
+  getItems,
+  getIds,
+  getNames,
+  getItem,
+  getId,
+  getName,
 };
 
 export default fn;

@@ -964,45 +964,50 @@ module.exports = function listToStyles (parentId, list) {
 
 var extend = {};
 extend.extend = function (out) {
-      out = out || {};
+  out = out || {};
 
-      for (var i = 1; i < arguments.length; i++) {
-            if (!arguments[i]) {
-                  continue;
-            }
-
-            for (var key in arguments[i]) {
-                  if (arguments[i].hasOwnProperty(key)) {
-                        out[key] = arguments[i][key];
-                  }
-            }
+  for (var i = 1; i < arguments.length; i++) {
+    if (!arguments[i]) {
+      continue;
+    }
+    if (arguments[i].constructor === Array) {
+      for (var index = 0; index < arguments[i].length; index++) {
+        out[index] = arguments[i][index];
       }
+    } else {
+      for (var key in arguments[i]) {
+        if (arguments[i].hasOwnProperty(key)) {
+          out[key] = arguments[i][key];
+        }
+      }
+    }
+  }
 
-      return out;
+  return out;
 };
 
 extend.deepExtend = function (out) {
-      out = out || {};
+  out = out || {};
 
-      for (var i = 1; i < arguments.length; i++) {
-            var obj = arguments[i];
+  for (var i = 1; i < arguments.length; i++) {
+    var obj = arguments[i];
 
-            if (!obj) {
-                  continue;
-            }
+    if (!obj) {
+      continue;
+    }
 
-            for (var key in obj) {
-                  if (obj.hasOwnProperty(key)) {
-                        if (__WEBPACK_IMPORTED_MODULE_0_babel_runtime_helpers_typeof___default()(obj[key]) === 'object') {
-                              out[key] = extend.deepExtend(out[key], obj[key]);
-                        } else {
-                              out[key] = obj[key];
-                        }
-                  }
-            }
+    for (var key in obj) {
+      if (obj.hasOwnProperty(key)) {
+        if (__WEBPACK_IMPORTED_MODULE_0_babel_runtime_helpers_typeof___default()(obj[key]) === 'object') {
+          out[key] = extend.deepExtend(out[key], obj[key]);
+        } else {
+          out[key] = obj[key];
+        }
       }
+    }
+  }
 
-      return out;
+  return out;
 };
 
 /* harmony default export */ __webpack_exports__["a"] = (extend);
@@ -1208,112 +1213,119 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-    name: "x-tree",
-    components: {
-        xTreeItem: __WEBPACK_IMPORTED_MODULE_3__xTreeItem_vue___default.a
-    },
-    props: {
-        data: Array,
-        options: Object,
-        fn: Object
-    },
-    data: function data() {
-        this.exportFn();
-        this.opts = this.initOptions(this.options);
-        this.tree = this.fn._arrayToTree(this.data, this.opts);
-        this.tree = this.initTree(this.tree, this.opts);
-        this.tree.fn = this.fn;
-        this.tree.opts = this.opts;
-        return {
-            tree: this.tree,
-            opts: this.opts,
-            fnfn: this.fn
-        };
-    },
-    computed: {},
-    methods: {
-        initOptions: function initOptions(options) {
-            var opts = __WEBPACK_IMPORTED_MODULE_2__methods_js__["a" /* default */]._initOptions(options);
-            return opts;
-        },
-        initTree: function initTree(tree, options) {
-            var treeChecked = options.sel_ids ? __WEBPACK_IMPORTED_MODULE_2__methods_js__["a" /* default */]._checkTreeByIds(tree, options.sel_ids) : tree;
-            var treeExpand = options.expandIds ? __WEBPACK_IMPORTED_MODULE_2__methods_js__["a" /* default */]._expandTreeByIds(treeChecked, options.expandIds) : treeChecked;
+  name: "x-tree",
+  components: {
+    xTreeItem: __WEBPACK_IMPORTED_MODULE_3__xTreeItem_vue___default.a
+  },
+  props: {
+    data: Array,
+    options: Object,
+    fn: Object
+  },
+  data: function data() {
+    this.opts = __WEBPACK_IMPORTED_MODULE_2__methods_js__["a" /* default */]._initOptions(this.options);
+    this.tree = __WEBPACK_IMPORTED_MODULE_2__methods_js__["a" /* default */]._arrayToTree(this.data, this.opts);
+    this.tree = this.initTree(this.tree, this.opts);
+    this.tree.fn = __WEBPACK_IMPORTED_MODULE_2__methods_js__["a" /* default */];
+    this.tree.opts = this.opts;
+    this.exportFn();
+    return {
+      dataTree: this.tree,
+      opts: this.opts,
+      fnfn: __WEBPACK_IMPORTED_MODULE_2__methods_js__["a" /* default */]
+    };
+  },
+  computed: {},
+  methods: {
+    initTree: function initTree(tree, options) {
+      var treeChecked = options.sel_ids ? __WEBPACK_IMPORTED_MODULE_2__methods_js__["a" /* default */]._checkTreeByIds(tree, options.sel_ids) : tree;
+      var treeExpand = options.expandIds ? __WEBPACK_IMPORTED_MODULE_2__methods_js__["a" /* default */]._expandTreeByIds(treeChecked, options.expandIds) : treeChecked;
 
-            if (options.expandIds) {
-                var ids = __WEBPACK_IMPORTED_MODULE_1__utils_utils_js__["a" /* default */].toArray(options.expandIds);
-                var items = __WEBPACK_IMPORTED_MODULE_2__methods_js__["a" /* default */].getItemByIds(tree, ids);
-                for (var i = 0; i < items.length; i++) {
-                    this.activeItem(items[i]);
-                }
-            }
-            return treeExpand;
-        },
-        exportFn: function exportFn() {
-            __WEBPACK_IMPORTED_MODULE_0__utils_extend_js__["a" /* default */].extend(this.fn, __WEBPACK_IMPORTED_MODULE_2__methods_js__["a" /* default */]);
-            this.fn.getItemById = this.getItemById;
-            this.fn.locateItem = this.locateItem;
-            this.fn.locateItems = this.locateItems;
-            this.fn.activeItem = this.activeItem;
-            this.fn.clearActive = this.clearActive;
-            this.fn.setCustom = this.setCustom;
-        },
-        getItemById: function getItemById(id) {
-            var item = __WEBPACK_IMPORTED_MODULE_2__methods_js__["a" /* default */].getItemById(this.tree, id);
-            if (!item) {
-                console.warn('没有找到对应的item');
-                return;
-            }
-            return item;
-        },
-        activeItem: function activeItem(item) {
-            item.class = this.opts.class.active;
-            this.tree.active.push(item);
-        },
-        clearActive: function clearActive(type, id) {
-            var array = this.tree.active;
-            if (type) {
-                for (var index = 0; index < array.length; index++) {
-                    array[index].class = '';
-                }
-                array.length = 0;
-            } else {
-                for (var _index = 0; _index < array.length; _index++) {
-                    if (array[_index].id == id) {
-                        array[_index].class = '';
-                        array.splice();
-                        break;
-                    }
-                }
-            }
-            return;
-        },
-        locateItem: function locateItem(id) {
-            var item = __WEBPACK_IMPORTED_MODULE_2__methods_js__["a" /* default */].getItemById(this.tree, id);
-            if (!item) {
-                console.warn('没有找到对应的item');
-                return;
-            }
-            item.expand = true;
-            __WEBPACK_IMPORTED_MODULE_2__methods_js__["a" /* default */]._expandParent(item.parent, true);
-            this.activeItem(item);
-            return item;
-        },
-        locateItems: function locateItems(ids) {
-            var tree = __WEBPACK_IMPORTED_MODULE_2__methods_js__["a" /* default */]._expandTreeByIds(this.tree, ids);
-            return tree;
-        },
-        setCustom: function setCustom(id, custom) {
-            var item = this.getItemById(id);
-            if (item) {
-                item.custom = custom;
-            } else {
-                console.warn('未找到item, 请检查id是否正确');
-            }
-            return item;
+      if (options.expandIds) {
+        var ids = __WEBPACK_IMPORTED_MODULE_1__utils_utils_js__["a" /* default */].toArray(options.expandIds);
+        var items = __WEBPACK_IMPORTED_MODULE_2__methods_js__["a" /* default */].getItemByIds(tree, ids);
+        for (var i = 0; i < items.length; i++) {
+          this.activeItem(items[i]);
         }
-
+      }
+      return treeExpand;
+    },
+    exportFn: function exportFn() {
+      this.fn.getItems = this.getItems;
+      this.fn.getIds = this.getIds;
+      this.fn.getNames = this.getNames;
+      this.fn.getItemById = this.getItemById;
+      this.fn.locateItem = this.locateItem;
+      this.fn.locateItems = this.locateItems;
+      this.fn.activeItem = this.activeItem;
+      this.fn.clearActive = this.clearActive;
+      this.fn.setCustom = this.setCustom;
+    },
+    getItems: function getItems(type) {
+      return __WEBPACK_IMPORTED_MODULE_2__methods_js__["a" /* default */].getItems(this.tree, type);
+    },
+    getIds: function getIds(type) {
+      return __WEBPACK_IMPORTED_MODULE_2__methods_js__["a" /* default */].getIds(this.tree, type);
+    },
+    getNames: function getNames(type) {
+      return __WEBPACK_IMPORTED_MODULE_2__methods_js__["a" /* default */].getNames(this.tree, type);
+    },
+    getItemById: function getItemById(id) {
+      var item = __WEBPACK_IMPORTED_MODULE_2__methods_js__["a" /* default */].getItemById(this.tree, id);
+      if (!item) {
+        console.warn('没有找到对应的item');
+        return;
+      }
+      return item;
+    },
+    activeItem: function activeItem(item) {
+      item.class = this.opts.class.active;
+      this.tree.active.push(item);
+    },
+    clearActive: function clearActive(type, id) {
+      var array = this.tree.active;
+      if (type) {
+        for (var index = 0; index < array.length; index++) {
+          array[index].class = '';
+        }
+        array.length = 0;
+      } else {
+        for (var _index = 0; _index < array.length; _index++) {
+          if (array[_index].id == id) {
+            array[_index].class = '';
+            array.splice();
+            break;
+          }
+        }
+      }
+      return;
+    },
+    locateItem: function locateItem(id) {
+      var item = __WEBPACK_IMPORTED_MODULE_2__methods_js__["a" /* default */].getItemById(this.tree, id);
+      if (!item) {
+        console.warn('没有找到对应的item');
+        return;
+      }
+      item.expand = true;
+      __WEBPACK_IMPORTED_MODULE_2__methods_js__["a" /* default */]._expandParent(item.parent, true);
+      this.activeItem(item);
+      return item;
+    },
+    locateItems: function locateItems(ids) {
+      var tree = __WEBPACK_IMPORTED_MODULE_2__methods_js__["a" /* default */]._expandTreeByIds(this.tree, ids);
+      return tree;
+    },
+    setCustom: function setCustom(id, custom) {
+      var item = this.getItemById(id);
+      if (item) {
+        item.custom = custom;
+      } else {
+        console.warn('未找到item, 请检查id是否正确');
+      }
+      return item;
     }
+
+  }
 });
 
 /***/ }),
@@ -1634,6 +1646,9 @@ function _getSubTree(arrayIn, parent, opt) {
   for (var i = 0; i < arrayIn.length; i++) {
     if (arrayIn[i].nodeId == parent.id) {
       temp = __WEBPACK_IMPORTED_MODULE_1__utils_extend_js__["a" /* default */].extend({}, arrayIn[i]);
+      if (opt.checkbox && temp.is_check === undefined) {
+        temp.is_check = false;
+      }
       temp.parent = parent;
       temp.custom = null;
       temp.class = null;
@@ -1897,22 +1912,6 @@ function _expandParent(parent, expand) {
   return true;
 }
 
-function getName(model) {
-  var name = [];
-  _traverseTree(model, getNameFn, name);
-  return name;
-}
-
-function getNameFn(item, name) {
-  if (item.is_check) {
-    name.push(item.name);
-  }
-  return {
-    children: true,
-    brother: true
-  };
-}
-
 function getItemById(tree, id) {
   if (!tree || id == undefined || id == null) {
     return false;
@@ -1936,7 +1935,6 @@ function getItemByIds(tree, ids) {
     return false;
   }
   var result = [];
-  var result2 = [];
   for (var i = 0; i < ids.length; i++) {
     if (tree.id == ids[i]) {
       result.push(tree);
@@ -1945,8 +1943,8 @@ function getItemByIds(tree, ids) {
   }
   if (ids.length && tree.children && tree.children.length) {
     for (var _i = 0; _i < tree.children.length; _i++) {
-      var _result = getItemByIds(tree.children[_i], ids);
-      result = result.concat(_result);
+      var result2 = getItemByIds(tree.children[_i], ids);
+      result = result.concat(result2);
       if (!ids.length) {
         break;
       }
@@ -1955,52 +1953,155 @@ function getItemByIds(tree, ids) {
   return result;
 }
 
-function getItem(tree, key, value) {
-  if (!tree || !ids || !ids.length) {
+function changeItemKeyValue(item, key, value) {
+  if (!item || !key) {
+    return false;
+  }
+  var temp = item;
+  temp[key] = value;
+  return true;
+}
+
+function getCheckedItems(tree) {
+  if (!tree) {
     return false;
   }
   var result = [];
-  var result2 = [];
-  for (var i = 0; i < ids.length; i++) {
-    if (tree.id == ids[i]) {
-      result.push(tree);
-      ids.splice(i, 1);
-    }
+  if (tree.is_check === true) {
+    result.push(tree);
   }
-  if (ids.length && tree.children && tree.children.length) {
-    for (var _i2 = 0; _i2 < tree.children.length; _i2++) {
-      var _result2 = getItemByIds(tree.children[_i2], ids);
-      result = result.concat(_result2);
-      if (!ids.length) {
-        break;
-      }
+  if (tree.children && tree.children.length) {
+    for (var i = 0; i < tree.children.length; i++) {
+      var result2 = getCheckedItems(tree.children[i]);
+      result = result.concat(result2);
     }
   }
   return result;
 }
 
-function changeItem(item, key, value, fn) {
-  if (!item || !ids || !ids.length) {
+function getItems(tree, typeIn) {
+  if (!tree) {
     return false;
   }
-  var result = [];
-  var result2 = [];
-  for (var i = 0; i < ids.length; i++) {
-    if (item.id == ids[i]) {
-      result.push(item);
-      ids.splice(i, 1);
-    }
+
+  var type = void 0;
+  var leaf = [];
+  var node = [];
+  var data = getCheckedItems(tree);
+
+  if (!typeIn) {
+    type = 1;
+  } else {
+    type = typeIn;
   }
-  if (ids.length && item.children && item.children.length) {
-    for (var _i3 = 0; _i3 < item.children.length; _i3++) {
-      var _result3 = getItemByIds(item.children[_i3], ids);
-      result = result.concat(_result3);
-      if (!ids.length) {
-        break;
+
+  switch (type) {
+    case 'node':
+      data.forEach(function (n) {
+        if (n.is_check === true && n.is_node === true) {
+          node.push(n);
+        }
+      }, this);
+      break;
+
+    case 'leaf':
+      data.forEach(function (n) {
+        if (n.is_check === true && n.is_node === false) {
+          leaf.push(n);
+        }
+      }, this);
+      break;
+
+    case 'merge':
+      var nodeIds = [];
+      data.forEach(function (n) {
+        if (n.is_check === true && n.is_node === true && n.level !== 0) {
+          nodeIds.push(n.id);
+        }
+      }, this);
+
+      var clone = [];
+      for (var index = 0; index < data.length; index++) {
+        clone[index] = __WEBPACK_IMPORTED_MODULE_1__utils_extend_js__["a" /* default */].extend({}, data[index]);
       }
+
+      for (var _index = 0; _index < clone.length; _index++) {
+        if (nodeIds.indexOf(clone[_index].nodeId) != -1 || !clone[_index].is_check || clone[_index].level === 0) {
+          clone[_index] = null;
+        }
+      }
+      clone.forEach(function (n) {
+        if (n && n.is_node === true) {
+          node.push(n);
+        } else if (n && n.is_node === false) {
+          leaf.push(n);
+        }
+      }, this);
+      break;
+    case 'all':
+    default:
+      data.forEach(function (n) {
+        if (n.is_check === true && n.is_node === true) {
+          node.push(n);
+        } else if (n.is_check === true && n.is_node === false) {
+          leaf.push(n);
+        }
+      }, this);
+      break;
+  }
+
+  return {
+    node: node,
+    leaf: leaf
+  };
+}
+
+function getIds(tree, type) {
+  var ids = {};
+  var items = getItems(tree, type);
+
+  for (key in items) {
+    ids[key] = [];
+    if (items.hasOwnProperty(key) && items[key].length > 0) {
+      items[key].forEach(function (element) {
+        ids[key].push(element.id);
+      }, this);
     }
   }
-  return result;
+  return ids;
+}
+
+function getNames(tree, type) {
+  var names = {};
+  var items = getItems(tree, type);
+
+  for (key in items) {
+    names[key] = [];
+    if (items.hasOwnProperty(key) && items[key].length > 0) {
+      items[key].forEach(function (element) {
+        names[key].push(element.name);
+      }, this);
+    }
+  }
+  return names;
+}
+
+function getItem(tree) {
+  var data = getItems(tree);
+  _traverseTree(model, getNameFn, name);
+  return name;
+}
+
+function getId(model) {
+  var name = [];
+  _traverseTree(model, getNameFn, name);
+  return name;
+}
+
+function getName(model) {
+  var name = [];
+  _traverseTree(model, getNameFn, name);
+  return name;
 }
 
 var fn = {
@@ -2027,10 +2128,15 @@ var fn = {
   _changeChildren: _changeChildren,
   _changeParent: _changeParent,
 
-  getName: getName,
-  getNameFn: getNameFn,
   getItemById: getItemById,
-  getItemByIds: getItemByIds
+  getItemByIds: getItemByIds,
+
+  getItems: getItems,
+  getIds: getIds,
+  getNames: getNames,
+  getItem: getItem,
+  getId: getId,
+  getName: getName
 };
 
 /* harmony default export */ __webpack_exports__["a"] = (fn);
@@ -2720,7 +2826,7 @@ exports = module.exports = __webpack_require__(21)();
 
 
 // module
-exports.push([module.i, "\n.x-tree-wrapper[data-v-273f1241] {\n    position: relative;\n    cursor: pointer;\n    font-size: 1em;\n    line-height: 1.8em;\n    white-space: nowrap;\n}\n", ""]);
+exports.push([module.i, "\n.x-tree-wrapper[data-v-273f1241] {\n  position: relative;\n  cursor: pointer;\n  font-size: 1em;\n  line-height: 1.8em;\n  white-space: nowrap;\n}\n\n", ""]);
 
 // exports
 
@@ -2790,8 +2896,8 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
   }, [_c('x-tree-item', {
     staticClass: "x-tree-root",
     attrs: {
-      "model": _vm.tree,
-      "tree": _vm.tree,
+      "model": _vm.dataTree,
+      "tree": _vm.dataTree,
       "options": _vm.opts,
       "fn": _vm.fnfn
     },

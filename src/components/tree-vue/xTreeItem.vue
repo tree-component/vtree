@@ -97,6 +97,13 @@
     },
     methods: {
       expandFn: function () {
+        if (this.options.lazyLoad && this.hasChildren && this.model.expand === false) {
+          let data = this.options.onLoad(this.model);
+          this.model.children.length = 0;
+          data.forEach(function (element) {
+            this.model.children.push(element);
+          }, this);
+        }
         if (this.hasChildren) {
           this.model.expand = !this.model.expand;
           this.options.onExpand(this.model);

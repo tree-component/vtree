@@ -1654,7 +1654,7 @@ function _getSubTree(arrayIn, parent, opt) {
       temp.class = null;
       temp.style = null;
       temp.level = parent.level + 1;
-      if (opt.expandIds) {
+      if (opt.expandIds.constructor === String || opt.expandIds.constructor === Array) {
         temp.expand = false;
       } else {
         temp.expand = expandLvl(opt.expand, temp);

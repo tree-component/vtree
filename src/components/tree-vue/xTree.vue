@@ -1,6 +1,20 @@
 <template>
-  <div class="x-tree-wrapper">
-    <x-tree-item class="x-tree-root" :class="" :style="" :model="dataTree" :tree="dataTree" :options="opts" :fn="fnfn" @click.stop=""></x-tree-item>
+  <div class="x-tree-root">
+    <div class="x-tree-head">
+      <span>{{options.title}}</span>
+      <span>{{root.is_check ? "全选":"全不选"}}</span>
+      <span>反选</span>
+      <span>全部折叠</span>
+      <input type="text" placeholder="请输入关键字进行过滤" v-model="filterText">
+      <span>当前选中：{{options.title}}。显示规则：{{options.title}}。</span>
+    </div>
+    <div class="x-tree-body">
+      <x-tree-item v-for="model in root.children" :model="model" :tree="tree" :options="options" :fn="fn">
+      </x-tree-item>
+      <div class="x-tree-body-empty" v-if="!root.children || root.children.length === 0">
+        <span class="x-tree-body-empty-text">{{ emptyText }}</span>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -131,7 +145,7 @@
 </script>
 
 <style scoped>
-  .x-tree-wrapper {
+  .x-tree-root {
     position: relative;
     cursor: pointer;
     font-size: 1em;

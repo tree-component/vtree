@@ -5,8 +5,8 @@
 </template>
 
 <script>
-  import extend from '../../utils/extend.js';
-  import utils from '../../utils/utils.js';
+  import extend from '../utils/extend.js';
+  import utils from '../utils/utils.js';
   import Fn from './methods.js';
   import xTreeItem from './xTreeItem.vue';
 

@@ -5,8 +5,8 @@ const config = {
   watch: true,
   context: path.resolve(__dirname, '../'),
   entry: {
-    'tree-vue': './src/components/tree-vue/index.js',
-    'tree-xbcx': './src/components/tree-xbcx/index.js',
+    'tree-vue': './src/tree-vue/index.js',
+    'tree-xbcx': './src/tree-xbcx/index.js',
   },
   output: {
     path: path.resolve(__dirname, '../dist'),

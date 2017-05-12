@@ -5,7 +5,8 @@
 </template>
 
 <script>
-  import extend from '../utils/extend.js';
+  import merge from '../utils/merge.js';
+  import mergeDeep from '../utils/mergeDeep.js';
   import utils from '../utils/utils.js';
   import Fn from './methods.js';
   import xTreeItem from './xTreeItem.vue';
@@ -50,7 +51,7 @@
         return treeExpand;
       },
       exportFn: function () {
-        // extend.extend(this.fn, Fn);
+        // merge(this.fn, Fn);
         this.fn.getItems = this.getItems;
         this.fn.getIds = this.getIds;
         this.fn.getNames = this.getNames;

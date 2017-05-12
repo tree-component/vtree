@@ -1,4 +1,4 @@
-import extend from '../utils/extend.js';
+import merge from '../utils/merge.js';
 
 function _initOptions(options) {
   const defOptions = {
@@ -57,7 +57,7 @@ function _initOptions(options) {
   if (options.style && options.style.tree && options.style.tree.width) {
     defOptions.style.custom.left = options.style.tree.width;
   }
-  const opt = extend.deepExtend({}, defOptions, options);
+  const opt = mergeDeep({}, defOptions, options);
   opt.originOptions = options;
   return opt;
 }
@@ -129,7 +129,7 @@ function _getSubTree(arrayIn, parent, opt) {
   let temp = {};
   for (let i = 0; i < arrayIn.length; i++) {
     if (arrayIn[i].nodeId == parent.id) {
-      temp = extend.extend({}, arrayIn[i]);
+      temp = merge({}, arrayIn[i]);
       if (opt.checkbox && temp.is_check === undefined) {
         temp.is_check = false;
       }
@@ -513,12 +513,12 @@ function getItems(tree, typeIn) {
       //节点合并
       let clone = []; //直接赋值传的是引用
       for (let index = 0; index < data.length; index++) {
-        clone[index] = extend.extend({}, data[index]);
+        clone[index] = merge({}, data[index]);
       }
       //去除相应子节点
       for (let index = 0; index < clone.length; index++) {
         //父节点checked，自身未被checked，自身是root节点
-        if ((nodeIds.indexOf(clone[index].nodeId) != -1) || !clone[index].is_check || clone[index].level === 0) { 
+        if ((nodeIds.indexOf(clone[index].nodeId) != -1) || !clone[index].is_check || clone[index].level === 0) {
           clone[index] = null;
         }
       }

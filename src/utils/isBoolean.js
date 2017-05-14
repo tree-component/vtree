@@ -1,5 +1,7 @@
+import getTag from './getTag';
+
 function isBoolean(value) {
-  return value === true || value === false;
+  return getTag(value) === '[object Boolean]';
 }
 
 export default isBoolean;

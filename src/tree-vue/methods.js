@@ -1,4 +1,8 @@
-import merge from '../utils/merge.js';
+import merge from '../utils/merge';
+import mergeDeep from '../utils/mergeDeep';
+import isString from '../utils/isString';
+import isArray from '../utils/isArray';
+
 
 function _initOptions(options) {
   const defOptions = {
@@ -36,10 +40,10 @@ function _initOptions(options) {
     },
     class: {
       tree: '',
-        item: '',
-        active: 'x-tree-item-active',
-        children: '',
-        custom: '',
+      item: '',
+      active: 'x-tree-item-active',
+      children: '',
+      custom: '',
     },
     onExpand() {},
     onClick() {},
@@ -138,7 +142,7 @@ function _getSubTree(arrayIn, parent, opt) {
       temp.class = null;
       temp.style = null;
       temp.level = parent.level + 1;
-      if (opt.expandIds.constructor === String || opt.expandIds.constructor === Array) {
+      if (isString(opt.expandIds) || isArray(opt.expandIds)) {
         temp.expand = false;
       } else {
         temp.expand = expandLvl(opt.expand, temp);
@@ -168,9 +172,9 @@ function expandLvl(expand, temp) {
 
 function _checkTreeByIds(tree, sel_ids) {
   let ids = [];
-  if (sel_ids.constructor == String) {
+  if (isString(sel_ids)) {
     ids = sel_ids.split(',');
-  } else if (sel_ids.constructor == Array) {
+  } else if (isArray(sel_ids)) {
     ids = sel_ids;
   } else {
     console.warn('请检查 sel_ids 格式');
@@ -203,9 +207,9 @@ function _checkTreeByIdsFn(item, ids) {
 
 function _expandTreeByIds(tree, expand_ids) {
   let ids = [];
-  if (expand_ids.constructor == String) {
+  if (isString(expand_ids)) {
     ids = expand_ids.split(',');
-  } else if (expand_ids.constructor == Array) {
+  } else if (isArray(expand_ids)) {
     ids = expand_ids;
   } else {
     console.warn('请检查 expandIds 格式');
@@ -236,9 +240,9 @@ function _expandTreeByIdsFn(item, ids) {
 
 function _activeTreeByIds(tree, expand_ids) {
   let ids = [];
-  if (expand_ids.constructor == String) {
+  if (isString(expand_ids)) {
     ids = expand_ids.split(',');
-  } else if (expand_ids.constructor == Array) {
+  } else if (isArray(expand_ids)) {
     ids = expand_ids;
   } else {
     console.warn('请检查 expandIds 格式');
@@ -465,20 +469,19 @@ function getCheckedItems(tree) {
 }
 
 
-
 function getItems(tree, typeIn) {
   if (!tree) {
     return false;
   }
-  //0、根据this.options
-  //'all'、全部；
-  //'merge'、合并到节点；
-  //'leaf'、仅叶子；
-  //'node'、仅节点；
-  let type
-  let leaf = [];
-  let node = [];
-  let data = getCheckedItems(tree);
+  // 0、根据this.options
+  // 'all'、全部；
+  // 'merge'、合并到节点；
+  // 'leaf'、仅叶子；
+  // 'node'、仅节点；
+  let type;
+  const leaf = [];
+  const node = [];
+  const data = getCheckedItems(tree);
 
   if (!typeIn) {
     type = 1;
@@ -487,42 +490,42 @@ function getItems(tree, typeIn) {
   }
 
   switch (type) {
-    case 'node': //仅节点
-      data.forEach(function (n) {
+    case 'node': // 仅节点
+      data.forEach((n) => {
         if (n.is_check === true && n.is_node === true) {
           node.push(n);
         }
       }, this);
       break;
 
-    case 'leaf': //仅叶子
-      data.forEach(function (n) {
+    case 'leaf': // 仅叶子
+      data.forEach((n) => {
         if (n.is_check === true && n.is_node === false) {
           leaf.push(n);
         }
       }, this);
       break;
 
-    case 'merge': //合并到节点
-      let nodeIds = [];
-      data.forEach(function (n) {
-        if (n.is_check === true && n.is_node === true && n.level !== 0) { //不要包括root节点
+    case 'merge': // 合并到节点
+      const nodeIds = [];
+      data.forEach((n) => {
+        if (n.is_check === true && n.is_node === true && n.level !== 0) { // 不要包括root节点
           nodeIds.push(n.id);
         }
       }, this);
-      //节点合并
-      let clone = []; //直接赋值传的是引用
+      // 节点合并
+      const clone = []; // 直接赋值传的是引用
       for (let index = 0; index < data.length; index++) {
         clone[index] = merge({}, data[index]);
       }
-      //去除相应子节点
+      // 去除相应子节点
       for (let index = 0; index < clone.length; index++) {
-        //父节点checked，自身未被checked，自身是root节点
+        // 父节点checked，自身未被checked，自身是root节点
         if ((nodeIds.indexOf(clone[index].nodeId) != -1) || !clone[index].is_check || clone[index].level === 0) {
           clone[index] = null;
         }
       }
-      clone.forEach(function (n) {
+      clone.forEach((n) => {
         if (n && n.is_node === true) {
           node.push(n);
         } else if (n && n.is_node === false) {
@@ -531,8 +534,8 @@ function getItems(tree, typeIn) {
       }, this);
       break;
     case 'all':
-    default: //全部
-      data.forEach(function (n) {
+    default: // 全部
+      data.forEach((n) => {
         if (n.is_check === true && n.is_node === true) {
           node.push(n);
         } else if (n.is_check === true && n.is_node === false) {
@@ -543,19 +546,19 @@ function getItems(tree, typeIn) {
   }
 
   return {
-    node: node,
-    leaf: leaf
+    node,
+    leaf,
   };
 }
 
 function getIds(tree, type) {
-  let ids = {}
-  let items = getItems(tree, type);
+  const ids = {};
+  const items = getItems(tree, type);
 
-  for (let key in items) {
+  for (const key in items) {
     ids[key] = [];
     if (items.hasOwnProperty(key) && items[key].length > 0) {
-      items[key].forEach(function (element) {
+      items[key].forEach((element) => {
         ids[key].push(element.id);
       }, this);
     }
@@ -565,13 +568,13 @@ function getIds(tree, type) {
 }
 
 function getNames(tree, type) {
-  let names = {};
-  let items = getItems(tree, type);
+  const names = {};
+  const items = getItems(tree, type);
 
-  for (let key in items) {
+  for (const key in items) {
     names[key] = [];
     if (items.hasOwnProperty(key) && items[key].length > 0) {
-      items[key].forEach(function (element) {
+      items[key].forEach((element) => {
         names[key].push(element.name);
       }, this);
     }
@@ -581,7 +584,7 @@ function getNames(tree, type) {
 
 
 function getItem(tree) {
-  let data = getItems(tree);
+  const data = getItems(tree);
   _traverseTree(model, getNameFn, name);
   return name;
 }

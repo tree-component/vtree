@@ -5,5 +5,3 @@ function isArguments(value) {
 }
 
 export default isArguments;
-
-

@@ -5,4 +5,3 @@ function isNull(value) {
 }
 
 export default isNull;
-

@@ -25,8 +25,6 @@
       this.opts = Fn._initOptions(this.options);
       this.tree = Fn._arrayToTree(this.data, this.opts);
       this.tree = this.initTree(this.tree, this.opts);
-      this.tree.fn = Fn;
-      this.tree.opts = this.opts;
       this.exportFn();
       return {
         dataTree: this.tree,

@@ -1,8 +1,11 @@
+import isString from './isString';
+import isArray from './isArray';
+
 function toArray(params) {
   let array = [];
-  if (params.constructor === String) {
+  if (isString(params)) {
     array = params.split(',');
-  } else if (params.constructor === Array) {
+  } else if (isArray(params)) {
     array = params;
   } else {
     console.warn('请检查 参数 格式');

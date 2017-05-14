@@ -5,4 +5,3 @@ function isFunction(value) {
 }
 
 export default isFunction;
-

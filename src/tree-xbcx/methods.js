@@ -54,16 +54,29 @@ function _initOptions(options) {
     onAddChild() {},
     onSort() {},
   };
-
-  const opt = mergeDeep({}, defOptions, options);
-  if (opt && opt.style && opt.style.custom && !opt.style.custom.left) {
-    if (opt.style && opt.style.tree && opt.style.tree.width) {
-      opt.style.custom.left = opt.style.tree.width;
-    }
+  if (options.style && options.style.tree && options.style.tree.width) {
+    defOptions.style.custom.left = options.style.tree.width;
   }
-  opt.originOptions = options;
+  const opt = mergeDeep({}, defOptions, options);
   return opt;
 }
+
+function _traverseTree(tree, fn, input, output) {
+  if (!tree) {
+    return true;
+  }
+  const _continue = fn(tree, input, output); // 是否继续遍历
+  if (_continue.children && tree.children) {
+    for (let i = 0; i < tree.children.length; i++) {
+      const brother = _traverseTree(tree.children[i], fn, input, output);
+      if (!brother) {
+        break;
+      }
+    }
+  }
+  return _continue.brother;
+}
+
 
 function _arrayToTree(arrayIn, opt) {
   const rootId = _getTreeRoot(arrayIn);
@@ -109,9 +122,9 @@ function _getTreeRoot(arrayIn) {
   rootId = _uniqueArray(rootId);
 
   if (rootId.length > 1) {
-    console.log('warning: rootId不唯一', rootId);
+    console.warn('warning: rootId不唯一', rootId);
   } else if (rootId.length <= 0) {
-    console.log('warning: 没有rootId', rootId);
+    console.warn('warning: 没有rootId', rootId);
   }
 
   return rootId[0];
@@ -268,22 +281,6 @@ function _activeTreeByIdsFn(item, ids) {
     children: ids.length,
     brother: ids.length,
   };
-}
-
-function _traverseTree(tree, fn, input, output) {
-  if (!tree) {
-    return true;
-  }
-  const _continue = fn(tree, input, output); // 是否继续遍历
-  if (_continue.children && tree.children) {
-    for (let i = 0; i < tree.children.length; i++) {
-      const brother = _traverseTree(tree.children[i], fn, input, output);
-      if (!brother) {
-        break;
-      }
-    }
-  }
-  return _continue.brother;
 }
 
 function _changeItem(item, change) {

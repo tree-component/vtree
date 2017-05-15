@@ -22,7 +22,7 @@ function mergeBase(target, src) {
   }
   if (isPlainObject(src)) {
     if (!isPlainObject(result)) {
-      result = [];
+      result = {};
     }
     for (const key in src) {
       if (hasOwnProperty.call(src, key) && !isUndefined(src[key]) && result[key] !== src[key] && result !== src[key]) {

@@ -1,4 +1,3 @@
-import isUndefined from './isUndefined';
 import isArray from './isArray';
 import isPlainObject from './isPlainObject';
 

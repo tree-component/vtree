@@ -3,6 +3,29 @@
 tree树形控件
 目前主要对应公司的需求，正在努力改成普遍适用的tree。有些功能定制程度太高，后面会改用更通用的功能来实现。
 
+## Installation
+
+- [ ] npm安装
+- [x] script标签引入
+
+## Getting started
+
+```JavaScript
+var app = new Vue({
+  el: '#app',
+  data: function () {
+    return {
+      data: arrayData,
+      options: treeOptions,
+    };
+  }
+});
+```
+
+## Demo
+
+[tree-xbcx](https://gitjcc.github.io/tree-vue/examples/tree-xbcx.html)
+
 ## features
 
 - [x] 多选：选中/半选/取消
@@ -26,7 +49,6 @@ tree树形控件
 - [ ] 全部折叠/展开
 - [ ] 树标题/名字
 - [ ] 空树时，显示
-
 
 ## License
 

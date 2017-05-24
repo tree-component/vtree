@@ -861,14 +861,15 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     tree: Object
   },
   data: function data() {
-    if (this.options.custom) {
-      this.model.custom = this.options.custom(this.model);
-    }
     return {
+      if: {},
+      show: {},
+      style: {},
       showEditor: false,
       state: {}
     };
   },
+
   computed: {
     hasChildren: function hasChildren() {
       return this.model.is_node && this.model.children && this.model.children.length;
@@ -877,11 +878,11 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       var faIcon = '';
       if (this.options.checkbox) {
         if (this.model.checkState === true) {
-          faIcon = 'fa-check-square-o';
+          faIcon = 'icon-square-check';
         } else if (this.model.checkState === false) {
-          faIcon = 'fa-square-o';
+          faIcon = 'icon-square';
         } else if (this.model.checkState === 'z') {
-          faIcon = 'fa-minus-square-o';
+          faIcon = 'icon-square-minus';
         }
       }
       return faIcon;
@@ -917,6 +918,13 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       };
     }
   },
+  created: function created() {
+    if (this.options.custom) {
+      this.model.custom = this.options.custom(this.model);
+    }
+  },
+
+
   methods: {
     expandFn: function expandFn() {
       if (this.hasChildren) {
@@ -952,6 +960,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         }
         parent.children.push(this.model);
       }
+      return false;
     },
     deleteFn: function deleteFn() {
       this.options.onDelete(this.model, this.deleteFnn);
@@ -1780,7 +1789,7 @@ exports = module.exports = __webpack_require__(7)();
 
 
 // module
-exports.push([module.i, "\n.x-tree-item[data-v-b33c931a] {\n  position: relative;\n  font-size: 14px;\n  -webkit-user-select: none;\n  -moz-user-select: none;\n  -ms-user-select: none;\n  user-select: none;\n}\n.x-tree-item-self[data-v-b33c931a] {\n  position: relative;\n  padding: 0 2em 0 0.5em;\n}\n.x-tree-item-self[data-v-b33c931a]:hover {\n  background: #E9EBEE;\n}\n.fa[data-v-b33c931a] {\n  font-size: 14px;\n  width: 14px;\n  color: #999;\n}\n.icon-blank[data-v-b33c931a] {\n  display: inline-block;\n  font-size: 14px;\n  width: 1em;\n}\n.x-tree-item-expand[data-v-b33c931a] {\n}\n.x-tree-item-checkbox[data-v-b33c931a] {\n}\n.x-tree-item-name[data-v-b33c931a] {\n  display: inline-block;\n  vertical-align: bottom;\n  padding: 0 1em 0 0em;\n  width: calc(100% - 40px);\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n}\n.x-tree-item-name-tip[data-v-b33c931a] {\n  position: absolute;\n  top: -20px;\n  left: 0px;\n  display: inline-block;\n  padding: 0 15px;\n  border: 1px solid #fff;\n  background: #fff;\n}\n.x-tree-item-edit[data-v-b33c931a] {\n  display: none;\n  position: absolute;\n  top: 0.36em;\n  right: 0.27em;\n}\n.x-tree-item-self:hover .x-tree-item-edit[data-v-b33c931a] {\n  display: block;\n}\n.x-tree-item-editor[data-v-b33c931a] {\n  display: block;\n  position: absolute;\n  right: 0;\n  width: 120px;\n  z-index: 99;\n  box-shadow: 0 1px 4px #999;\n  background: #fff;\n}\n.x-tree-item-editor-item[data-v-b33c931a] {\n  display: block;\n  padding: 2px 35px 2px 15px;\n}\n.x-tree-item-editor-item[data-v-b33c931a]:hover {\n  background: #E9EBEE;\n}\n.x-tree-item-children[data-v-b33c931a] {\n  /*padding-left: 1.3em;*/\n}\n.editable_false[data-v-b33c931a] {\n  padding-right: 0;\n}\n.x-tree-node>.editable_false>.x-tree-item-name[data-v-b33c931a] {\n  padding: 0;\n  width: calc(100% - 37px);\n}\n.x-tree-leaf>.editable_false>.x-tree-item-name[data-v-b33c931a] {\n  padding: 0;\n  width: calc(100% - 20px);\n}\n\n", ""]);
+exports.push([module.i, "\n.x-tree-item[data-v-b33c931a] {\n  position: relative;\n  font-size: 14px;\n  -webkit-user-select: none;\n  -moz-user-select: none;\n  -ms-user-select: none;\n  user-select: none;\n}\n.x-tree-item-self[data-v-b33c931a] {\n  position: relative;\n  padding: 0 2em 0 0.5em;\n}\n.x-tree-item-self[data-v-b33c931a]:hover {\n  background: #E9EBEE;\n}\n.iconfont[data-v-b33c931a] {\n  font-size: 14px;\n  width: 14px;\n  color: #999;\n}\n.icon-blank[data-v-b33c931a] {\n  display: inline-block;\n  font-size: 14px;\n  width: 1em;\n}\n.x-tree-item-expand[data-v-b33c931a] {\n}\n.x-tree-item-checkbox[data-v-b33c931a] {\n}\n.x-tree-item-name[data-v-b33c931a] {\n  display: inline-block;\n  vertical-align: bottom;\n  padding: 0 1em 0 0em;\n  width: calc(100% - 40px);\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n}\n.x-tree-item-name-tip[data-v-b33c931a] {\n  position: absolute;\n  top: -20px;\n  left: 0px;\n  display: inline-block;\n  padding: 0 15px;\n  border: 1px solid #fff;\n  background: #fff;\n}\n.x-tree-item-edit[data-v-b33c931a] {\n  display: none;\n  position: absolute;\n  top: 0.36em;\n  right: 0.27em;\n}\n.x-tree-item-self:hover .x-tree-item-edit[data-v-b33c931a] {\n  display: block;\n}\n.x-tree-item-editor[data-v-b33c931a] {\n  display: block;\n  position: absolute;\n  right: 0;\n  width: 120px;\n  z-index: 99;\n  box-shadow: 0 1px 4px #999;\n  background: #fff;\n}\n.x-tree-item-editor-item[data-v-b33c931a] {\n  display: block;\n  padding: 2px 35px 2px 15px;\n}\n.x-tree-item-editor-item[data-v-b33c931a]:hover {\n  background: #E9EBEE;\n}\n.x-tree-item-children[data-v-b33c931a] {\n  /*padding-left: 1.3em;*/\n}\n.editable_false[data-v-b33c931a] {\n  padding-right: 0;\n}\n.x-tree-node>.editable_false>.x-tree-item-name[data-v-b33c931a] {\n  padding: 0;\n  width: calc(100% - 37px);\n}\n.x-tree-leaf>.editable_false>.x-tree-item-name[data-v-b33c931a] {\n  padding: 0;\n  width: calc(100% - 20px);\n}\n", ""]);
 
 // exports
 
@@ -1880,8 +1889,8 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       "mouseleave": _vm.hideEditorFn
     }
   }, [(_vm.hasChildren) ? _c('i', {
-    staticClass: "x-tree-item-expand fa",
-    class: _vm.model.expand ? 'fa-caret-down' : 'fa-caret-right',
+    staticClass: "x-tree-item-expand iconfont",
+    class: _vm.model.expand ? 'icon-1' : 'icon-1-copy',
     on: {
       "click": function($event) {
         $event.stopPropagation();
@@ -1897,7 +1906,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       value: (_vm.options.checkbox),
       expression: "options.checkbox"
     }],
-    staticClass: "x-tree-item-checkbox fa",
+    staticClass: "x-tree-item-checkbox iconfont",
     class: _vm.checkboxIcon,
     on: {
       "click": function($event) {
@@ -1912,7 +1921,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       value: (_vm.model.is_node),
       expression: "model.is_node"
     }],
-    staticClass: "x-tree-item-folder fa fa-folder-o"
+    staticClass: "x-tree-item-folder iconfont icon-wenjianjia1"
   }), _vm._v(" "), _c('span', {
     staticClass: "x-tree-item-name",
     attrs: {
@@ -1925,7 +1934,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       }
     }
   }, [_vm._v("\n      " + _vm._s(_vm.model.name) + "\n    ")]), _vm._v(" "), (_vm.options.editable) ? _c('i', {
-    staticClass: "x-tree-item-edit fa fa-caret-square-o-down",
+    staticClass: "x-tree-item-edit iconfont icon-xiangxia11",
     on: {
       "click": function($event) {
         $event.stopPropagation();

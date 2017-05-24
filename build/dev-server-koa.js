@@ -24,7 +24,7 @@ app.use(views(basePath, {
 }));
 
 // 静态资源目录对于相对入口文件index.js的路径
-const staticPath = path.resolve(__dirname, '../dist');
+const staticPath = path.resolve(__dirname, '../');
 app.use(serve(staticPath));
 
 // logger

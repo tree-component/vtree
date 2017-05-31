@@ -36,8 +36,7 @@
     methods: {
       initTree: function (tree, options) {
         let treeChecked = options.sel_ids ? Fn._checkTreeByIds(tree, options.sel_ids) : tree;
-        let treeExpand = options.expandIds ? Fn._expandTreeByIds(treeChecked, options.expandIds) :
-          treeChecked;
+        let treeExpand = options.expandIds ? Fn._expandTreeByIds(treeChecked, options.expandIds) : treeChecked;
 
         if (options.expandIds) {
           let ids = utils.toArray(options.expandIds);

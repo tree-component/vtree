@@ -15,7 +15,10 @@
         <span class="x-tree-item-editor-item" v-show="model.is_add" @click.stop="addChildFn">{{options.editorText.add}}</span>
         <span class="x-tree-item-editor-item" v-show="sortable.upAble" @click.stop="sortFn(true)">{{options.editorText.up}}</span>
         <span class="x-tree-item-editor-item" v-show="sortable.downAble" @click.stop="sortFn(false)">{{options.editorText.down}}</span>
-        <span class="x-tree-item-editor-item" v-show="cantEdit">editorText.unable</span>
+        <span class="x-tree-item-editor-item" v-show="cantEdit">options.editorText.unable</span>
+        <span class="x-tree-item-editor-item" v-for="(item, index) in model.menu" @click.stop="menuFn(index)">
+          {{item}}
+        </span>
       </div>
       <div class='x-tree-item-custom' v-show="model.level" v-html="model.custom" :style="options.style.custom">
       </div>
@@ -53,7 +56,7 @@ export default {
   },
   computed: {
     hasChildren() {
-      return this.model.is_node && this.model.children && this.model.children.length
+      return this.model.is_node && this.model.children && this.model.children.length;
     },
     checkboxIcon() {
       let faIcon = '';
@@ -70,7 +73,7 @@ export default {
     },
     cantEdit() {
       return !this.model.is_edit && !this.model.is_delete && !this.model.is_add && !this.sortable.upAble && !this.sortable
-        .downAble;
+        .downAble && !this.model.menu;
     },
     index() {
       if (!this.model.parent) {
@@ -103,6 +106,11 @@ export default {
   created() {
     if (this.options.custom) {
       this.model.custom = this.options.custom(this.model);
+    }
+    if (this.options.menuCustom) {
+      const temp = this.options.menuCustom(this.model);
+      this.model.menu = temp.texts;
+      this.model.menuFns = temp.callbacks;
     }
   },
 
@@ -144,6 +152,12 @@ export default {
         parent.children.push(this.model);
       }
       return false;
+    },
+    menuFn(index) {
+      if (this.model.menuFns && this.model.menuFns[index]) {
+        this.model.menuFns[index](this.model);
+      }
+      this.showEditor = false;
     },
     deleteFn() {
       this.options.onDelete(this.model, this.deleteFnn);

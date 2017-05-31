@@ -888,7 +888,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       return faIcon;
     },
     cantEdit: function cantEdit() {
-      return !this.model.is_edit && !this.model.is_delete && !this.model.is_add && !this.sortable.upAble && !this.sortable.downAble;
+      return !this.model.is_edit && !this.model.is_delete && !this.model.is_add && !this.sortable.upAble && !this.sortable.downAble && !this.model.menu;
     },
     index: function index() {
       if (!this.model.parent) {
@@ -921,6 +921,11 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
   created: function created() {
     if (this.options.custom) {
       this.model.custom = this.options.custom(this.model);
+    }
+    if (this.options.menuCustom) {
+      var temp = this.options.menuCustom(this.model);
+      this.model.menu = temp.texts;
+      this.model.menuFns = temp.callbacks;
     }
   },
 
@@ -961,6 +966,12 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         parent.children.push(this.model);
       }
       return false;
+    },
+    menuFn: function menuFn(index) {
+      if (this.model.menuFns && this.model.menuFns[index]) {
+        this.model.menuFns[index](this.model);
+      }
+      this.showEditor = false;
     },
     deleteFn: function deleteFn() {
       this.options.onDelete(this.model, this.deleteFnn);
@@ -1140,6 +1151,8 @@ function _arrayToTree(arrayIn, opt) {
     level: 0,
     expand: true,
     custom: null,
+    menuCustom: null,
+    menuCustomFn: null,
     active: [],
     options: opt,
     originData: arrayIn,
@@ -1200,6 +1213,8 @@ function _getSubTree(arrayIn, parent, opt) {
       }
       temp.parent = parent;
       temp.custom = null;
+      temp.menuCustom = null;
+      temp.menuCustomFn = null;
       temp.class = null;
       temp.style = null;
       temp.level = parent.level + 1;
@@ -2027,7 +2042,17 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       expression: "cantEdit"
     }],
     staticClass: "x-tree-item-editor-item"
-  }, [_vm._v("editorText.unable")])]) : _vm._e(), _vm._v(" "), _c('div', {
+  }, [_vm._v("options.editorText.unable")]), _vm._v(" "), _vm._l((_vm.model.menu), function(item, index) {
+    return _c('span', {
+      staticClass: "x-tree-item-editor-item",
+      on: {
+        "click": function($event) {
+          $event.stopPropagation();
+          _vm.menuFn(index)
+        }
+      }
+    }, [_vm._v("\n        " + _vm._s(item) + "\n      ")])
+  })], 2) : _vm._e(), _vm._v(" "), _c('div', {
     directives: [{
       name: "show",
       rawName: "v-show",

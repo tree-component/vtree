@@ -4,8 +4,8 @@
       <i class="x-tree-item-expand iconfont" v-if="hasChildren" :class="model.expand ? 'icon-1' : 'icon-1-copy'" @click.stop="expandFn"></i>
       <span class="icon-blank" v-else></span>
       <i class="x-tree-item-checkbox iconfont" v-show="options.checkbox" :class="checkboxIcon" @click.stop="checkFn"></i>
-      <i class="x-tree-item-folder iconfont icon-wenjianjia1" v-show="model.is_node"></i>
-      <span class="x-tree-item-name" :title="model.name" @click.stop="nameFn">
+      <i class="x-tree-item-folder iconfont" :class="iconIcon" v-show="options.textIcon ? true : model.is_node"></i>
+      <span class="x-tree-item-text" :title="model.name" @click.stop="nameFn">
         {{model.name}}
       </span>
       <i class="x-tree-item-edit iconfont icon-xiangxia11" v-if="options.editable" @click.stop="showEditorFn"></i>
@@ -15,7 +15,7 @@
         <span class="x-tree-item-editor-item" v-show="model.is_add" @click.stop="addChildFn">{{options.editorText.add}}</span>
         <span class="x-tree-item-editor-item" v-show="sortable.upAble" @click.stop="sortFn(true)">{{options.editorText.up}}</span>
         <span class="x-tree-item-editor-item" v-show="sortable.downAble" @click.stop="sortFn(false)">{{options.editorText.down}}</span>
-        <span class="x-tree-item-editor-item" v-show="cantEdit">options.editorText.unable</span>
+        <span class="x-tree-item-editor-item" v-show="cantEdit">{{options.editorText.unable}}</span>
         <span class="x-tree-item-editor-item" v-for="(item, index) in model.menu" @click.stop="menuFn(index)">
           {{item}}
         </span>
@@ -58,6 +58,19 @@ export default {
     hasChildren() {
       return this.model.is_node && this.model.children && this.model.children.length;
     },
+    expandIcon() {
+      let faIcon = '';
+      if (this.options.checkbox) {
+        if (this.model.checkState === true) {
+          faIcon = 'icon-square-check';
+        } else if (this.model.checkState === false) {
+          faIcon = 'icon-square';
+        } else if (this.model.checkState === 'z') {
+          faIcon = 'icon-square-minus';
+        }
+      }
+      return faIcon;
+    },
     checkboxIcon() {
       let faIcon = '';
       if (this.options.checkbox) {
@@ -70,6 +83,18 @@ export default {
         }
       }
       return faIcon;
+    },
+    iconIf() {
+
+    },
+    iconIcon() {
+      let iconIcon = '';
+      if (this.options.textIcon) {
+        iconIcon = this.options.textIcon;
+      } else if (this.model.is_node) {
+        iconIcon = 'icon-wenjianjia1';
+      }
+      return iconIcon;
     },
     cantEdit() {
       return !this.model.is_edit && !this.model.is_delete && !this.model.is_add && !this.sortable.upAble && !this.sortable
@@ -255,7 +280,7 @@ export default {
 
 .x-tree-item-checkbox {}
 
-.x-tree-item-name {
+.x-tree-item-text {
   display: inline-block;
   vertical-align: bottom;
   padding: 0 1em 0 0em;
@@ -265,7 +290,7 @@ export default {
   white-space: nowrap;
 }
 
-.x-tree-item-name-tip {
+.x-tree-item-text-tip {
   position: absolute;
   top: -20px;
   left: 0px;
@@ -313,12 +338,12 @@ export default {
   padding-right: 0;
 }
 
-.x-tree-node>.editable_false>.x-tree-item-name {
+.x-tree-node>.editable_false>.x-tree-item-text {
   padding: 0;
   width: calc(100% - 37px);
 }
 
-.x-tree-leaf>.editable_false>.x-tree-item-name {
+.x-tree-leaf>.editable_false>.x-tree-item-text {
   padding: 0;
   width: calc(100% - 20px);
 }

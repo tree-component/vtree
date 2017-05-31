@@ -60,14 +60,14 @@
       // expand: true,
       expandIds: '2,9,11', //优先级高于expand
       editable: true,
-      editorText: {
-        edit: 'edit',
-        delete: 'delete',
-        add: 'add',
-        up: 'up',
-        down: 'down',
-        unable: 'unable',
-      },
+      // editorText: {
+      //   edit: 'edit',
+      //   delete: 'delete',
+      //   add: 'add',
+      //   up: 'up',
+      //   down: 'down',
+      //   unable: 'unable',
+      // },
       style: {
         tree: {
           width: '300px',
@@ -81,6 +81,8 @@
       },
       // class : {
       //     active:'locate'
+      // },
+      // textIcon: {
       // },
       custom: function (item) {
         var html = '<span>' + item.id + '</span><span>' + item.name + '</span><span>' + item.expand +
@@ -97,8 +99,8 @@
       //       function name(params) {
       //         console.log(params.name);
       //       },
-      //     ]
-      //   }
+      //     ],
+      //   };
       // },
       onExpand: function (item, callback) {
         console.log("expand item", item, item.name);
@@ -240,9 +242,9 @@
         nodeId: 110,
         is_node: false,
         is_check: false,
-        is_edit: true,
-        is_delete: true,
-        is_add: true
+        is_edit: false,
+        is_delete: false,
+        is_add: false,
       },
 
       {

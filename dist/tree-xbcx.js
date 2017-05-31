@@ -874,6 +874,19 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     hasChildren: function hasChildren() {
       return this.model.is_node && this.model.children && this.model.children.length;
     },
+    expandIcon: function expandIcon() {
+      var faIcon = '';
+      if (this.options.checkbox) {
+        if (this.model.checkState === true) {
+          faIcon = 'icon-square-check';
+        } else if (this.model.checkState === false) {
+          faIcon = 'icon-square';
+        } else if (this.model.checkState === 'z') {
+          faIcon = 'icon-square-minus';
+        }
+      }
+      return faIcon;
+    },
     checkboxIcon: function checkboxIcon() {
       var faIcon = '';
       if (this.options.checkbox) {
@@ -886,6 +899,16 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         }
       }
       return faIcon;
+    },
+    iconIf: function iconIf() {},
+    iconIcon: function iconIcon() {
+      var iconIcon = '';
+      if (this.options.textIcon) {
+        iconIcon = this.options.textIcon;
+      } else if (this.model.is_node) {
+        iconIcon = 'icon-wenjianjia1';
+      }
+      return iconIcon;
     },
     cantEdit: function cantEdit() {
       return !this.model.is_edit && !this.model.is_delete && !this.model.is_add && !this.sortable.upAble && !this.sortable.downAble && !this.model.menu;
@@ -1804,7 +1827,7 @@ exports = module.exports = __webpack_require__(7)();
 
 
 // module
-exports.push([module.i, "\n.x-tree-item[data-v-b33c931a] {\n  position: relative;\n  font-size: 14px;\n  -webkit-user-select: none;\n  -moz-user-select: none;\n  -ms-user-select: none;\n  user-select: none;\n}\n.x-tree-item-self[data-v-b33c931a] {\n  position: relative;\n  padding: 0 2em 0 0.5em;\n}\n.x-tree-item-self[data-v-b33c931a]:hover {\n  background: #E9EBEE;\n}\n.iconfont[data-v-b33c931a] {\n  font-size: 14px;\n  width: 14px;\n  color: #999;\n}\n.icon-blank[data-v-b33c931a] {\n  display: inline-block;\n  font-size: 14px;\n  width: 1em;\n}\n.x-tree-item-expand[data-v-b33c931a] {\n}\n.x-tree-item-checkbox[data-v-b33c931a] {\n}\n.x-tree-item-name[data-v-b33c931a] {\n  display: inline-block;\n  vertical-align: bottom;\n  padding: 0 1em 0 0em;\n  width: calc(100% - 40px);\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n}\n.x-tree-item-name-tip[data-v-b33c931a] {\n  position: absolute;\n  top: -20px;\n  left: 0px;\n  display: inline-block;\n  padding: 0 15px;\n  border: 1px solid #fff;\n  background: #fff;\n}\n.x-tree-item-edit[data-v-b33c931a] {\n  display: none;\n  position: absolute;\n  top: 0.36em;\n  right: 0.27em;\n}\n.x-tree-item-self:hover .x-tree-item-edit[data-v-b33c931a] {\n  display: block;\n}\n.x-tree-item-editor[data-v-b33c931a] {\n  display: block;\n  position: absolute;\n  right: 0;\n  width: 120px;\n  z-index: 99;\n  box-shadow: 0 1px 4px #999;\n  background: #fff;\n}\n.x-tree-item-editor-item[data-v-b33c931a] {\n  display: block;\n  padding: 2px 35px 2px 15px;\n}\n.x-tree-item-editor-item[data-v-b33c931a]:hover {\n  background: #E9EBEE;\n}\n.x-tree-item-children[data-v-b33c931a] {\n  /*padding-left: 1.3em;*/\n}\n.editable_false[data-v-b33c931a] {\n  padding-right: 0;\n}\n.x-tree-node>.editable_false>.x-tree-item-name[data-v-b33c931a] {\n  padding: 0;\n  width: calc(100% - 37px);\n}\n.x-tree-leaf>.editable_false>.x-tree-item-name[data-v-b33c931a] {\n  padding: 0;\n  width: calc(100% - 20px);\n}\n", ""]);
+exports.push([module.i, "\n.x-tree-item[data-v-b33c931a] {\n  position: relative;\n  font-size: 14px;\n  -webkit-user-select: none;\n  -moz-user-select: none;\n  -ms-user-select: none;\n  user-select: none;\n}\n.x-tree-item-self[data-v-b33c931a] {\n  position: relative;\n  padding: 0 2em 0 0.5em;\n}\n.x-tree-item-self[data-v-b33c931a]:hover {\n  background: #E9EBEE;\n}\n.iconfont[data-v-b33c931a] {\n  font-size: 14px;\n  width: 14px;\n  color: #999;\n}\n.icon-blank[data-v-b33c931a] {\n  display: inline-block;\n  font-size: 14px;\n  width: 1em;\n}\n.x-tree-item-expand[data-v-b33c931a] {\n}\n.x-tree-item-checkbox[data-v-b33c931a] {\n}\n.x-tree-item-text[data-v-b33c931a] {\n  display: inline-block;\n  vertical-align: bottom;\n  padding: 0 1em 0 0em;\n  width: calc(100% - 40px);\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n}\n.x-tree-item-text-tip[data-v-b33c931a] {\n  position: absolute;\n  top: -20px;\n  left: 0px;\n  display: inline-block;\n  padding: 0 15px;\n  border: 1px solid #fff;\n  background: #fff;\n}\n.x-tree-item-edit[data-v-b33c931a] {\n  display: none;\n  position: absolute;\n  top: 0.36em;\n  right: 0.27em;\n}\n.x-tree-item-self:hover .x-tree-item-edit[data-v-b33c931a] {\n  display: block;\n}\n.x-tree-item-editor[data-v-b33c931a] {\n  display: block;\n  position: absolute;\n  right: 0;\n  width: 120px;\n  z-index: 99;\n  box-shadow: 0 1px 4px #999;\n  background: #fff;\n}\n.x-tree-item-editor-item[data-v-b33c931a] {\n  display: block;\n  padding: 2px 35px 2px 15px;\n}\n.x-tree-item-editor-item[data-v-b33c931a]:hover {\n  background: #E9EBEE;\n}\n.x-tree-item-children[data-v-b33c931a] {\n  /*padding-left: 1.3em;*/\n}\n.editable_false[data-v-b33c931a] {\n  padding-right: 0;\n}\n.x-tree-node>.editable_false>.x-tree-item-text[data-v-b33c931a] {\n  padding: 0;\n  width: calc(100% - 37px);\n}\n.x-tree-leaf>.editable_false>.x-tree-item-text[data-v-b33c931a] {\n  padding: 0;\n  width: calc(100% - 20px);\n}\n", ""]);
 
 // exports
 
@@ -1933,12 +1956,13 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     directives: [{
       name: "show",
       rawName: "v-show",
-      value: (_vm.model.is_node),
-      expression: "model.is_node"
+      value: (_vm.options.textIcon ? true : _vm.model.is_node),
+      expression: "options.textIcon ? true : model.is_node"
     }],
-    staticClass: "x-tree-item-folder iconfont icon-wenjianjia1"
+    staticClass: "x-tree-item-folder iconfont",
+    class: _vm.iconIcon
   }), _vm._v(" "), _c('span', {
-    staticClass: "x-tree-item-name",
+    staticClass: "x-tree-item-text",
     attrs: {
       "title": _vm.model.name
     },
@@ -2042,7 +2066,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       expression: "cantEdit"
     }],
     staticClass: "x-tree-item-editor-item"
-  }, [_vm._v("options.editorText.unable")]), _vm._v(" "), _vm._l((_vm.model.menu), function(item, index) {
+  }, [_vm._v(_vm._s(_vm.options.editorText.unable))]), _vm._v(" "), _vm._l((_vm.model.menu), function(item, index) {
     return _c('span', {
       staticClass: "x-tree-item-editor-item",
       on: {

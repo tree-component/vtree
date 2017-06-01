@@ -91,9 +91,8 @@ function _arrayToTree(arrayIn, opt) {
     parent: null,
     level: 0,
     expand: true,
-    custom: null,
-    menuCustom: null,
-    menuCustomFn: null,
+    addition: null,
+    menu: null,
     active: [],
     options: opt,
     originData: arrayIn,
@@ -153,9 +152,8 @@ function _getSubTree(arrayIn, parent, opt) {
         temp.is_check = false;
       }
       temp.parent = parent;
-      temp.custom = null;
-      temp.menuCustom = null;
-      temp.menuCustomFn = null;
+      temp.addition = null;
+      temp.menu = null;
       temp.class = null;
       temp.style = null;
       temp.level = parent.level + 1;
@@ -211,7 +209,7 @@ function _checkTreeByIdsFn(item, ids) {
   }
   for (let i = 0; i < ids.length; i++) {
     if (item.id == ids[i]) {
-      _changeItem(item, true);
+      changeItem(item, true);
       ids.splice(i, 1);
       break;
     }
@@ -288,7 +286,7 @@ function _activeTreeByIdsFn(item, ids) {
   };
 }
 
-function _changeItem(item, change) {
+function changeItem(item, change) {
   if (!item) {
     return false;
   }
@@ -622,7 +620,7 @@ const fn = {
 
   _traverseTree,
 
-  _changeItem,
+  changeItem,
   _changeChildren,
   _changeParent,
 

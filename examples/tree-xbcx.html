@@ -89,19 +89,21 @@
           '</span>';
         return html
       },
-      // menuCustom: function (item) {
-      //   return {
-      //     texts: [item.id, item.name],
-      //     callbacks: [
-      //       function name(params) {
-      //         console.log(params.id);
-      //       },
-      //       function name(params) {
-      //         console.log(params.name);
-      //       },
-      //     ],
-      //   };
-      // },
+      menuCustom: function (item) {
+        return [{
+            text: item.id,
+            callback: function name(params) {
+              console.log(params.id);
+            },
+          },
+          {
+            text: item.name,
+            callback: function name(params) {
+              console.log(params.name);
+            },
+          }
+        ]
+      },
       onExpand: function (item, callback) {
         console.log("expand item", item, item.name);
       },

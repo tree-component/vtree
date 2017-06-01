@@ -946,9 +946,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       this.model.custom = this.options.custom(this.model);
     }
     if (this.options.menuCustom) {
-      var temp = this.options.menuCustom(this.model);
-      this.model.menu = temp.texts;
-      this.model.menuFns = temp.callbacks;
+      this.model.menu = this.options.menuCustom(this.model);
     }
   },
 
@@ -990,9 +988,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       }
       return false;
     },
-    menuFn: function menuFn(index) {
-      if (this.model.menuFns && this.model.menuFns[index]) {
-        this.model.menuFns[index](this.model);
+    menuFn: function menuFn(callback) {
+      if (callback) {
+        callback(this.model);
       }
       this.showEditor = false;
     },
@@ -2072,10 +2070,10 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       on: {
         "click": function($event) {
           $event.stopPropagation();
-          _vm.menuFn(index)
+          _vm.menuFn(item.callback)
         }
       }
-    }, [_vm._v("\n        " + _vm._s(item) + "\n      ")])
+    }, [_vm._v("\n        " + _vm._s(item.text) + "\n      ")])
   })], 2) : _vm._e(), _vm._v(" "), _c('div', {
     directives: [{
       name: "show",

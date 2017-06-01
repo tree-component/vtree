@@ -16,8 +16,8 @@
         <span class="x-tree-item-editor-item" v-show="sortable.upAble" @click.stop="sortFn(true)">{{options.editorText.up}}</span>
         <span class="x-tree-item-editor-item" v-show="sortable.downAble" @click.stop="sortFn(false)">{{options.editorText.down}}</span>
         <span class="x-tree-item-editor-item" v-show="cantEdit">{{options.editorText.unable}}</span>
-        <span class="x-tree-item-editor-item" v-for="(item, index) in model.menu" @click.stop="menuFn(index)">
-          {{item}}
+        <span class="x-tree-item-editor-item" v-for="(item, index) in model.menu" @click.stop="menuFn(item.callback)">
+          {{item.text}}
         </span>
       </div>
       <div class='x-tree-item-custom' v-show="model.level" v-html="model.custom" :style="options.style.custom">
@@ -133,9 +133,7 @@ export default {
       this.model.custom = this.options.custom(this.model);
     }
     if (this.options.menuCustom) {
-      const temp = this.options.menuCustom(this.model);
-      this.model.menu = temp.texts;
-      this.model.menuFns = temp.callbacks;
+      this.model.menu = this.options.menuCustom(this.model);
     }
   },
 
@@ -178,9 +176,9 @@ export default {
       }
       return false;
     },
-    menuFn(index) {
-      if (this.model.menuFns && this.model.menuFns[index]) {
-        this.model.menuFns[index](this.model);
+    menuFn(callback) {
+      if (callback) {
+        callback(this.model);
       }
       this.showEditor = false;
     },

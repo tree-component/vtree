@@ -2161,8 +2161,8 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     directives: [{
       name: "show",
       rawName: "v-show",
-      value: (_vm.sortable.upAble),
-      expression: "sortable.upAble"
+      value: (_vm.model.is_move_up !== undefined ? _vm.model.is_move_up : _vm.sortable.upAble),
+      expression: "model.is_move_up!==undefined ? model.is_move_up : sortable.upAble"
     }],
     staticClass: "x-tree-item-menu-item",
     on: {
@@ -2175,8 +2175,8 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     directives: [{
       name: "show",
       rawName: "v-show",
-      value: (_vm.sortable.downAble),
-      expression: "sortable.downAble"
+      value: (_vm.model.is_move_down !== undefined ? _vm.model.is_move_down : _vm.sortable.downAble),
+      expression: "model.is_move_down!==undefined ? model.is_move_down : sortable.downAble"
     }],
     staticClass: "x-tree-item-menu-item",
     on: {

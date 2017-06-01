@@ -716,10 +716,10 @@ module.exports = Component.exports
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__utils_merge_js__ = __webpack_require__(5);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__utils_mergeDeep_js__ = __webpack_require__(6);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__utils_utils_js__ = __webpack_require__(12);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__methods_js__ = __webpack_require__(23);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__utils_merge__ = __webpack_require__(5);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__utils_mergeDeep__ = __webpack_require__(6);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__utils_utils__ = __webpack_require__(12);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__methods__ = __webpack_require__(23);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__xTreeItem_vue__ = __webpack_require__(34);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__xTreeItem_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4__xTreeItem_vue__);
 
@@ -731,7 +731,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-  name: "x-tree",
+  name: 'x-tree',
   components: {
     xTreeItem: __WEBPACK_IMPORTED_MODULE_4__xTreeItem_vue___default.a
   },
@@ -741,25 +741,25 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     fn: Object
   },
   data: function data() {
-    this.opts = __WEBPACK_IMPORTED_MODULE_3__methods_js__["a" /* default */]._initOptions(this.options);
-    this.tree = __WEBPACK_IMPORTED_MODULE_3__methods_js__["a" /* default */]._arrayToTree(this.data, this.opts);
+    this.opts = __WEBPACK_IMPORTED_MODULE_3__methods__["a" /* default */]._initOptions(this.options);
+    this.tree = __WEBPACK_IMPORTED_MODULE_3__methods__["a" /* default */]._arrayToTree(this.data, this.opts);
     this.tree = this.initTree(this.tree, this.opts);
     this.exportFn();
     return {
       dataTree: this.tree,
       opts: this.opts,
-      fnfn: __WEBPACK_IMPORTED_MODULE_3__methods_js__["a" /* default */]
+      fnfn: __WEBPACK_IMPORTED_MODULE_3__methods__["a" /* default */]
     };
   },
   computed: {},
   methods: {
     initTree: function initTree(tree, options) {
-      var treeChecked = options.sel_ids ? __WEBPACK_IMPORTED_MODULE_3__methods_js__["a" /* default */]._checkTreeByIds(tree, options.sel_ids) : tree;
-      var treeExpand = options.expandIds ? __WEBPACK_IMPORTED_MODULE_3__methods_js__["a" /* default */]._expandTreeByIds(treeChecked, options.expandIds) : treeChecked;
+      var treeChecked = options.sel_ids ? __WEBPACK_IMPORTED_MODULE_3__methods__["a" /* default */]._checkTreeByIds(tree, options.sel_ids) : tree;
+      var treeExpand = options.expandIds ? __WEBPACK_IMPORTED_MODULE_3__methods__["a" /* default */]._expandTreeByIds(treeChecked, options.expandIds) : treeChecked;
 
       if (options.expandIds) {
-        var ids = __WEBPACK_IMPORTED_MODULE_2__utils_utils_js__["a" /* default */].toArray(options.expandIds);
-        var items = __WEBPACK_IMPORTED_MODULE_3__methods_js__["a" /* default */].getItemByIds(tree, ids);
+        var ids = __WEBPACK_IMPORTED_MODULE_2__utils_utils__["a" /* default */].toArray(options.expandIds);
+        var items = __WEBPACK_IMPORTED_MODULE_3__methods__["a" /* default */].getItemByIds(tree, ids);
         for (var i = 0; i < items.length; i++) {
           this.activeItem(items[i]);
         }
@@ -776,18 +776,19 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       this.fn.activeItem = this.activeItem;
       this.fn.clearActive = this.clearActive;
       this.fn.setCustom = this.setCustom;
+      this.fn.setTextIcon = this.setTextIcon;
     },
     getItems: function getItems(type) {
-      return __WEBPACK_IMPORTED_MODULE_3__methods_js__["a" /* default */].getItems(this.tree, type);
+      return __WEBPACK_IMPORTED_MODULE_3__methods__["a" /* default */].getItems(this.tree, type);
     },
     getIds: function getIds(type) {
-      return __WEBPACK_IMPORTED_MODULE_3__methods_js__["a" /* default */].getIds(this.tree, type);
+      return __WEBPACK_IMPORTED_MODULE_3__methods__["a" /* default */].getIds(this.tree, type);
     },
     getNames: function getNames(type) {
-      return __WEBPACK_IMPORTED_MODULE_3__methods_js__["a" /* default */].getNames(this.tree, type);
+      return __WEBPACK_IMPORTED_MODULE_3__methods__["a" /* default */].getNames(this.tree, type);
     },
     getItemById: function getItemById(id) {
-      var item = __WEBPACK_IMPORTED_MODULE_3__methods_js__["a" /* default */].getItemById(this.tree, id);
+      var item = __WEBPACK_IMPORTED_MODULE_3__methods__["a" /* default */].getItemById(this.tree, id);
       if (!item) {
         console.warn('没有找到对应的item');
         return;
@@ -817,18 +818,18 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       return;
     },
     locateItem: function locateItem(id) {
-      var item = __WEBPACK_IMPORTED_MODULE_3__methods_js__["a" /* default */].getItemById(this.tree, id);
+      var item = __WEBPACK_IMPORTED_MODULE_3__methods__["a" /* default */].getItemById(this.tree, id);
       if (!item) {
         console.warn('没有找到对应的item');
         return;
       }
       item.expand = true;
-      __WEBPACK_IMPORTED_MODULE_3__methods_js__["a" /* default */]._expandParent(item.parent, true);
+      __WEBPACK_IMPORTED_MODULE_3__methods__["a" /* default */]._expandParent(item.parent, true);
       this.activeItem(item);
       return item;
     },
     locateItems: function locateItems(ids) {
-      var tree = __WEBPACK_IMPORTED_MODULE_3__methods_js__["a" /* default */]._expandTreeByIds(this.tree, ids);
+      var tree = __WEBPACK_IMPORTED_MODULE_3__methods__["a" /* default */]._expandTreeByIds(this.tree, ids);
       return tree;
     },
     setCustom: function setCustom(id, custom) {
@@ -839,8 +840,16 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         console.warn('未找到item, 请检查id是否正确');
       }
       return item;
+    },
+    setTextIcon: function setTextIcon(id, textIcon) {
+      var item = this.getItemById(id);
+      if (item) {
+        item.textIcon = textIcon;
+      } else {
+        console.warn('未找到item, 请检查id是否正确');
+      }
+      return item;
     }
-
   }
 });
 
@@ -1299,6 +1308,7 @@ function _arrayToTree(arrayIn, opt) {
     expand: true,
     addition: null,
     menu: null,
+    textIcon: null,
     active: [],
     options: opt,
     originData: arrayIn,
@@ -1360,6 +1370,7 @@ function _getSubTree(arrayIn, parent, opt) {
       temp.parent = parent;
       temp.addition = null;
       temp.menu = null;
+      temp.textIcon = null;
       temp.class = null;
       temp.style = null;
       temp.level = parent.level + 1;
@@ -1934,7 +1945,7 @@ exports = module.exports = __webpack_require__(7)();
 
 
 // module
-exports.push([module.i, "\n.x-tree-wrapper[data-v-2c0e2680] {\n  position: relative;\n  cursor: pointer;\n  font-size: 1em;\n  line-height: 1.8em;\n  white-space: nowrap;\n}\n\n", ""]);
+exports.push([module.i, "\n.x-tree-wrapper[data-v-2c0e2680] {\n  position: relative;\n  cursor: pointer;\n  font-size: 1em;\n  line-height: 1.8em;\n  white-space: nowrap;\n}\n", ""]);
 
 // exports
 

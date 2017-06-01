@@ -93,6 +93,7 @@ function _arrayToTree(arrayIn, opt) {
     expand: true,
     addition: null,
     menu: null,
+    textIcon: null,
     active: [],
     options: opt,
     originData: arrayIn,
@@ -154,6 +155,7 @@ function _getSubTree(arrayIn, parent, opt) {
       temp.parent = parent;
       temp.addition = null;
       temp.menu = null;
+      temp.textIcon = null;
       temp.class = null;
       temp.style = null;
       temp.level = parent.level + 1;

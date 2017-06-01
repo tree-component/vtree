@@ -8,14 +8,15 @@
       <span class="x-tree-item-text" :title="model.name" @click.stop="nameFn">
         {{model.name}}
       </span>
-      <i class="x-tree-item-edit iconfont icon-xiangxia11" v-if="options.editable" @click.stop="showEditorFn"></i>
-      <div class="x-tree-item-editor" v-if="options.editable" v-show="showEditor">
-        <span class="x-tree-item-editor-item" v-show="model.is_edit" @click.stop="editFn">{{options.editorText.edit}}</span>
-        <span class="x-tree-item-editor-item" v-show="model.is_delete" @click.stop="deleteFn">{{options.editorText.delete}}</span>
-        <span class="x-tree-item-editor-item" v-show="model.is_add" @click.stop="addChildFn">{{options.editorText.add}}</span>
-        <span class="x-tree-item-editor-item" v-show="sortable.upAble" @click.stop="sortFn(true)">{{options.editorText.up}}</span>
-        <span class="x-tree-item-editor-item" v-show="sortable.downAble" @click.stop="sortFn(false)">{{options.editorText.down}}</span>
-        <span class="x-tree-item-editor-item" v-show="cantEdit">{{options.editorText.unable}}</span>
+      <i class="x-tree-item-edit iconfont icon-xiangxia11" v-if="menuIf" @click.stop="showEditorFn"></i>
+      <div class="x-tree-item-editor" v-if="menuIf" v-show="showEditor">
+        <div v-if="options.defaultMenu">
+          <span class="x-tree-item-editor-item" v-show="model.is_edit" @click.stop="editFn">{{options.editorText.edit}}</span>
+          <span class="x-tree-item-editor-item" v-show="model.is_delete" @click.stop="deleteFn">{{options.editorText.delete}}</span>
+          <span class="x-tree-item-editor-item" v-show="model.is_add" @click.stop="addChildFn">{{options.editorText.add}}</span>
+          <span class="x-tree-item-editor-item" v-show="sortable.upAble" @click.stop="sortFn(true)">{{options.editorText.up}}</span>
+          <span class="x-tree-item-editor-item" v-show="sortable.downAble" @click.stop="sortFn(false)">{{options.editorText.down}}</span>
+        </div>
         <span class="x-tree-item-editor-item" v-for="(item, index) in model.menu" @click.stop="menuFn(item.callback)">
           {{item.text}}
         </span>
@@ -54,10 +55,15 @@ export default {
       state: {},
     };
   },
+  created() {
+    if (this.options.custom) {
+      this.model.custom = this.options.custom(this.model);
+    }
+    if (this.options.menuCustom) {
+      this.model.menu = this.options.menuCustom(this.model);
+    }
+  },
   computed: {
-    hasChildren() {
-      return this.model.is_node && this.model.children && this.model.children.length;
-    },
     expandIcon() {
       let faIcon = '';
       if (this.options.checkbox) {
@@ -96,15 +102,26 @@ export default {
       }
       return iconIcon;
     },
-    cantEdit() {
-      return !this.model.is_edit && !this.model.is_delete && !this.model.is_add && !this.sortable.upAble && !this.sortable
-        .downAble && !this.model.menu;
+    menuIf() {
+      if (this.options.editable === false) {
+        return false;
+      }
+      if (this.options.defaultMenu === false) {
+        return this.model.menu.length !== 0;
+      } else if (!this.model.is_edit && !this.model.is_delete && !this.model.is_add
+        && !this.sortable.upAble && !this.sortable.downAble) {
+        return this.model.menu.length !== 0;
+      }
+      return true;
     },
     index() {
       if (!this.model.parent) {
         return false;
       }
       return this.model.parent.children.indexOf(this.model);
+    },
+    hasChildren() {
+      return this.model.is_node && this.model.children && this.model.children.length;
     },
     sortable() {
       if (!this.model.parent || this.model.parent.children.length == 1) {
@@ -127,14 +144,6 @@ export default {
         downAble: downable,
       };
     },
-  },
-  created() {
-    if (this.options.custom) {
-      this.model.custom = this.options.custom(this.model);
-    }
-    if (this.options.menuCustom) {
-      this.model.menu = this.options.menuCustom(this.model);
-    }
   },
 
   methods: {

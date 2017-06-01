@@ -18,6 +18,7 @@ function _initOptions(options) {
     sel_ids: '',
     checkbox: false,
     editable: false,
+    defaultMenu: true,
     editorText: {
       edit: '修改部门',
       delete: '删除部门',

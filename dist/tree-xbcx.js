@@ -869,11 +869,16 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       state: {}
     };
   },
+  created: function created() {
+    if (this.options.custom) {
+      this.model.custom = this.options.custom(this.model);
+    }
+    if (this.options.menuCustom) {
+      this.model.menu = this.options.menuCustom(this.model);
+    }
+  },
 
   computed: {
-    hasChildren: function hasChildren() {
-      return this.model.is_node && this.model.children && this.model.children.length;
-    },
     expandIcon: function expandIcon() {
       var faIcon = '';
       if (this.options.checkbox) {
@@ -910,14 +915,25 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       }
       return iconIcon;
     },
-    cantEdit: function cantEdit() {
-      return !this.model.is_edit && !this.model.is_delete && !this.model.is_add && !this.sortable.upAble && !this.sortable.downAble && !this.model.menu;
+    menuIf: function menuIf() {
+      if (this.options.editable === false) {
+        return false;
+      }
+      if (this.options.defaultMenu === false) {
+        return this.model.menu.length !== 0;
+      } else if (!this.model.is_edit && !this.model.is_delete && !this.model.is_add && !this.sortable.upAble && !this.sortable.downAble) {
+        return this.model.menu.length !== 0;
+      }
+      return true;
     },
     index: function index() {
       if (!this.model.parent) {
         return false;
       }
       return this.model.parent.children.indexOf(this.model);
+    },
+    hasChildren: function hasChildren() {
+      return this.model.is_node && this.model.children && this.model.children.length;
     },
     sortable: function sortable() {
       if (!this.model.parent || this.model.parent.children.length == 1) {
@@ -941,15 +957,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       };
     }
   },
-  created: function created() {
-    if (this.options.custom) {
-      this.model.custom = this.options.custom(this.model);
-    }
-    if (this.options.menuCustom) {
-      this.model.menu = this.options.menuCustom(this.model);
-    }
-  },
-
 
   methods: {
     expandFn: function expandFn() {
@@ -1100,6 +1107,7 @@ function _initOptions(options) {
     sel_ids: '',
     checkbox: false,
     editable: false,
+    defaultMenu: true,
     editorText: {
       edit: '修改部门',
       delete: '删除部门',
@@ -1970,7 +1978,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
         _vm.nameFn($event)
       }
     }
-  }, [_vm._v("\n      " + _vm._s(_vm.model.name) + "\n    ")]), _vm._v(" "), (_vm.options.editable) ? _c('i', {
+  }, [_vm._v("\n      " + _vm._s(_vm.model.name) + "\n    ")]), _vm._v(" "), (_vm.menuIf) ? _c('i', {
     staticClass: "x-tree-item-edit iconfont icon-xiangxia11",
     on: {
       "click": function($event) {
@@ -1978,7 +1986,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
         _vm.showEditorFn($event)
       }
     }
-  }) : _vm._e(), _vm._v(" "), (_vm.options.editable) ? _c('div', {
+  }) : _vm._e(), _vm._v(" "), (_vm.menuIf) ? _c('div', {
     directives: [{
       name: "show",
       rawName: "v-show",
@@ -1986,7 +1994,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       expression: "showEditor"
     }],
     staticClass: "x-tree-item-editor"
-  }, [_c('span', {
+  }, [(_vm.options.defaultMenu) ? _c('div', [_c('span', {
     directives: [{
       name: "show",
       rawName: "v-show",
@@ -2000,7 +2008,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
         _vm.editFn($event)
       }
     }
-  }, [_vm._v(_vm._s(_vm.options.editorText.edit))]), _vm._v(" "), _c('span', {
+  }, [_vm._v(_vm._s(_vm.options.editorText.edit))]), _vm._v(" "), (_vm.options.defaultMenu) ? _c('span', {
     directives: [{
       name: "show",
       rawName: "v-show",
@@ -2014,7 +2022,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
         _vm.deleteFn($event)
       }
     }
-  }, [_vm._v(_vm._s(_vm.options.editorText.delete))]), _vm._v(" "), _c('span', {
+  }, [_vm._v(_vm._s(_vm.options.editorText.delete))]) : _vm._e(), _vm._v(" "), (_vm.options.defaultMenu) ? _c('span', {
     directives: [{
       name: "show",
       rawName: "v-show",
@@ -2028,7 +2036,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
         _vm.addChildFn($event)
       }
     }
-  }, [_vm._v(_vm._s(_vm.options.editorText.add))]), _vm._v(" "), _c('span', {
+  }, [_vm._v(_vm._s(_vm.options.editorText.add))]) : _vm._e(), _vm._v(" "), (_vm.options.defaultMenu) ? _c('span', {
     directives: [{
       name: "show",
       rawName: "v-show",
@@ -2042,7 +2050,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
         _vm.sortFn(true)
       }
     }
-  }, [_vm._v(_vm._s(_vm.options.editorText.up))]), _vm._v(" "), _c('span', {
+  }, [_vm._v(_vm._s(_vm.options.editorText.up))]) : _vm._e(), _vm._v(" "), (_vm.options.defaultMenu) ? _c('span', {
     directives: [{
       name: "show",
       rawName: "v-show",
@@ -2056,15 +2064,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
         _vm.sortFn(false)
       }
     }
-  }, [_vm._v(_vm._s(_vm.options.editorText.down))]), _vm._v(" "), _c('span', {
-    directives: [{
-      name: "show",
-      rawName: "v-show",
-      value: (_vm.cantEdit),
-      expression: "cantEdit"
-    }],
-    staticClass: "x-tree-item-editor-item"
-  }, [_vm._v(_vm._s(_vm.options.editorText.unable))]), _vm._v(" "), _vm._l((_vm.model.menu), function(item, index) {
+  }, [_vm._v(_vm._s(_vm.options.editorText.down))]) : _vm._e()]) : _vm._e(), _vm._v(" "), _vm._l((_vm.model.menu), function(item, index) {
     return _c('span', {
       staticClass: "x-tree-item-editor-item",
       on: {

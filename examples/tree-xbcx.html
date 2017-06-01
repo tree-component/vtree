@@ -68,6 +68,7 @@
       //   down: 'down',
       //   unable: 'unable',
       // },
+      defaultMenu: false,
       style: {
         tree: {
           width: '300px',
@@ -90,6 +91,9 @@
         return html
       },
       menuCustom: function (item) {
+        if(item.id == 110){
+          return [];
+        }
         return [{
             text: item.id,
             callback: function name(params) {

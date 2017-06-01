@@ -1078,6 +1078,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       } else if (index >= len - 1) {
         downable = false;
       }
+      upable = this.model.is_move_up !== undefined ? this.model.is_move_up : upable;
+      downable = this.model.is_move_down !== undefined ? this.model.is_move_down : upable;
       return {
         upAble: upable,
         downAble: downable
@@ -2172,8 +2174,8 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     directives: [{
       name: "show",
       rawName: "v-show",
-      value: (_vm.model.is_move_up !== undefined ? _vm.model.is_move_up : _vm.sortable.upAble),
-      expression: "model.is_move_up!==undefined ? model.is_move_up : sortable.upAble"
+      value: (_vm.sortable.upAble),
+      expression: "sortable.upAble"
     }],
     staticClass: "x-tree-item-menu-item",
     on: {
@@ -2186,8 +2188,8 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     directives: [{
       name: "show",
       rawName: "v-show",
-      value: (_vm.model.is_move_down !== undefined ? _vm.model.is_move_down : _vm.sortable.downAble),
-      expression: "model.is_move_down!==undefined ? model.is_move_down : sortable.downAble"
+      value: (_vm.sortable.downAble),
+      expression: "sortable.downAble"
     }],
     staticClass: "x-tree-item-menu-item",
     on: {

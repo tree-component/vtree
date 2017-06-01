@@ -14,8 +14,8 @@
           <span class="x-tree-item-menu-item" v-show="model.is_edit" @click.stop="editFn">{{options.editorText.edit}}</span>
           <span class="x-tree-item-menu-item" v-show="model.is_delete" @click.stop="deleteFn">{{options.editorText.delete}}</span>
           <span class="x-tree-item-menu-item" v-show="model.is_add" @click.stop="addChildFn">{{options.editorText.add}}</span>
-          <span class="x-tree-item-menu-item" v-show="model.is_move_up!==undefined ? model.is_move_up : sortable.upAble" @click.stop="sortFn(true)">{{options.editorText.up}}</span>
-          <span class="x-tree-item-menu-item" v-show="model.is_move_down!==undefined ? model.is_move_down : sortable.downAble" @click.stop="sortFn(false)">{{options.editorText.down}}</span>
+          <span class="x-tree-item-menu-item" v-show="sortable.upAble" @click.stop="sortFn(true)">{{options.editorText.up}}</span>
+          <span class="x-tree-item-menu-item" v-show="sortable.downAble" @click.stop="sortFn(false)">{{options.editorText.down}}</span>
         </div>
         <div>
           <span class="x-tree-item-menu-item" v-for="(item, index) in model.menu" @click.stop="menuFn(item.callback)">
@@ -252,6 +252,8 @@ export default {
       } else if (index >= len - 1) {
         downable = false;
       }
+      upable = this.model.is_move_up !== undefined ? this.model.is_move_up : upable;
+      downable = this.model.is_move_down !== undefined ? this.model.is_move_down : upable;
       return {
         upAble: upable,
         downAble: downable,

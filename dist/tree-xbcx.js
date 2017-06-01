@@ -862,58 +862,122 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
   },
   data: function data() {
     return {
-      if: {},
-      show: {},
-      style: {},
-      showEditor: false,
-      state: {}
+      text: this.model.name,
+      title: this.model.name,
+      showMenu: false
     };
   },
   created: function created() {
     if (this.options.custom) {
-      this.model.custom = this.options.custom(this.model);
+      this.model.addition = this.options.custom(this.model);
     }
     if (this.options.menuCustom) {
       this.model.menu = this.options.menuCustom(this.model);
     }
+    if (this.options.textIcon) {
+      this.model.textIcon = this.options.textIcon(this.model);
+    }
   },
 
   computed: {
-    expandIcon: function expandIcon() {
+    itemIf: function itemIf() {
+      return true;
+    },
+    itemShow: function itemShow() {
+      return true;
+    },
+    itemClass: function itemClass() {
+      return this.model.is_node ? 'x-tree-node' : 'x-tree-leaf';
+    },
+    itemStyle: function itemStyle() {
+      return '';
+    },
+    selfIf: function selfIf() {
+      return true;
+    },
+    selfShow: function selfShow() {
+      return this.model.level;
+    },
+    selfClass: function selfClass() {
+      return [this.options.editable ? '' : 'editable_false', this.model.class];
+    },
+    selfStyle: function selfStyle() {
+      var paddingLeft = this.model.level * 1.3 - 0.5;
+      return [{ 'padding-left': paddingLeft + 'em' }, this.options.style.item, this.model.style];
+    },
+    expandIf: function expandIf() {
+      return this.childrenIf;
+    },
+    expandShow: function expandShow() {
+      return true;
+    },
+    expandClass: function expandClass() {
+      return this.childrenShow ? 'icon-1' : 'icon-1-copy';
+    },
+    expandStyle: function expandStyle() {
+      return '';
+    },
+    checkboxIf: function checkboxIf() {
+      return true;
+    },
+    checkboxShow: function checkboxShow() {
+      return this.options.checkbox;
+    },
+    checkboxClass: function checkboxClass() {
       var faIcon = '';
-      if (this.options.checkbox) {
-        if (this.model.checkState === true) {
-          faIcon = 'icon-square-check';
-        } else if (this.model.checkState === false) {
-          faIcon = 'icon-square';
-        } else if (this.model.checkState === 'z') {
-          faIcon = 'icon-square-minus';
-        }
+      if (this.model.checkState === true) {
+        faIcon = 'icon-square-check';
+      } else if (this.model.checkState === false) {
+        faIcon = 'icon-square';
+      } else if (this.model.checkState === 'z') {
+        faIcon = 'icon-square-minus';
       }
       return faIcon;
     },
-    checkboxIcon: function checkboxIcon() {
-      var faIcon = '';
-      if (this.options.checkbox) {
-        if (this.model.checkState === true) {
-          faIcon = 'icon-square-check';
-        } else if (this.model.checkState === false) {
-          faIcon = 'icon-square';
-        } else if (this.model.checkState === 'z') {
-          faIcon = 'icon-square-minus';
-        }
-      }
-      return faIcon;
+    checkboxStyle: function checkboxStyle() {
+      return '';
     },
-    iconIf: function iconIf() {},
-    iconIcon: function iconIcon() {
+    iconIf: function iconIf() {
+      return true;
+    },
+    iconShow: function iconShow() {
+      return this.options.textIcon ? true : this.model.is_node;
+    },
+    iconClass: function iconClass() {
       var iconIcon = '';
-      if (this.options.textIcon) {
-        iconIcon = this.options.textIcon;
+      if (this.model.textIcon) {
+        iconIcon = this.model.textIcon;
       } else if (this.model.is_node) {
         iconIcon = 'icon-wenjianjia1';
       }
       return iconIcon;
+    },
+    iconStyle: function iconStyle() {
+      return '';
+    },
+    textIf: function textIf() {
+      return true;
+    },
+    textShow: function textShow() {
+      return true;
+    },
+    textClass: function textClass() {
+      return true;
+    },
+    textStyle: function textStyle() {
+      return true;
+    },
+    dropdownIf: function dropdownIf() {
+      return this.menuIf;
+    },
+    dropdownShow: function dropdownShow() {
+      return true;
+    },
+    dropdownClass: function dropdownClass() {
+      return '';
+    },
+    dropdownStyle: function dropdownStyle() {
+      return '';
     },
     menuIf: function menuIf() {
       if (this.options.editable === false) {
@@ -926,14 +990,68 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       }
       return true;
     },
+    menuShow: function menuShow() {
+      return this.showMenu;
+    },
+    menuClass: function menuClass() {
+      return '';
+    },
+    menuStyle: function menuStyle() {
+      return '';
+    },
+    defaultMenuIf: function defaultMenuIf() {
+      return true;
+    },
+    defaultMenuShow: function defaultMenuShow() {
+      return this.options.defaultMenu;
+    },
+    defaultMenuClass: function defaultMenuClass() {
+      return '';
+    },
+    defaultMenuStyle: function defaultMenuStyle() {
+      return '';
+    },
+    customMenuIf: function customMenuIf() {
+      return true;
+    },
+    customMenuShow: function customMenuShow() {
+      return true;
+    },
+    customMenuClass: function customMenuClass() {
+      return '';
+    },
+    customMenuStyle: function customMenuStyle() {
+      return '';
+    },
+    additionIf: function additionIf() {
+      return this.model.addition;
+    },
+    additionShow: function additionShow() {
+      return this.model.level;
+    },
+    additionClass: function additionClass() {
+      return '';
+    },
+    additionStyle: function additionStyle() {
+      return this.options.style.custom;
+    },
+    childrenIf: function childrenIf() {
+      return this.model.is_node && this.model.children && this.model.children.length;
+    },
+    childrenShow: function childrenShow() {
+      return this.model.expand;
+    },
+    childrenClass: function childrenClass() {
+      return '';
+    },
+    childrenStyle: function childrenStyle() {
+      return this.options.style.children;
+    },
     index: function index() {
       if (!this.model.parent) {
         return false;
       }
       return this.model.parent.children.indexOf(this.model);
-    },
-    hasChildren: function hasChildren() {
-      return this.model.is_node && this.model.children && this.model.children.length;
     },
     sortable: function sortable() {
       if (!this.model.parent || this.model.parent.children.length == 1) {
@@ -960,28 +1078,28 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
   methods: {
     expandFn: function expandFn() {
-      if (this.hasChildren) {
+      if (this.childrenIf) {
         this.model.expand = !this.model.expand;
         this.options.onExpand(this.model);
       }
     },
     checkFn: function checkFn() {
-      this.fn._changeItem(this.model, !this.model.is_check);
+      this.fn.changeItem(this.model, !this.model.is_check);
       this.options.onCheck(this.model);
     },
     nameFn: function nameFn() {
       this.options.onClick(this.model);
     },
     nameFnn: function nameFnn() {},
-    showEditorFn: function showEditorFn() {
-      this.showEditor = !this.showEditor;
+    menuShowFn: function menuShowFn() {
+      this.showMenu = !this.showMenu;
     },
-    hideEditorFn: function hideEditorFn() {
-      this.showEditor = false;
+    menuHideFn: function menuHideFn() {
+      this.showMenu = false;
     },
     editFn: function editFn() {
       this.options.onEdit(this.model, this.editFnn);
-      this.showEditor = false;
+      this.showMenu = false;
     },
     editFnn: function editFnn(item, pid, result) {
       if (result && this.model.parent.id != pid) {
@@ -999,11 +1117,11 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       if (callback) {
         callback(this.model);
       }
-      this.showEditor = false;
+      this.showMenu = false;
     },
     deleteFn: function deleteFn() {
       this.options.onDelete(this.model, this.deleteFnn);
-      this.showEditor = false;
+      this.showMenu = false;
     },
     deleteFnn: function deleteFnn(item, result) {
       var index = this.model.parent.children.indexOf(this.model);
@@ -1024,7 +1142,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         children: []
       };
       this.options.onAddChild(newChild, this.addChildFnn);
-      this.showEditor = false;
+      this.showMenu = false;
     },
     addChildFnn: function addChildFnn(item, result) {
       if (result) {
@@ -1041,7 +1159,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         brother = this.model.parent.children[index + 1];
         this.options.onSort(this.model, brother, this.downFnn);
       }
-      this.showEditor = false;
+      this.showMenu = false;
     },
     upFnn: function upFnn(item, result) {
       var index = this.model.parent.children.indexOf(this.model);
@@ -1179,9 +1297,8 @@ function _arrayToTree(arrayIn, opt) {
     parent: null,
     level: 0,
     expand: true,
-    custom: null,
-    menuCustom: null,
-    menuCustomFn: null,
+    addition: null,
+    menu: null,
     active: [],
     options: opt,
     originData: arrayIn,
@@ -1241,9 +1358,8 @@ function _getSubTree(arrayIn, parent, opt) {
         temp.is_check = false;
       }
       temp.parent = parent;
-      temp.custom = null;
-      temp.menuCustom = null;
-      temp.menuCustomFn = null;
+      temp.addition = null;
+      temp.menu = null;
       temp.class = null;
       temp.style = null;
       temp.level = parent.level + 1;
@@ -1299,7 +1415,7 @@ function _checkTreeByIdsFn(item, ids) {
   }
   for (var i = 0; i < ids.length; i++) {
     if (item.id == ids[i]) {
-      _changeItem(item, true);
+      changeItem(item, true);
       ids.splice(i, 1);
       break;
     }
@@ -1376,7 +1492,7 @@ function _activeTreeByIdsFn(item, ids) {
   };
 }
 
-function _changeItem(item, change) {
+function changeItem(item, change) {
   if (!item) {
     return false;
   }
@@ -1714,7 +1830,7 @@ var fn = {
 
   _traverseTree: _traverseTree,
 
-  _changeItem: _changeItem,
+  changeItem: changeItem,
   _changeChildren: _changeChildren,
   _changeParent: _changeParent,
 
@@ -1833,7 +1949,7 @@ exports = module.exports = __webpack_require__(7)();
 
 
 // module
-exports.push([module.i, "\n.x-tree-item[data-v-b33c931a] {\n  position: relative;\n  font-size: 14px;\n  -webkit-user-select: none;\n  -moz-user-select: none;\n  -ms-user-select: none;\n  user-select: none;\n}\n.x-tree-item-self[data-v-b33c931a] {\n  position: relative;\n  padding: 0 2em 0 0.5em;\n}\n.x-tree-item-self[data-v-b33c931a]:hover {\n  background: #E9EBEE;\n}\n.iconfont[data-v-b33c931a] {\n  font-size: 14px;\n  width: 14px;\n  color: #999;\n}\n.icon-blank[data-v-b33c931a] {\n  display: inline-block;\n  font-size: 14px;\n  width: 1em;\n}\n.x-tree-item-expand[data-v-b33c931a] {\n}\n.x-tree-item-checkbox[data-v-b33c931a] {\n}\n.x-tree-item-text[data-v-b33c931a] {\n  display: inline-block;\n  vertical-align: bottom;\n  padding: 0 1em 0 0em;\n  width: calc(100% - 40px);\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n}\n.x-tree-item-text-tip[data-v-b33c931a] {\n  position: absolute;\n  top: -20px;\n  left: 0px;\n  display: inline-block;\n  padding: 0 15px;\n  border: 1px solid #fff;\n  background: #fff;\n}\n.x-tree-item-edit[data-v-b33c931a] {\n  display: none;\n  position: absolute;\n  top: 0.36em;\n  right: 0.27em;\n}\n.x-tree-item-self:hover .x-tree-item-edit[data-v-b33c931a] {\n  display: block;\n}\n.x-tree-item-editor[data-v-b33c931a] {\n  display: block;\n  position: absolute;\n  right: 0;\n  width: 120px;\n  z-index: 99;\n  box-shadow: 0 1px 4px #999;\n  background: #fff;\n}\n.x-tree-item-editor-item[data-v-b33c931a] {\n  display: block;\n  padding: 2px 35px 2px 15px;\n}\n.x-tree-item-editor-item[data-v-b33c931a]:hover {\n  background: #E9EBEE;\n}\n.x-tree-item-children[data-v-b33c931a] {\n  /*padding-left: 1.3em;*/\n}\n.editable_false[data-v-b33c931a] {\n  padding-right: 0;\n}\n.x-tree-node>.editable_false>.x-tree-item-text[data-v-b33c931a] {\n  padding: 0;\n  width: calc(100% - 37px);\n}\n.x-tree-leaf>.editable_false>.x-tree-item-text[data-v-b33c931a] {\n  padding: 0;\n  width: calc(100% - 20px);\n}\n", ""]);
+exports.push([module.i, "\n.x-tree-item[data-v-b33c931a] {\n  position: relative;\n  font-size: 14px;\n  -webkit-user-select: none;\n  -moz-user-select: none;\n  -ms-user-select: none;\n  user-select: none;\n}\n.x-tree-item-self[data-v-b33c931a] {\n  position: relative;\n  padding: 0 2em 0 0.5em;\n}\n.x-tree-item-self[data-v-b33c931a]:hover {\n  background: #E9EBEE;\n}\n.iconfont[data-v-b33c931a] {\n  font-size: 14px;\n  width: 14px;\n  color: #999;\n}\n.icon-blank[data-v-b33c931a] {\n  display: inline-block;\n  font-size: 14px;\n  width: 1em;\n}\n.x-tree-item-expand[data-v-b33c931a] {\n}\n.x-tree-item-checkbox[data-v-b33c931a] {\n}\n.x-tree-item-text[data-v-b33c931a] {\n  display: inline-block;\n  vertical-align: bottom;\n  padding: 0 1em 0 0em;\n  width: calc(100% - 40px);\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n}\n.x-tree-item-text-tip[data-v-b33c931a] {\n  position: absolute;\n  top: -20px;\n  left: 0px;\n  display: inline-block;\n  padding: 0 15px;\n  border: 1px solid #fff;\n  background: #fff;\n}\n.x-tree-item-menu-dropdown[data-v-b33c931a] {\n  display: none;\n  position: absolute;\n  top: 0.36em;\n  right: 0.27em;\n}\n.x-tree-item-self:hover .x-tree-item-menu-dropdown[data-v-b33c931a] {\n  display: block;\n}\n.x-tree-item-menu[data-v-b33c931a] {\n  display: block;\n  position: absolute;\n  right: 0;\n  width: 120px;\n  z-index: 99;\n  box-shadow: 0 1px 4px #999;\n  background: #fff;\n}\n.x-tree-item-menu-item[data-v-b33c931a] {\n  display: block;\n  padding: 2px 35px 2px 15px;\n}\n.x-tree-item-menu-item[data-v-b33c931a]:hover {\n  background: #E9EBEE;\n}\n.x-tree-item-children[data-v-b33c931a] {\n  /*padding-left: 1.3em;*/\n}\n.editable_false[data-v-b33c931a] {\n  padding-right: 0;\n}\n.x-tree-node>.editable_false>.x-tree-item-text[data-v-b33c931a] {\n  padding: 0;\n  width: calc(100% - 37px);\n}\n.x-tree-leaf>.editable_false>.x-tree-item-text[data-v-b33c931a] {\n  padding: 0;\n  width: calc(100% - 20px);\n}\n", ""]);
 
 // exports
 
@@ -1916,25 +2032,23 @@ if (false) {
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
   return _c('div', {
     staticClass: "x-tree-item",
-    class: _vm.model.is_node ? 'x-tree-node' : 'x-tree-leaf'
+    class: _vm.itemClass
   }, [_c('div', {
     directives: [{
       name: "show",
       rawName: "v-show",
-      value: (_vm.model.level),
-      expression: "model.level"
+      value: (_vm.selfShow),
+      expression: "selfShow"
     }],
     staticClass: "x-tree-item-self",
-    class: [_vm.options.editable ? '' : 'editable_false', _vm.model.class],
-    style: ([{
-      'padding-left': (_vm.model.level - 1) * 1.3 + 0.8 + 'em'
-    }, _vm.options.style.item, _vm.model.style]),
+    class: _vm.selfClass,
+    style: (_vm.selfStyle),
     on: {
-      "mouseleave": _vm.hideEditorFn
+      "mouseleave": _vm.menuHideFn
     }
-  }, [(_vm.hasChildren) ? _c('i', {
+  }, [(_vm.expandIf) ? _c('i', {
     staticClass: "x-tree-item-expand iconfont",
-    class: _vm.model.expand ? 'icon-1' : 'icon-1-copy',
+    class: _vm.expandClass,
     on: {
       "click": function($event) {
         $event.stopPropagation();
@@ -1947,11 +2061,11 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     directives: [{
       name: "show",
       rawName: "v-show",
-      value: (_vm.options.checkbox),
-      expression: "options.checkbox"
+      value: (_vm.checkboxShow),
+      expression: "checkboxShow"
     }],
     staticClass: "x-tree-item-checkbox iconfont",
-    class: _vm.checkboxIcon,
+    class: _vm.checkboxClass,
     on: {
       "click": function($event) {
         $event.stopPropagation();
@@ -1962,11 +2076,11 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     directives: [{
       name: "show",
       rawName: "v-show",
-      value: (_vm.options.textIcon ? true : _vm.model.is_node),
-      expression: "options.textIcon ? true : model.is_node"
+      value: (_vm.iconShow),
+      expression: "iconShow"
     }],
-    staticClass: "x-tree-item-folder iconfont",
-    class: _vm.iconIcon
+    staticClass: "x-tree-item-icon iconfont",
+    class: _vm.iconClass
   }), _vm._v(" "), _c('span', {
     staticClass: "x-tree-item-text",
     attrs: {
@@ -1978,127 +2092,128 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
         _vm.nameFn($event)
       }
     }
-  }, [_vm._v("\n      " + _vm._s(_vm.model.name) + "\n    ")]), _vm._v(" "), (_vm.menuIf) ? _c('i', {
-    staticClass: "x-tree-item-edit iconfont icon-xiangxia11",
+  }, [_vm._v("\n      " + _vm._s(_vm.model.name) + "\n    ")]), _vm._v(" "), (_vm.dropdownIf) ? _c('i', {
+    staticClass: "x-tree-item-menu-dropdown iconfont icon-xiangxia11",
     on: {
       "click": function($event) {
         $event.stopPropagation();
-        _vm.showEditorFn($event)
+        _vm.menuShowFn($event)
       }
     }
   }) : _vm._e(), _vm._v(" "), (_vm.menuIf) ? _c('div', {
     directives: [{
       name: "show",
       rawName: "v-show",
-      value: (_vm.showEditor),
-      expression: "showEditor"
+      value: (_vm.menuShow),
+      expression: "menuShow"
     }],
-    staticClass: "x-tree-item-editor"
-  }, [(_vm.options.defaultMenu) ? _c('div', [_c('span', {
+    staticClass: "x-tree-item-menu"
+  }, [_c('div', {
+    directives: [{
+      name: "show",
+      rawName: "v-show",
+      value: (_vm.defaultMenuShow),
+      expression: "defaultMenuShow"
+    }]
+  }, [_c('span', {
     directives: [{
       name: "show",
       rawName: "v-show",
       value: (_vm.model.is_edit),
       expression: "model.is_edit"
     }],
-    staticClass: "x-tree-item-editor-item",
+    staticClass: "x-tree-item-menu-item",
     on: {
       "click": function($event) {
         $event.stopPropagation();
         _vm.editFn($event)
       }
     }
-  }, [_vm._v(_vm._s(_vm.options.editorText.edit))]), _vm._v(" "), (_vm.options.defaultMenu) ? _c('span', {
+  }, [_vm._v(_vm._s(_vm.options.editorText.edit))]), _vm._v(" "), _c('span', {
     directives: [{
       name: "show",
       rawName: "v-show",
       value: (_vm.model.is_delete),
       expression: "model.is_delete"
     }],
-    staticClass: "x-tree-item-editor-item",
+    staticClass: "x-tree-item-menu-item",
     on: {
       "click": function($event) {
         $event.stopPropagation();
         _vm.deleteFn($event)
       }
     }
-  }, [_vm._v(_vm._s(_vm.options.editorText.delete))]) : _vm._e(), _vm._v(" "), (_vm.options.defaultMenu) ? _c('span', {
+  }, [_vm._v(_vm._s(_vm.options.editorText.delete))]), _vm._v(" "), _c('span', {
     directives: [{
       name: "show",
       rawName: "v-show",
       value: (_vm.model.is_add),
       expression: "model.is_add"
     }],
-    staticClass: "x-tree-item-editor-item",
+    staticClass: "x-tree-item-menu-item",
     on: {
       "click": function($event) {
         $event.stopPropagation();
         _vm.addChildFn($event)
       }
     }
-  }, [_vm._v(_vm._s(_vm.options.editorText.add))]) : _vm._e(), _vm._v(" "), (_vm.options.defaultMenu) ? _c('span', {
+  }, [_vm._v(_vm._s(_vm.options.editorText.add))]), _vm._v(" "), _c('span', {
     directives: [{
       name: "show",
       rawName: "v-show",
       value: (_vm.sortable.upAble),
       expression: "sortable.upAble"
     }],
-    staticClass: "x-tree-item-editor-item",
+    staticClass: "x-tree-item-menu-item",
     on: {
       "click": function($event) {
         $event.stopPropagation();
         _vm.sortFn(true)
       }
     }
-  }, [_vm._v(_vm._s(_vm.options.editorText.up))]) : _vm._e(), _vm._v(" "), (_vm.options.defaultMenu) ? _c('span', {
+  }, [_vm._v(_vm._s(_vm.options.editorText.up))]), _vm._v(" "), _c('span', {
     directives: [{
       name: "show",
       rawName: "v-show",
       value: (_vm.sortable.downAble),
       expression: "sortable.downAble"
     }],
-    staticClass: "x-tree-item-editor-item",
+    staticClass: "x-tree-item-menu-item",
     on: {
       "click": function($event) {
         $event.stopPropagation();
         _vm.sortFn(false)
       }
     }
-  }, [_vm._v(_vm._s(_vm.options.editorText.down))]) : _vm._e()]) : _vm._e(), _vm._v(" "), _vm._l((_vm.model.menu), function(item, index) {
+  }, [_vm._v(_vm._s(_vm.options.editorText.down))])]), _vm._v(" "), _c('div', _vm._l((_vm.model.menu), function(item, index) {
     return _c('span', {
-      staticClass: "x-tree-item-editor-item",
+      staticClass: "x-tree-item-menu-item",
       on: {
         "click": function($event) {
           $event.stopPropagation();
           _vm.menuFn(item.callback)
         }
       }
-    }, [_vm._v("\n        " + _vm._s(item.text) + "\n      ")])
-  })], 2) : _vm._e(), _vm._v(" "), _c('div', {
-    directives: [{
-      name: "show",
-      rawName: "v-show",
-      value: (_vm.model.level),
-      expression: "model.level"
-    }],
-    staticClass: "x-tree-item-custom",
-    style: (_vm.options.style.custom),
+    }, [_vm._v("\n          " + _vm._s(item.text) + "\n        ")])
+  }))]) : _vm._e(), _vm._v(" "), (_vm.additionIf) ? _c('div', {
+    staticClass: "x-tree-item-addition x-tree-item-custom",
+    style: (_vm.additionStyle),
     domProps: {
-      "innerHTML": _vm._s(_vm.model.custom)
+      "innerHTML": _vm._s(_vm.model.addition)
     }
-  })]), _vm._v(" "), (_vm.hasChildren) ? _c('div', {
+  }) : _vm._e()]), _vm._v(" "), (_vm.childrenIf) ? _c('div', {
     directives: [{
       name: "show",
       rawName: "v-show",
-      value: (_vm.model.expand),
-      expression: "model.expand"
+      value: (_vm.childrenShow),
+      expression: "childrenShow"
     }],
     staticClass: "x-tree-item-children",
-    style: (_vm.options.style.children)
-  }, _vm._l((_vm.model.children), function(model) {
+    style: (_vm.childrenStyle)
+  }, _vm._l((_vm.model.children), function(child) {
     return _c('x-tree-item', {
       attrs: {
-        "model": model,
+        "model": child,
         "tree": _vm.tree,
         "options": _vm.options,
         "fn": _vm.fn

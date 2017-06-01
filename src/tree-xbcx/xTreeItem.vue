@@ -1,31 +1,33 @@
 <template>
-  <div class="x-tree-item" :class="model.is_node ? 'x-tree-node' : 'x-tree-leaf' ">
-    <div class="x-tree-item-self" v-show="model.level" :class="[options.editable ? '' : 'editable_false', model.class]" :style="[{ 'padding-left': (model.level - 1) * 1.3 + 0.8 + 'em'}, options.style.item, model.style]" @mouseleave="hideEditorFn">
-      <i class="x-tree-item-expand iconfont" v-if="hasChildren" :class="model.expand ? 'icon-1' : 'icon-1-copy'" @click.stop="expandFn"></i>
+  <div class="x-tree-item" :class="itemClass">
+    <div class="x-tree-item-self" v-show="selfShow" :class="selfClass" :style="selfStyle" @mouseleave="menuHideFn">
+      <i class="x-tree-item-expand iconfont" v-if="expandIf" :class="expandClass" @click.stop="expandFn"></i>
       <span class="icon-blank" v-else></span>
-      <i class="x-tree-item-checkbox iconfont" v-show="options.checkbox" :class="checkboxIcon" @click.stop="checkFn"></i>
-      <i class="x-tree-item-folder iconfont" :class="iconIcon" v-show="options.textIcon ? true : model.is_node"></i>
+      <i class="x-tree-item-checkbox iconfont" v-show="checkboxShow" :class="checkboxClass" @click.stop="checkFn"></i>
+      <i class="x-tree-item-icon iconfont" v-show="iconShow" :class="iconClass"></i>
       <span class="x-tree-item-text" :title="model.name" @click.stop="nameFn">
         {{model.name}}
       </span>
-      <i class="x-tree-item-edit iconfont icon-xiangxia11" v-if="menuIf" @click.stop="showEditorFn"></i>
-      <div class="x-tree-item-editor" v-if="menuIf" v-show="showEditor">
-        <div v-if="options.defaultMenu">
-          <span class="x-tree-item-editor-item" v-show="model.is_edit" @click.stop="editFn">{{options.editorText.edit}}</span>
-          <span class="x-tree-item-editor-item" v-show="model.is_delete" @click.stop="deleteFn">{{options.editorText.delete}}</span>
-          <span class="x-tree-item-editor-item" v-show="model.is_add" @click.stop="addChildFn">{{options.editorText.add}}</span>
-          <span class="x-tree-item-editor-item" v-show="sortable.upAble" @click.stop="sortFn(true)">{{options.editorText.up}}</span>
-          <span class="x-tree-item-editor-item" v-show="sortable.downAble" @click.stop="sortFn(false)">{{options.editorText.down}}</span>
+      <i class="x-tree-item-menu-dropdown iconfont icon-xiangxia11" v-if="dropdownIf" @click.stop="menuShowFn"></i>
+      <div class="x-tree-item-menu" v-if="menuIf" v-show="menuShow">
+        <div v-show="defaultMenuShow">
+          <span class="x-tree-item-menu-item" v-show="model.is_edit" @click.stop="editFn">{{options.editorText.edit}}</span>
+          <span class="x-tree-item-menu-item" v-show="model.is_delete" @click.stop="deleteFn">{{options.editorText.delete}}</span>
+          <span class="x-tree-item-menu-item" v-show="model.is_add" @click.stop="addChildFn">{{options.editorText.add}}</span>
+          <span class="x-tree-item-menu-item" v-show="sortable.upAble" @click.stop="sortFn(true)">{{options.editorText.up}}</span>
+          <span class="x-tree-item-menu-item" v-show="sortable.downAble" @click.stop="sortFn(false)">{{options.editorText.down}}</span>
         </div>
-        <span class="x-tree-item-editor-item" v-for="(item, index) in model.menu" @click.stop="menuFn(item.callback)">
-          {{item.text}}
-        </span>
+        <div>
+          <span class="x-tree-item-menu-item" v-for="(item, index) in model.menu" @click.stop="menuFn(item.callback)">
+            {{item.text}}
+          </span>
+        </div>
       </div>
-      <div class='x-tree-item-custom' v-show="model.level" v-html="model.custom" :style="options.style.custom">
+      <div class='x-tree-item-addition x-tree-item-custom' v-if="additionIf" :style="additionStyle" v-html="model.addition">
       </div>
     </div>
-    <div class='x-tree-item-children' v-if="hasChildren" v-show="model.expand" :style="options.style.children">
-      <x-tree-item v-for="model in model.children" :model="model" :tree="tree" :options="options" :fn="fn">
+    <div class='x-tree-item-children' v-if="childrenIf" v-show="childrenShow" :class="" :style="childrenStyle">
+      <x-tree-item v-for="child in model.children" :model="child" :tree="tree" :options="options" :fn="fn">
       </x-tree-item>
     </div>
   </div>
@@ -42,65 +44,121 @@ export default {
   },
   data() {
     return {
-      if: {
-
-      },
-      show: {
-
-      },
-      style: {
-
-      },
-      showEditor: false,
-      state: {},
+      text: this.model.name,
+      title: this.model.name,
+      showMenu: false,
     };
   },
   created() {
     if (this.options.custom) {
-      this.model.custom = this.options.custom(this.model);
+      this.model.addition = this.options.custom(this.model);
     }
     if (this.options.menuCustom) {
       this.model.menu = this.options.menuCustom(this.model);
     }
+    if (this.options.textIcon) {
+      this.model.textIcon = this.options.textIcon(this.model);
+    }
   },
   computed: {
-    expandIcon() {
+    itemIf() {
+      return true;
+    },
+    itemShow() {
+      return true;
+    },
+    itemClass() {
+      return this.model.is_node ? 'x-tree-node' : 'x-tree-leaf';
+    },
+    itemStyle() {
+      return '';
+    },
+    selfIf() {
+      return true;
+    },
+    selfShow() {
+      return this.model.level;
+    },
+    selfClass() {
+      return [this.options.editable ? '' : 'editable_false', this.model.class];
+    },
+    selfStyle() {
+      const paddingLeft = (this.model.level * 1.3) - 0.5;
+      return [{ 'padding-left': `${paddingLeft}em` }, this.options.style.item, this.model.style];
+    },
+    expandIf() {
+      return this.childrenIf;
+    },
+    expandShow() {
+      return true;
+    },
+    expandClass() {
+      return this.childrenShow ? 'icon-1' : 'icon-1-copy';
+    },
+    expandStyle() {
+      return '';
+    },
+    checkboxIf() {
+      return true;
+    },
+    checkboxShow() {
+      return this.options.checkbox;
+    },
+    checkboxClass() {
       let faIcon = '';
-      if (this.options.checkbox) {
-        if (this.model.checkState === true) {
-          faIcon = 'icon-square-check';
-        } else if (this.model.checkState === false) {
-          faIcon = 'icon-square';
-        } else if (this.model.checkState === 'z') {
-          faIcon = 'icon-square-minus';
-        }
+      if (this.model.checkState === true) {
+        faIcon = 'icon-square-check';
+      } else if (this.model.checkState === false) {
+        faIcon = 'icon-square';
+      } else if (this.model.checkState === 'z') {
+        faIcon = 'icon-square-minus';
       }
       return faIcon;
     },
-    checkboxIcon() {
-      let faIcon = '';
-      if (this.options.checkbox) {
-        if (this.model.checkState === true) {
-          faIcon = 'icon-square-check';
-        } else if (this.model.checkState === false) {
-          faIcon = 'icon-square';
-        } else if (this.model.checkState === 'z') {
-          faIcon = 'icon-square-minus';
-        }
-      }
-      return faIcon;
+    checkboxStyle() {
+      return '';
     },
     iconIf() {
-
+      return true;
     },
-    iconIcon() {
+    iconShow() {
+      return this.options.textIcon ? true : this.model.is_node;
+    },
+    iconClass() {
       let iconIcon = '';
-      if (this.options.textIcon) {
-        iconIcon = this.options.textIcon;
+      if (this.model.textIcon) {
+        iconIcon = this.model.textIcon;
       } else if (this.model.is_node) {
         iconIcon = 'icon-wenjianjia1';
       }
       return iconIcon;
+    },
+    iconStyle() {
+      return '';
+    },
+    textIf() {
+      return true;
+    },
+    textShow() {
+      return true;
+    },
+    textClass() {
+      return true;
+    },
+    textStyle() {
+      return true;
+    },
+    dropdownIf() {
+      return this.menuIf;
+    },
+    dropdownShow() {
+      return true;
+    },
+    dropdownClass() {
+      return '';
+    },
+    dropdownStyle() {
+      return '';
     },
     menuIf() {
       if (this.options.editable === false) {
@@ -114,14 +172,69 @@ export default {
       }
       return true;
     },
+    menuShow() {
+      return this.showMenu;
+    },
+    menuClass() {
+      return '';
+    },
+    menuStyle() {
+      return '';
+    },
+    defaultMenuIf() {
+      return true;
+    },
+    defaultMenuShow() {
+      return this.options.defaultMenu;
+    },
+    defaultMenuClass() {
+      return '';
+    },
+    defaultMenuStyle() {
+      return '';
+    },
+    customMenuIf() {
+      return true;
+    },
+    customMenuShow() {
+      return true;
+    },
+    customMenuClass() {
+      return '';
+    },
+    customMenuStyle() {
+      return '';
+    },
+    additionIf() {
+      return this.model.addition;
+    },
+    additionShow() {
+      return this.model.level;
+    },
+    additionClass() {
+      return '';
+    },
+    additionStyle() {
+      return this.options.style.custom;
+    },
+    childrenIf() {
+      return this.model.is_node && this.model.children && this.model.children.length;
+    },
+    childrenShow() {
+      return this.model.expand;
+    },
+    childrenClass() {
+      return '';
+    },
+    childrenStyle() {
+      return this.options.style.children;
+    },
+
     index() {
       if (!this.model.parent) {
         return false;
       }
       return this.model.parent.children.indexOf(this.model);
-    },
-    hasChildren() {
-      return this.model.is_node && this.model.children && this.model.children.length;
     },
     sortable() {
       if (!this.model.parent || this.model.parent.children.length == 1) {
@@ -148,13 +261,13 @@ export default {
 
   methods: {
     expandFn() {
-      if (this.hasChildren) {
+      if (this.childrenIf) {
         this.model.expand = !this.model.expand;
         this.options.onExpand(this.model);
       }
     },
     checkFn() {
-      this.fn._changeItem(this.model, !this.model.is_check);
+      this.fn.changeItem(this.model, !this.model.is_check);
       this.options.onCheck(this.model);
     },
     nameFn() {
@@ -163,15 +276,15 @@ export default {
     nameFnn() {
 
     },
-    showEditorFn() {
-      this.showEditor = !this.showEditor;
+    menuShowFn() {
+      this.showMenu = !this.showMenu;
     },
-    hideEditorFn() {
-      this.showEditor = false;
+    menuHideFn() {
+      this.showMenu = false;
     },
     editFn() {
       this.options.onEdit(this.model, this.editFnn);
-      this.showEditor = false;
+      this.showMenu = false;
     },
     editFnn(item, pid, result) {
       if (result && this.model.parent.id != pid) {
@@ -189,11 +302,11 @@ export default {
       if (callback) {
         callback(this.model);
       }
-      this.showEditor = false;
+      this.showMenu = false;
     },
     deleteFn() {
       this.options.onDelete(this.model, this.deleteFnn);
-      this.showEditor = false;
+      this.showMenu = false;
     },
     deleteFnn(item, result) {
       const index = this.model.parent.children.indexOf(this.model);
@@ -214,7 +327,7 @@ export default {
         children: [],
       };
       this.options.onAddChild(newChild, this.addChildFnn);
-      this.showEditor = false;
+      this.showMenu = false;
     },
     addChildFnn(item, result) {
       if (result) {
@@ -231,7 +344,7 @@ export default {
         brother = this.model.parent.children[index + 1];
         this.options.onSort(this.model, brother, this.downFnn);
       }
-      this.showEditor = false;
+      this.showMenu = false;
     },
     upFnn(item, result) {
       const index = this.model.parent.children.indexOf(this.model);
@@ -274,7 +387,7 @@ export default {
 .iconfont {
   font-size: 14px;
   width: 14px;
-  color: #999;
+  color: #666;
 }
 
 .icon-blank {
@@ -307,18 +420,18 @@ export default {
   background: #fff;
 }
 
-.x-tree-item-edit {
+.x-tree-item-menu-dropdown {
   display: none;
   position: absolute;
   top: 0.36em;
   right: 0.27em;
 }
 
-.x-tree-item-self:hover .x-tree-item-edit {
+.x-tree-item-self:hover .x-tree-item-menu-dropdown {
   display: block;
 }
 
-.x-tree-item-editor {
+.x-tree-item-menu {
   display: block;
   position: absolute;
   right: 0;
@@ -328,12 +441,12 @@ export default {
   background: #fff;
 }
 
-.x-tree-item-editor-item {
+.x-tree-item-menu-item {
   display: block;
   padding: 2px 35px 2px 15px;
 }
 
-.x-tree-item-editor-item:hover {
+.x-tree-item-menu-item:hover {
   background: #E9EBEE;
 }
 

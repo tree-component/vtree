@@ -32,25 +32,32 @@
       background: red;
     }
 
+    .color-red {
+      color: red !important;
+    }
+
+    .color-blue {
+      color: blue !important;
+    }
+
   </style>
   <script src="/dist/lib/vue.js"></script>
   <script src="/dist/tree-xbcx.js"></script>
 </head>
 
 <body>
-  <div id="xTreeDemo">
+  <div id="app">
     <x-tree :data="data" :options="options" :fn="fn"></x-tree>
+    <p>tree-vue</p>
+    <div class="buttons">
+      <div class="button button-edit">edit</div>
+      <div class="button button-delete">delete</div>
+      <div class="button button-add">add</div>
+      <div class="button button-cancel">cancel</div>
+      <div class="button button-sort">sort</div>
+      <div class="button button-sortn">sortn</div>
+    </div>
   </div>
-
-  <div class="buttons">
-    <div class="button button-edit">edit</div>
-    <div class="button button-delete">delete</div>
-    <div class="button button-add">add</div>
-    <div class="button button-cancel">cancel</div>
-    <div class="button button-sort">sort</div>
-    <div class="button button-sortn">sortn</div>
-  </div>
-
   <div class="footer">footer</div>
 
   <script>
@@ -58,7 +65,7 @@
       checkbox: true,
       sel_ids: '3,11,12,13,30,31,32,33',
       // expand: true,
-      expandIds: '2,9,11', //优先级高于expand
+      expandIds: '2,9,11', // 优先级高于expand
       editable: true,
       // editorText: {
       //   edit: 'edit',
@@ -74,24 +81,20 @@
           width: '300px',
         },
         item: {
-          'border-bottom': '1px solid red'
+          'border-bottom': '1px solid red',
         },
         custom: {
-          'border-bottom': '1px solid blue'
+          'border-bottom': '1px solid blue',
         },
       },
       // class : {
       //     active:'locate'
       // },
-      // textIcon: {
-      // },
-      custom: function (item) {
-        var html = '<span>' + item.id + '</span><span>' + item.name + '</span><span>' + item.expand +
-          '</span>';
-        return html
+      textIcon: function name(item) {
+        return item.is_node ? 'icon-yonghu color-red' : 'icon-yonghu color-blue';
       },
       menuCustom: function (item) {
-        if(item.id == 110){
+        if (item.is_node) {
           return [];
         }
         return [{
@@ -105,8 +108,13 @@
             callback: function name(params) {
               console.log(params.name);
             },
-          }
-        ]
+          },
+        ];
+      },
+      custom: function (item) {
+        var html = '<span>' + item.id + '</span><span>' + item.name + '</span><span>' + item.expand +
+          '</span>';
+        return html
       },
       onExpand: function (item, callback) {
         console.log("expand item", item, item.name);
@@ -376,7 +384,7 @@
     ];
 
     var xTree1 = new Vue({
-      el: '#xTreeDemo',
+      el: '#app',
       data: function () {
         return {
           data: treeData,

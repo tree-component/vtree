@@ -950,7 +950,13 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       return true;
     },
     iconShow: function iconShow() {
-      return this.options.textIcon ? true : this.model.is_node;
+      if (this.options.textIcon) {
+        return true;
+      }
+      if (this.model.textIcon) {
+        return true;
+      }
+      return this.model.is_node;
     },
     iconClass: function iconClass() {
       var iconIcon = '';

@@ -122,7 +122,13 @@ export default {
       return true;
     },
     iconShow() {
-      return this.options.textIcon ? true : this.model.is_node;
+      if (this.options.textIcon) {
+        return true;
+      }
+      if (this.model.textIcon) {
+        return true;
+      }
+      return this.model.is_node;
     },
     iconClass() {
       let iconIcon = '';

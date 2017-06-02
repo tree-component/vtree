@@ -873,6 +873,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     return {
       text: this.model.name,
       title: this.model.name,
+      iconfont: 'iconfont',
       showMenu: false
     };
   },
@@ -915,12 +916,15 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       return [{ 'padding-left': paddingLeft + 'em' }, this.options.style.item, this.model.style];
     },
     expandIf: function expandIf() {
-      return this.childrenIf;
+      return true;
     },
     expandShow: function expandShow() {
       return true;
     },
     expandClass: function expandClass() {
+      if (this.childrenIf === false) {
+        return 'icon-sos icon-blank';
+      }
       return this.childrenShow ? 'icon-1' : 'icon-1-copy';
     },
     expandStyle: function expandStyle() {
@@ -989,7 +993,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       return true;
     },
     dropdownClass: function dropdownClass() {
-      return '';
+      return 'icon-xiangxia11';
     },
     dropdownStyle: function dropdownStyle() {
       return '';
@@ -1968,7 +1972,7 @@ exports = module.exports = __webpack_require__(7)();
 
 
 // module
-exports.push([module.i, "\n.x-tree-item[data-v-b33c931a] {\n  position: relative;\n  font-size: 14px;\n  -webkit-user-select: none;\n  -moz-user-select: none;\n  -ms-user-select: none;\n  user-select: none;\n}\n.x-tree-item-self[data-v-b33c931a] {\n  position: relative;\n  padding: 0 2em 0 0.5em;\n}\n.x-tree-item-self[data-v-b33c931a]:hover {\n  background: #E9EBEE;\n}\n.iconfont[data-v-b33c931a] {\n  font-size: 14px;\n  width: 14px;\n  color: #999;\n}\n.icon-blank[data-v-b33c931a] {\n  display: inline-block;\n  font-size: 14px;\n  width: 1em;\n}\n.x-tree-item-expand[data-v-b33c931a] {\n}\n.x-tree-item-checkbox[data-v-b33c931a] {\n}\n.x-tree-item-text[data-v-b33c931a] {\n  display: inline-block;\n  vertical-align: bottom;\n  padding: 0 1em 0 0em;\n  width: calc(100% - 40px);\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n}\n.x-tree-item-text-tip[data-v-b33c931a] {\n  position: absolute;\n  top: -20px;\n  left: 0px;\n  display: inline-block;\n  padding: 0 15px;\n  border: 1px solid #fff;\n  background: #fff;\n}\n.x-tree-item-menu-dropdown[data-v-b33c931a] {\n  display: none;\n  position: absolute;\n  top: 0.36em;\n  right: 0.27em;\n}\n.x-tree-item-self:hover .x-tree-item-menu-dropdown[data-v-b33c931a] {\n  display: block;\n}\n.x-tree-item-menu[data-v-b33c931a] {\n  display: block;\n  position: absolute;\n  right: 0;\n  width: 120px;\n  z-index: 99;\n  box-shadow: 0 1px 4px #999;\n  background: #fff;\n}\n.x-tree-item-menu-item[data-v-b33c931a] {\n  display: block;\n  padding: 2px 35px 2px 15px;\n}\n.x-tree-item-menu-item[data-v-b33c931a]:hover {\n  background: #E9EBEE;\n}\n.x-tree-item-children[data-v-b33c931a] {\n  /*padding-left: 1.3em;*/\n}\n.editable_false[data-v-b33c931a] {\n  padding-right: 0;\n}\n.x-tree-node>.editable_false>.x-tree-item-text[data-v-b33c931a] {\n  padding: 0;\n  width: calc(100% - 37px);\n}\n.x-tree-leaf>.editable_false>.x-tree-item-text[data-v-b33c931a] {\n  padding: 0;\n  width: calc(100% - 20px);\n}\n", ""]);
+exports.push([module.i, "\n.x-tree-item[data-v-b33c931a] {\n  position: relative;\n  font-size: 14px;\n  -webkit-user-select: none;\n  -moz-user-select: none;\n  -ms-user-select: none;\n  user-select: none;\n}\n.x-tree-item-self[data-v-b33c931a] {\n  position: relative;\n  padding: 0 2em 0 0.5em;\n}\n.x-tree-item-self[data-v-b33c931a]:hover {\n  background: #E9EBEE;\n}\n.iconfont[data-v-b33c931a] {\n  font-size: 14px;\n  width: 14px;\n  color: #999;\n}\n.icon-blank[data-v-b33c931a] {\n  opacity: 0;\n}\n.x-tree-item-expand[data-v-b33c931a] {\n}\n.x-tree-item-checkbox[data-v-b33c931a] {\n}\n.x-tree-item-text[data-v-b33c931a] {\n  display: inline-block;\n  vertical-align: bottom;\n  padding: 0 1em 0 0em;\n  width: calc(100% - 40px);\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n}\n.x-tree-item-text-tip[data-v-b33c931a] {\n  position: absolute;\n  top: -20px;\n  left: 0px;\n  display: inline-block;\n  padding: 0 15px;\n  border: 1px solid #fff;\n  background: #fff;\n}\n.x-tree-item-menu-dropdown[data-v-b33c931a] {\n  display: none;\n  position: absolute;\n  top: 0.36em;\n  right: 0.27em;\n}\n.x-tree-item-self:hover .x-tree-item-menu-dropdown[data-v-b33c931a] {\n  display: block;\n}\n.x-tree-item-menu[data-v-b33c931a] {\n  display: block;\n  position: absolute;\n  right: 0;\n  width: 120px;\n  z-index: 99;\n  box-shadow: 0 1px 4px #999;\n  background: #fff;\n}\n.x-tree-item-menu-item[data-v-b33c931a] {\n  display: block;\n  padding: 2px 35px 2px 15px;\n}\n.x-tree-item-menu-item[data-v-b33c931a]:hover {\n  background: #E9EBEE;\n}\n.x-tree-item-children[data-v-b33c931a] {\n  /*padding-left: 1.3em;*/\n}\n.editable_false[data-v-b33c931a] {\n  padding-right: 0;\n}\n.x-tree-node>.editable_false>.x-tree-item-text[data-v-b33c931a] {\n  padding: 0;\n  width: calc(100% - 37px);\n}\n.x-tree-leaf>.editable_false>.x-tree-item-text[data-v-b33c931a] {\n  padding: 0;\n  width: calc(100% - 20px);\n}\n", ""]);
 
 // exports
 
@@ -2065,17 +2069,15 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     on: {
       "mouseleave": _vm.menuHideFn
     }
-  }, [(_vm.expandIf) ? _c('i', {
-    staticClass: "x-tree-item-expand iconfont",
-    class: _vm.expandClass,
+  }, [_c('i', {
+    staticClass: "x-tree-item-expand",
+    class: [_vm.iconfont, _vm.expandClass],
     on: {
       "click": function($event) {
         $event.stopPropagation();
         _vm.expandFn($event)
       }
     }
-  }) : _c('span', {
-    staticClass: "icon-blank"
   }), _vm._v(" "), _c('i', {
     directives: [{
       name: "show",
@@ -2083,8 +2085,8 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       value: (_vm.checkboxShow),
       expression: "checkboxShow"
     }],
-    staticClass: "x-tree-item-checkbox iconfont",
-    class: _vm.checkboxClass,
+    staticClass: "x-tree-item-checkbox",
+    class: [_vm.iconfont, _vm.checkboxClass],
     on: {
       "click": function($event) {
         $event.stopPropagation();
@@ -2098,8 +2100,8 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       value: (_vm.iconShow),
       expression: "iconShow"
     }],
-    staticClass: "x-tree-item-icon iconfont",
-    class: _vm.iconClass
+    staticClass: "x-tree-item-icon",
+    class: [_vm.iconfont, _vm.iconClass]
   }), _vm._v(" "), _c('span', {
     staticClass: "x-tree-item-text",
     attrs: {
@@ -2112,7 +2114,8 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       }
     }
   }, [_vm._v("\n      " + _vm._s(_vm.model.name) + "\n    ")]), _vm._v(" "), (_vm.dropdownIf) ? _c('i', {
-    staticClass: "x-tree-item-menu-dropdown iconfont icon-xiangxia11",
+    staticClass: "x-tree-item-menu-dropdown",
+    class: [_vm.iconfont, _vm.dropdownClass],
     on: {
       "click": function($event) {
         $event.stopPropagation();

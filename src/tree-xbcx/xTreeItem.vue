@@ -1,14 +1,13 @@
 <template>
   <div class="x-tree-item" :class="itemClass">
     <div class="x-tree-item-self" v-show="selfShow" :class="selfClass" :style="selfStyle" @mouseleave="menuHideFn">
-      <i class="x-tree-item-expand iconfont" v-if="expandIf" :class="expandClass" @click.stop="expandFn"></i>
-      <span class="icon-blank" v-else></span>
-      <i class="x-tree-item-checkbox iconfont" v-show="checkboxShow" :class="checkboxClass" @click.stop="checkFn"></i>
-      <i class="x-tree-item-icon iconfont" v-show="iconShow" :class="iconClass"></i>
+      <i class="x-tree-item-expand" :class="[iconfont, expandClass]" @click.stop="expandFn"></i>
+      <i class="x-tree-item-checkbox" v-show="checkboxShow" :class="[iconfont, checkboxClass]" @click.stop="checkFn"></i>
+      <i class="x-tree-item-icon" v-show="iconShow" :class="[iconfont, iconClass]"></i>
       <span class="x-tree-item-text" :title="model.name" @click.stop="nameFn">
         {{model.name}}
       </span>
-      <i class="x-tree-item-menu-dropdown iconfont icon-xiangxia11" v-if="dropdownIf" @click.stop="menuShowFn"></i>
+      <i class="x-tree-item-menu-dropdown" v-if="dropdownIf" :class="[iconfont, dropdownClass]" @click.stop="menuShowFn"></i>
       <div class="x-tree-item-menu" v-if="menuIf" v-show="menuShow">
         <div v-show="defaultMenuShow">
           <span class="x-tree-item-menu-item" v-show="model.is_edit" @click.stop="editFn">{{options.editorText.edit}}</span>
@@ -46,6 +45,7 @@ export default {
     return {
       text: this.model.name,
       title: this.model.name,
+      iconfont: 'iconfont',
       showMenu: false,
     };
   },
@@ -87,12 +87,15 @@ export default {
       return [{ 'padding-left': `${paddingLeft}em` }, this.options.style.item, this.model.style];
     },
     expandIf() {
-      return this.childrenIf;
+      return true;
     },
     expandShow() {
       return true;
     },
     expandClass() {
+      if (this.childrenIf === false) {
+        return 'icon-sos icon-blank';
+      }
       return this.childrenShow ? 'icon-1' : 'icon-1-copy';
     },
     expandStyle() {
@@ -161,7 +164,7 @@ export default {
       return true;
     },
     dropdownClass() {
-      return '';
+      return 'icon-xiangxia11';
     },
     dropdownStyle() {
       return '';
@@ -399,9 +402,7 @@ export default {
 }
 
 .icon-blank {
-  display: inline-block;
-  font-size: 14px;
-  width: 1em;
+  opacity: 0;
 }
 
 .x-tree-item-expand {}

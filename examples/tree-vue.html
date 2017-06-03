@@ -4,7 +4,7 @@
 <head>
   <meta charset="utf-8">
   <title>tree-title</title>
-  <link rel="stylesheet" href="/dist/font-awesome-4.7.0/css/font-awesome.css">
+  <link rel="stylesheet" href="/dist/iconfont/iconfont.css">
   <style>
     .buttons {
       margin: 10px 0;
@@ -32,69 +32,89 @@
       background: red;
     }
 
+    .color-red {
+      color: red !important;
+    }
+
+    .color-blue {
+      color: blue !important;
+    }
+
   </style>
   <script src="/dist/lib/vue.js"></script>
-  <script src="/dist/tree-vue.js"></script>
+  <script src="/dist/tree-xbcx.js"></script>
 </head>
 
 <body>
-  <div id="xTreeDemo">
+  <div id="app">
     <x-tree :data="data" :options="options" :fn="fn"></x-tree>
+    <p>tree-vue</p>
+    <div class="buttons">
+      <div class="button button-edit">edit</div>
+      <div class="button button-delete">delete</div>
+      <div class="button button-add">add</div>
+      <div class="button button-cancel">cancel</div>
+      <div class="button button-sort">sort</div>
+      <div class="button button-sortn">sortn</div>
+    </div>
   </div>
-
-  <div class="buttons">
-    <div class="button button-edit">edit</div>
-    <div class="button button-delete">delete</div>
-    <div class="button button-add">add</div>
-    <div class="button button-cancel">cancel</div>
-    <div class="button button-sort">sort</div>
-    <div class="button button-sortn">sortn</div>
-  </div>
-
   <div class="footer">footer</div>
 
   <script>
     var treeOptions = {
-      lazyLoad: true,
       checkbox: true,
       sel_ids: '3,11,12,13,30,31,32,33',
-      expand: true,
-      // expandIds: '2,9,11', //优先级高于expand
+      // expand: true,
+      expandIds: '2,9,11', // 优先级高于expand
       editable: true,
-      editorText: {
-        edit: 'edit',
-        delete: 'delete',
-        add: 'add',
-        up: 'up',
-        down: 'down',
-        unable: 'unable',
-      },
+      // editorText: {
+      //   edit: 'edit',
+      //   delete: 'delete',
+      //   add: 'add',
+      //   up: 'up',
+      //   down: 'down',
+      //   unable: 'unable',
+      // },
+      // defaultMenu: false,
       style: {
         tree: {
           width: '300px',
         },
         item: {
-          'border-bottom': '1px solid red'
+          'border-bottom': '1px solid red',
         },
         custom: {
-          'border-bottom': '1px solid blue'
+          'border-bottom': '1px solid blue',
         },
       },
       // class : {
       //     active:'locate'
       // },
+      textIcon: function name(item) {
+        return item.is_node ? 'icon-yonghu color-red' : 'icon-yonghu color-blue';
+      },
+      menuCustom: function (item) {
+        if (item.is_node) {
+          return [];
+        }
+        return [{
+            text: item.id,
+            callback: function name(params) {
+              console.log(params.id);
+            },
+          },
+          {
+            text: item.name,
+            callback: function name(params) {
+              console.log(params.name);
+            },
+          },
+        ];
+      },
       custom: function (item) {
         var html = '<span>' + item.id + '</span><span>' + item.name + '</span><span>' + item.expand +
           '</span>';
         return html
-      },
-      onLoad: function (item) {
-        var source = item.children
-        var result = []
-        for (var index = source.length-1; index >= 0; index--) {
-          result.push(source[index])
-        }
-        return result
       },
       onExpand: function (item, callback) {
         console.log("expand item", item, item.name);
@@ -218,7 +238,7 @@
         is_check: false,
         is_edit: true,
         is_delete: true,
-        is_add: true
+        is_add: true,
       },
       {
         id: 110,
@@ -226,9 +246,11 @@
         nodeId: 99,
         is_node: true,
         is_check: false,
-        is_edit: true,
-        is_delete: true,
-        is_add: true
+        is_edit: false,
+        is_delete: false,
+        is_add: false,
+        is_move_up: false,
+        is_move_down: false,
       },
       {
         id: 111,
@@ -236,19 +258,11 @@
         nodeId: 110,
         is_node: false,
         is_check: false,
-        is_edit: true,
-        is_delete: true,
-        is_add: true
-      },
-      {
-        id: 112,
-        name: '台湾',
-        nodeId: 110,
-        is_node: false,
-        is_check: false,
-        is_edit: true,
-        is_delete: true,
-        is_add: true
+        is_edit: false,
+        is_delete: false,
+        is_add: false,
+        is_move_up: false,
+        is_move_down: false,
       },
 
       {
@@ -349,7 +363,9 @@
         is_check: false,
         is_edit: true,
         is_delete: true,
-        is_add: true
+        is_add: true,
+        is_move_up: true,
+        is_move_down: true,
       },
       {
         id: 12,
@@ -374,7 +390,7 @@
     ];
 
     var xTree1 = new Vue({
-      el: '#xTreeDemo',
+      el: '#app',
       data: function () {
         return {
           data: treeData,

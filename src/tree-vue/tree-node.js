@@ -1,6 +1,9 @@
 let idDefault = 0;
 export default class Node {
   constructor(options) {
+    this.key = options.key; //
+    this.pkey = options.pkey;
+    this.parent = options.parent;
     this.id = idDefault++;
     this.name = null;
     this.text = null;
@@ -12,8 +15,8 @@ export default class Node {
     this.is_node = false;
     this.expand = false;
 
-    this.parent = null;
-    this.children = [];
+    this.parentNode = null;
+    this.childrenNode = [];
 
     // internal
     this.level = 0;

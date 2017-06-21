@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>vue-tree - 基于 vue 的树形组件</title>
+  <meta name="description" content="基于 vue 的树形组件">
+  <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <link rel="icon" href="_images/favicon.ico">
+  <link rel="stylesheet" href="https://unpkg.com/docsify/themes/vue.css">
+  <link rel="stylesheet" href="/_assets/_styles/custom-vue.css">
+</head>
+
+<body>
+  <div id="app"></div>
+</body>
+
+<script src="https://unpkg.com/markrun/dist/markrun.min.js"></script>
+<script>
+  window.$docsify = {
+    name: 'vue-tree',
+    auto2top: true,
+    coverpage: true,
+    loadSidebar: true,
+    loadNavbar: true,
+    mergeNavbar: true,
+    maxLevel: 4,
+    subMaxLevel: 2,
+    search: {
+      noData: {
+        '/zh-cn/': '没有结果!',
+        '/': 'No results!',
+      },
+      paths: 'auto',
+      placeholder: {
+        '/zh-cn/': '搜索',
+        '/': 'Search',
+      },
+    },
+    formatUpdated: '{MM}/{DD} {HH}:{mm}',
+  };
+
+</script>
+<script src="https://unpkg.com/docsify/lib/docsify.js"></script>
+
+</html>

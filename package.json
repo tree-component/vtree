@@ -2,7 +2,7 @@
   "name": "vue-tree",
   "version": "0.0.1",
   "main": "index.js",
-  "description": "xstrap",
+  "description": "基于 vue 的树形组件",
   "author": "gitjcc",
   "repository": {
     "type": "git",

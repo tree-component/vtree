@@ -1,3 +1,5 @@
 .app-nav li ul {
-  overflow: auto;
+  border: none;
+  background: inherit;
+  overflow: visible;
 }

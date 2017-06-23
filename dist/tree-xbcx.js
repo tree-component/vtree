@@ -163,7 +163,6 @@ function mergeDeep() {
   var target = arguments[0] || {};
   for (var i = 1; i < arguments.length; i++) {
     target = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__mergeDeepBase__["a" /* default */])(target, arguments[i]);
-    console.log(target);
   }
   return target;
 }

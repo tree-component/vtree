@@ -1,4 +1,4 @@
-![logo](/_assets/_images/logo.png)
+![logo](./_images/logo.png)
 
 # tree-vue
 

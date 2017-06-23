@@ -13,10 +13,10 @@
     "build": "webpack --config ./build/webpack.prod.config.js",
     "dev": "webpack --config ./build/webpack.dev.config.js",
     "dev-server": "webpack-dev-server --inline --watch --progress --config ./build/webpack.prod.config.js --port 5399",
-    "express": "node ./build/dev-server-express.js",
-    "koa": "node ./build/dev-server-koa.js",
-    "demo": "cross-env NODE_ENV=demo node ./build/dev-server-koa.js",
-    "docs": "cross-env NODE_ENV=docs node ./build/dev-server-koa.js"
+    "express": "node ./build/server/dev-server-express.js",
+    "koa": "node ./build/server/dev-server-koa.js",
+    "demo": "cross-env NODE_ENV=demo node ./build/server/dev-server-koa.js",
+    "docs": "cross-env NODE_ENV=docs node ./build/server/dev-server-koa.js"
   },
   "dependencies": {
     "vue": "^2.2.1",

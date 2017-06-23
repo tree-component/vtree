@@ -1,3 +1,3 @@
 - 语言
-  - [:cn: 中文](/zh-cn/)
-  - [:uk: English](/zh-en/)
+  - [:cn: 中文](/zh-CN/)
+  - [:uk: English](/en-US/)

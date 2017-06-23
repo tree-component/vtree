@@ -6,8 +6,8 @@
   <title>vue-tree - 基于 vue 的树形组件</title>
   <meta name="description" content="基于 vue 的树形组件">
   <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-  <link rel="icon" href="_images/favicon.ico">
-  <link rel="stylesheet" href="https://unpkg.com/docsify/themes/vue.css">
+  <link rel="icon" href="./_assets/_images/favicon.ico">
+  <link rel="stylesheet" href="//unpkg.com/docsify/themes/vue.css">
   <link rel="stylesheet" href="./_assets/_styles/custom-vue.css">
 </head>
 
@@ -15,7 +15,7 @@
   <div id="app"></div>
 </body>
 
-<script src="https://unpkg.com/markrun/dist/markrun.min.js"></script>
+<script src="//unpkg.com/markrun/dist/markrun.min.js"></script>
 <script>
   window.$docsify = {
     name: 'vue-tree',
@@ -26,7 +26,7 @@
     subMaxLevel: 2,
     loadNavbar: true,
     mergeNavbar: true,
-    formatUpdated: '{MM}/{DD} {HH}:{mm}',
+    formatUpdated: '{YYYY}/{MM}/{DD} {HH}:{mm}',
     search: {
       noData: {
         '/zh-cn/': '没有结果!',
@@ -40,6 +40,20 @@
         '/': '搜索',
       },
     },
+    plugins: [
+      function footer(hook, vm) {
+        console.log(vm);
+        hook.beforeEach(function (html) {
+          var url = 'https://github.com/gitjcc/tree-vue/tree/master' + vm.route.file;
+          var editHtml = '[:memo: Edit Document](' + url + ')\n';
+
+          return html +
+            '\n----\n' +
+            'Last modified {docsify-updated} ' +
+            editHtml
+        });
+      },
+    ],
   };
 
 </script>

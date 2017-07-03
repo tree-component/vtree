@@ -1418,21 +1418,10 @@ function _arrayToTree(arrayIn, opt) {
     expand: true,
     amount: arrayIn.length
   };
-  var temp = {};
   for (var i = 0; i < rootIds.length; i++) {
     for (var j = 0; j < arrayIn.length; j++) {
       if (arrayIn[j].nodeId == rootIds[i]) {
-        temp = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__utils_clone__["a" /* default */])(arrayIn[j]);
-        temp.checkState = temp.is_check;
-        temp.parent = treeData;
-        temp.level = treeData.level + 1;
-        temp.expand = true;
-        if (temp.is_node) {
-          temp.children = this._getSubTree(arrayIn, temp, opt);
-        } else {
-          temp.children = [];
-        }
-        treeData.children.push(temp);
+        treeData.children.push(newItem(arrayIn, arrayIn[j], treeData, opt));
       }
     }
   }
@@ -1444,10 +1433,10 @@ function _getTreeRoot(arrayIn) {
   var clone = JSON.parse(__WEBPACK_IMPORTED_MODULE_0_babel_runtime_core_js_json_stringify___default()(arrayIn));
   for (var i = 0, len = arrayIn.length; i < len; i++) {
     for (var j = i; j < len; j++) {
-      if (arrayIn[i].id == arrayIn[j].nodeId) {
+      if (arrayIn[i].is_node && arrayIn[i].id == arrayIn[j].nodeId) {
         clone[j] = null;
       }
-      if (arrayIn[i].nodeId == arrayIn[j].id) {
+      if (arrayIn[i].nodeId == arrayIn[j].id && arrayIn[j].is_node) {
         clone[i] = null;
       }
     }
@@ -1458,13 +1447,6 @@ function _getTreeRoot(arrayIn) {
     }
   }
   rootIds = this._uniqueArray(rootIds);
-
-  if (rootIds.length > 1) {
-    console.warn('warning: rootId不唯一', rootIds);
-  } else if (rootIds.length <= 0) {
-    console.warn('warning: 没有rootId', rootIds);
-  }
-
   return rootIds;
 }
 
@@ -1480,33 +1462,36 @@ function _uniqueArray(arrayIn) {
 
 function _getSubTree(arrayIn, parent, opt) {
   var result = [];
-  var temp = {};
-  for (var i = 0; i < arrayIn.length; i++) {
+  for (var i = 0; i < arrayIn.length; i += 1) {
     if (arrayIn[i].nodeId == parent.id) {
-      temp = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__utils_clone__["a" /* default */])(arrayIn[i]);
-      if (opt.checkbox && temp.is_check === undefined) {
-        temp.is_check = false;
-      }
-      temp.parent = parent;
-      temp.addition = null;
-      temp.menu = null;
-      temp.textIcon = null;
-      temp.class = null;
-      temp.style = null;
-      temp.level = parent.level + 1;
-      if (!__webpack_require__.i(__WEBPACK_IMPORTED_MODULE_5__utils_isEmpty__["a" /* default */])(opt.expandIds) && (__webpack_require__.i(__WEBPACK_IMPORTED_MODULE_6__utils_isString__["a" /* default */])(opt.expandIds) || __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_7__utils_isArray__["a" /* default */])(opt.expandIds))) {
-        temp.expand = false;
-      } else {
-        temp.expand = expandLvl(opt.expand, temp);
-      }
-      temp.checkState = temp.is_check;
-      if (temp.is_node) {
-        temp.children = _getSubTree(arrayIn, temp, opt);
-      } else {
-        temp.children = [];
-      }
-      result.push(temp);
+      result.push(newItem(arrayIn, arrayIn[i], parent, opt));
     }
+  }
+  return result;
+}
+
+function newItem(arrayIn, originItem, parent, opt) {
+  var result = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__utils_clone__["a" /* default */])(originItem);
+  if (opt.checkbox && result.is_check === undefined) {
+    result.is_check = false;
+  }
+  result.parent = parent;
+  result.addition = null;
+  result.menu = null;
+  result.textIcon = null;
+  result.class = null;
+  result.style = null;
+  result.level = parent.level + 1;
+  if (!__webpack_require__.i(__WEBPACK_IMPORTED_MODULE_5__utils_isEmpty__["a" /* default */])(opt.expandIds) && (__webpack_require__.i(__WEBPACK_IMPORTED_MODULE_6__utils_isString__["a" /* default */])(opt.expandIds) || __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_7__utils_isArray__["a" /* default */])(opt.expandIds))) {
+    result.expand = false;
+  } else {
+    result.expand = expandLvl(opt.expand, result);
+  }
+  result.checkState = result.is_check;
+  if (result.is_node) {
+    result.children = _getSubTree(arrayIn, result, opt);
+  } else {
+    result.children = [];
   }
   return result;
 }
@@ -1514,8 +1499,8 @@ function _getSubTree(arrayIn, parent, opt) {
 function expandLvl(expand, temp) {
   if (expand === true) {
     return true;
-  } else if (expand === false && temp.level <= 0) {
-    return true;
+  } else if (expand === false) {
+    return temp.level <= 0;
   } else if (temp.level <= expand) {
     return true;
   }

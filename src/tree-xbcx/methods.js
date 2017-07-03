@@ -14,7 +14,7 @@ function _initOptions(options) {
     only_child: false, // 是否结果只要 child
     node_merge: false, // 结果只显示最上层  比如   中国被选中  四川,成都则不会显示  否则 每个被勾选的节点都显示
     is_multi: true, // 是否多选
-    expand: false, // 是否展开，false、true、num,(0、1、false,都展开一级。true,完全展开。num>=2时，展开到对应级）
+    expand: false, // 是否展开(true, 完全展开。false, 展开第 0 级（即显示第一级）。num 时，展开对应级（即显示 num+1 级））
     expandIds: null,
     sel_ids: '',
     checkbox: false,
@@ -81,8 +81,8 @@ function _traverseTree(tree, fn, input, output) {
 
 
 function _arrayToTree(arrayIn, opt) {
-  var rootIds = this._getTreeRoot(arrayIn);
-  var treeData = {
+  const rootIds = this._getTreeRoot(arrayIn);
+  const treeData = {
     id: rootIds,
     name: 'ROOT',
     nodeId: null,
@@ -93,23 +93,12 @@ function _arrayToTree(arrayIn, opt) {
     parent: null,
     level: 0,
     expand: true,
-    amount: arrayIn.length
+    amount: arrayIn.length,
   };
-  var temp = {};
-  for (var i = 0; i < rootIds.length; i++) {
-    for (var j = 0; j < arrayIn.length; j++) {
+  for (let i = 0; i < rootIds.length; i++) {
+    for (let j = 0; j < arrayIn.length; j++) {
       if (arrayIn[j].nodeId == rootIds[i]) {
-        temp = clone(arrayIn[j]);
-        temp.checkState = temp.is_check;
-        temp.parent = treeData;
-        temp.level = treeData.level + 1;
-        temp.expand = true;
-        if (temp.is_node) {
-          temp.children = this._getSubTree(arrayIn, temp, opt);
-        } else {
-          temp.children = [];
-        }
-        treeData.children.push(temp);
+        treeData.children.push(newItem(arrayIn, arrayIn[j], treeData, opt));
       }
     }
   }
@@ -117,31 +106,24 @@ function _arrayToTree(arrayIn, opt) {
 }
 
 function _getTreeRoot(arrayIn) {
-  var rootIds = [];
-  var clone = JSON.parse(JSON.stringify(arrayIn));
-  for (var i = 0, len = arrayIn.length; i < len; i++) {
-    for (var j = i; j < len; j++) {
-      if (arrayIn[i].id == arrayIn[j].nodeId) {
+  let rootIds = [];
+  const clone = JSON.parse(JSON.stringify(arrayIn));
+  for (let i = 0, len = arrayIn.length; i < len; i++) {
+    for (let j = i; j < len; j++) {
+      if (arrayIn[i].is_node && arrayIn[i].id == arrayIn[j].nodeId) {
         clone[j] = null;
       }
-      if (arrayIn[i].nodeId == arrayIn[j].id) {
+      if (arrayIn[i].nodeId == arrayIn[j].id && arrayIn[j].is_node) {
         clone[i] = null;
       }
     }
   }
-  for (var k = 0; k < clone.length; k++) {
+  for (let k = 0; k < clone.length; k++) {
     if (clone[k]) {
       rootIds.push(clone[k].nodeId);
     }
   }
   rootIds = this._uniqueArray(rootIds);
-
-  if (rootIds.length > 1) {
-    console.warn('warning: rootId不唯一', rootIds);
-  } else if (rootIds.length <= 0) {
-    console.warn('warning: 没有rootId', rootIds);
-  }
-
   return rootIds;
 }
 
@@ -157,33 +139,36 @@ function _uniqueArray(arrayIn) {
 
 function _getSubTree(arrayIn, parent, opt) {
   const result = [];
-  let temp = {};
-  for (let i = 0; i < arrayIn.length; i++) {
+  for (let i = 0; i < arrayIn.length; i += 1) {
     if (arrayIn[i].nodeId == parent.id) {
-      temp = clone(arrayIn[i]);
-      if (opt.checkbox && temp.is_check === undefined) {
-        temp.is_check = false;
-      }
-      temp.parent = parent;
-      temp.addition = null;
-      temp.menu = null;
-      temp.textIcon = null;
-      temp.class = null;
-      temp.style = null;
-      temp.level = parent.level + 1;
-      if (!isEmpty(opt.expandIds) && (isString(opt.expandIds) || isArray(opt.expandIds))) {
-        temp.expand = false;
-      } else {
-        temp.expand = expandLvl(opt.expand, temp);
-      }
-      temp.checkState = temp.is_check;
-      if (temp.is_node) {
-        temp.children = _getSubTree(arrayIn, temp, opt);
-      } else {
-        temp.children = [];
-      }
-      result.push(temp);
+      result.push(newItem(arrayIn, arrayIn[i], parent, opt));
     }
+  }
+  return result;
+}
+
+function newItem(arrayIn, originItem, parent, opt) {
+  const result = clone(originItem);
+  if (opt.checkbox && result.is_check === undefined) {
+    result.is_check = false;
+  }
+  result.parent = parent;
+  result.addition = null;
+  result.menu = null;
+  result.textIcon = null;
+  result.class = null;
+  result.style = null;
+  result.level = parent.level + 1;
+  if (!isEmpty(opt.expandIds) && (isString(opt.expandIds) || isArray(opt.expandIds))) {
+    result.expand = false;
+  } else {
+    result.expand = expandLvl(opt.expand, result);
+  }
+  result.checkState = result.is_check;
+  if (result.is_node) {
+    result.children = _getSubTree(arrayIn, result, opt);
+  } else {
+    result.children = [];
   }
   return result;
 }
@@ -191,8 +176,8 @@ function _getSubTree(arrayIn, parent, opt) {
 function expandLvl(expand, temp) {
   if (expand === true) {
     return true;
-  } else if (expand === false && temp.level <= 0) {
-    return true;
+  } else if (expand === false) {
+    return temp.level <= 0;
   } else if (temp.level <= expand) {
     return true;
   }

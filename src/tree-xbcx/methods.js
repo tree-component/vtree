@@ -2,6 +2,7 @@ import clone from '../utils/clone';
 import cloneDeep from '../utils/cloneDeep';
 import merge from '../utils/merge';
 import mergeDeep from '../utils/mergeDeep';
+import isEmpty from '../utils/isEmpty';
 import isString from '../utils/isString';
 import isArray from '../utils/isArray';
 
@@ -159,7 +160,7 @@ function _getSubTree(arrayIn, parent, opt) {
       temp.class = null;
       temp.style = null;
       temp.level = parent.level + 1;
-      if (isString(opt.expandIds) || isArray(opt.expandIds)) {
+      if (!isEmpty(opt.expandIds) && (isString(opt.expandIds) || isArray(opt.expandIds))) {
         temp.expand = false;
       } else {
         temp.expand = expandLvl(opt.expand, temp);

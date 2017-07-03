@@ -152,245 +152,37 @@
     },
   };
 
-  var treeData = [{
-      id: 26,
-      name: '成都',
-      nodeId: 7,
-      is_node: false,
-      is_check: false,
-      is_edit: true,
-      is_delete: true,
-      is_add: true
-    },
-    {
-      id: 27,
-      name: '泸州',
-      nodeId: 7,
-      is_node: false,
-      is_check: false,
-      is_edit: true,
-      is_delete: true,
-      is_add: true
-    },
-    {
-      id: 28,
-      name: '昆明',
-      nodeId: 7,
-      is_node: false,
-      is_check: false,
-      is_edit: true,
-      is_delete: true,
-      is_add: true
-    },
-    {
-      id: 29,
-      name: '大理',
-      nodeId: 7,
-      is_node: true,
-      is_check: false,
-      is_edit: true,
-      is_delete: true,
-      is_add: true
-    },
-    {
-      id: 30,
-      name: '贵阳',
-      nodeId: 29,
-      is_node: false,
-      is_check: false,
-      is_edit: true,
-      is_delete: true,
-      is_add: true
-    },
-    {
-      id: 31,
-      name: '遵义',
-      nodeId: 29,
-      is_node: false,
-      is_check: false,
-      is_edit: true,
-      is_delete: true,
-      is_add: true
-    },
-    {
-      id: 32,
-      name: '南宁',
-      nodeId: 29,
-      is_node: false,
-      is_check: false,
-      is_edit: true,
-      is_delete: true,
-      is_add: true
-    },
-    {
-      id: 33,
-      name: '桂林',
-      nodeId: 29,
-      is_node: false,
-      is_check: false,
-      is_edit: true,
-      is_delete: true,
-      is_add: true
-    },
+ var treeData = [{ id: 26, name: '成都', nodeId: 7, is_node: false, is_check: false, is_edit: true, is_delete: true, is_add:
+true },
+ { id: 27, name: '泸州', nodeId: 7, is_node: false, is_check: false, is_edit: true, is_delete: true, is_add: true },
+{ id: 28, name: '昆明', nodeId: 7, is_node: false, is_check: false, is_edit: true, is_delete: true, is_add: true }, { id: 29,
+name: '大理', nodeId: 7, is_node: true, is_check: false, is_edit: true, is_delete: true, is_add: true }, { id: 30, name: '贵阳',
+nodeId: 29, is_node: false, is_check: false, is_edit: true, is_delete: true, is_add: true }, { id: 31, name: '遵义', nodeId:
+29, is_node: false, is_check: false, is_edit: true, is_delete: true, is_add: true }, { id: 32, name: '南宁', nodeId: 29, is_node:
+false, is_check: false, is_edit: true, is_delete: true, is_add: true }, { id: 33, name: '桂林', nodeId: 29, is_node: false,
+is_check: false, is_edit: true, is_delete: true, is_add: true }, { id: 1, name: '中国', nodeId: 99, is_node: true, is_check:
+false, is_edit: true, is_delete: true, is_add: true, }, { id: 110, name: '大陆', nodeId: 99, is_node: true, is_check: false,
+is_edit: false, is_delete: false, is_add: false, is_move_up: false, is_move_down: false, }, { id: 111, name: '大陆', nodeId:
+110, is_node: false, is_check: false, is_edit: false, is_delete: false, is_add: false, is_move_up: false, is_move_down: false,
+}, { id: 2, name: '四川', nodeId: 1, is_node: true, is_check: false, is_edit: true, is_delete: true, is_add: true }, { id:
+3, name: '云南', nodeId: 1, is_node: true, is_check: false, is_edit: true, is_delete: true, is_add: true }, { id: 4, name:
+'贵州', nodeId: 1, is_node: true, is_check: false, is_edit: true, is_delete: true, is_add: true }, { id: 5, name: '广西', nodeId:
+1, is_node: true, is_check: false, is_edit: true, is_delete: true, is_add: true }, { id: 6, name: '成都', nodeId: 2, is_node:
+false, is_check: false, is_edit: true, is_delete: true, is_add: true }, { id: 7, name: '泸州', nodeId: 2, is_node: true, is_check:
+false, is_edit: true, is_delete: true, is_add: true }, { id: 8, name: '昆明', nodeId: 3, is_node: false, is_check: false, is_edit:
+true, is_delete: true, is_add: true }, { id: 9, name: '大理', nodeId: 3, is_node: false, is_check: false, is_edit: true, is_delete:
+true, is_add: true }, { id: 10, name: '贵阳', nodeId: 4, is_node: false, is_check: false, is_edit: true, is_delete: true, is_add:
+true }, { id: 11, name: '遵义', nodeId: 4, is_node: false, is_check: false, is_edit: true, is_delete: true, is_add: true, is_move_up:
+true, is_move_down: true, }, { id: 12, name: '南宁', nodeId: 5, is_node: false, is_check: false, is_edit: true, is_delete:
+true, is_add: true }, { id: 13, name: '桂林', nodeId: 5, is_node: false, is_check: false, is_edit: true, is_delete: true, is_add:
+true }, 
+{ id: 666, name: '四川', nodeId: 66, is_node: true, is_check: false,
+is_edit: false, is_delete: false, is_add: false, is_move_up: false, is_move_down: false, }, 
+{ id: 777, name: '成都', nodeId:
+666, is_node: false, is_check: false, is_edit: false, is_delete: false, is_add: false, is_move_up: false, is_move_down: false,
+}, 
+];
 
-    {
-      id: 1,
-      name: '中国',
-      nodeId: 99,
-      is_node: true,
-      is_check: false,
-      is_edit: true,
-      is_delete: true,
-      is_add: true,
-    },
-    {
-      id: 110,
-      name: '大陆',
-      nodeId: 99,
-      is_node: true,
-      is_check: false,
-      is_edit: false,
-      is_delete: false,
-      is_add: false,
-      is_move_up: false,
-      is_move_down: false,
-    },
-    {
-      id: 111,
-      name: '大陆',
-      nodeId: 110,
-      is_node: false,
-      is_check: false,
-      is_edit: false,
-      is_delete: false,
-      is_add: false,
-      is_move_up: false,
-      is_move_down: false,
-    },
-
-    {
-      id: 2,
-      name: '四川',
-      nodeId: 1,
-      is_node: true,
-      is_check: false,
-      is_edit: true,
-      is_delete: true,
-      is_add: true
-    },
-    {
-      id: 3,
-      name: '云南',
-      nodeId: 1,
-      is_node: true,
-      is_check: false,
-      is_edit: true,
-      is_delete: true,
-      is_add: true
-    },
-    {
-      id: 4,
-      name: '贵州',
-      nodeId: 1,
-      is_node: true,
-      is_check: false,
-      is_edit: true,
-      is_delete: true,
-      is_add: true
-    },
-    {
-      id: 5,
-      name: '广西',
-      nodeId: 1,
-      is_node: true,
-      is_check: false,
-      is_edit: true,
-      is_delete: true,
-      is_add: true
-    },
-    {
-      id: 6,
-      name: '成都',
-      nodeId: 2,
-      is_node: false,
-      is_check: false,
-      is_edit: true,
-      is_delete: true,
-      is_add: true
-    },
-    {
-      id: 7,
-      name: '泸州',
-      nodeId: 2,
-      is_node: true,
-      is_check: false,
-      is_edit: true,
-      is_delete: true,
-      is_add: true
-    },
-    {
-      id: 8,
-      name: '昆明',
-      nodeId: 3,
-      is_node: false,
-      is_check: false,
-      is_edit: true,
-      is_delete: true,
-      is_add: true
-    },
-    {
-      id: 9,
-      name: '大理',
-      nodeId: 3,
-      is_node: false,
-      is_check: false,
-      is_edit: true,
-      is_delete: true,
-      is_add: true
-    },
-    {
-      id: 10,
-      name: '贵阳',
-      nodeId: 4,
-      is_node: false,
-      is_check: false,
-      is_edit: true,
-      is_delete: true,
-      is_add: true
-    },
-    {
-      id: 11,
-      name: '遵义',
-      nodeId: 4,
-      is_node: false,
-      is_check: false,
-      is_edit: true,
-      is_delete: true,
-      is_add: true,
-      is_move_up: true,
-      is_move_down: true,
-    },
-    {
-      id: 12,
-      name: '南宁',
-      nodeId: 5,
-      is_node: false,
-      is_check: false,
-      is_edit: true,
-      is_delete: true,
-      is_add: true
-    },
-    {
-      id: 13,
-      name: '桂林',
-      nodeId: 5,
-      is_node: false,
-      is_check: false,
-      is_edit: true,
-      is_delete: true,
-      is_add: true
-    },
-  ];
 
   var xTree1 = new Vue({
     el: '#app',

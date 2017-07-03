@@ -43,10 +43,10 @@ function _initOptions(options) {
     },
     class: {
       tree: '',
-      item: '',
-      active: 'x-tree-item-active',
-      children: '',
-      custom: '',
+        item: '',
+        active: 'x-tree-item-active',
+        children: '',
+        custom: '',
     },
     onExpand() {},
     onClick() {},
@@ -81,57 +81,68 @@ function _traverseTree(tree, fn, input, output) {
 
 
 function _arrayToTree(arrayIn, opt) {
-  const rootId = _getTreeRoot(arrayIn);
-  const treeData = {
-    id: rootId,
+  var rootIds = this._getTreeRoot(arrayIn);
+  var treeData = {
+    id: rootIds,
     name: 'ROOT',
     nodeId: null,
     is_node: true,
     is_check: false,
+    checkState: false,
     children: [],
     parent: null,
     level: 0,
     expand: true,
-    addition: null,
-    menu: null,
-    textIcon: null,
-    active: [],
-    options: opt,
-    originData: arrayIn,
-    itemAmount: arrayIn.length,
+    amount: arrayIn.length
   };
-  treeData.children = _getSubTree(arrayIn, treeData, opt);
+  var temp = {};
+  for (var i = 0; i < rootIds.length; i++) {
+    for (var j = 0; j < arrayIn.length; j++) {
+      if (arrayIn[j].nodeId == rootIds[i]) {
+        temp = clone(arrayIn[j]);
+        temp.checkState = temp.is_check;
+        temp.parent = treeData;
+        temp.level = treeData.level + 1;
+        temp.expand = true;
+        if (temp.is_node) {
+          temp.children = this._getSubTree(arrayIn, temp, opt);
+        } else {
+          temp.children = [];
+        }
+        treeData.children.push(temp);
+      }
+    }
+  }
   return treeData;
 }
 
 function _getTreeRoot(arrayIn) {
-  let rootId = [];
-  const copy = clone(arrayIn);
-  for (let i = 0, len = arrayIn.length; i < len; i++) {
-    for (let j = i; j < len; j++) {
+  var rootIds = [];
+  var clone = JSON.parse(JSON.stringify(arrayIn));
+  for (var i = 0, len = arrayIn.length; i < len; i++) {
+    for (var j = i; j < len; j++) {
       if (arrayIn[i].id == arrayIn[j].nodeId) {
-        copy[j] = null;
+        clone[j] = null;
       }
       if (arrayIn[i].nodeId == arrayIn[j].id) {
-        copy[i] = null;
+        clone[i] = null;
       }
     }
   }
-
-  for (let k = 0; k < copy.length; k++) {
-    if (copy[k]) {
-      rootId.push(copy[k].nodeId);
+  for (var k = 0; k < clone.length; k++) {
+    if (clone[k]) {
+      rootIds.push(clone[k].nodeId);
     }
   }
-  rootId = _uniqueArray(rootId);
+  rootIds = this._uniqueArray(rootIds);
 
-  if (rootId.length > 1) {
-    console.warn('warning: rootId不唯一', rootId);
-  } else if (rootId.length <= 0) {
-    console.warn('warning: 没有rootId', rootId);
+  if (rootIds.length > 1) {
+    console.warn('warning: rootId不唯一', rootIds);
+  } else if (rootIds.length <= 0) {
+    console.warn('warning: 没有rootId', rootIds);
   }
 
-  return rootId[0];
+  return rootIds;
 }
 
 function _uniqueArray(arrayIn) {

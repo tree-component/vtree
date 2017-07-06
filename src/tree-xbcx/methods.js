@@ -93,7 +93,13 @@ function _arrayToTree(arrayIn, opt) {
     parent: null,
     level: 0,
     expand: true,
-    amount: arrayIn.length,
+    addition: null,
+    menu: null,
+    textIcon: null,
+    active: [],
+    options: opt,
+    originData: arrayIn,
+    itemAmount: arrayIn.length,
   };
   for (let i = 0; i < rootIds.length; i++) {
     for (let j = 0; j < arrayIn.length; j++) {

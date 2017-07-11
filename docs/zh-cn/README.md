@@ -1,4 +1,4 @@
-# tree-vue
+# vtree
 
 tree树形控件
 目前主要对应公司的需求，正在努力改成普遍适用的tree。有些功能定制程度太高，后面会改用更通用的功能来实现。
@@ -24,7 +24,7 @@ var app = new Vue({
 
 ## Demo
 
-[tree-xbcx](https://gitjcc.github.io/tree-vue/examples/tree-xbcx.html)
+[tree-xbcx](https://gitjcc.github.io/vtree/examples/tree-xbcx.html)
 
 ## features
 

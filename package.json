@@ -6,7 +6,7 @@
   "author": "gitjcc",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/gitjcc/tree-vue.git"
+    "url": "git+https://github.com/gitjcc/vtree.git"
   },
   "license": "MIT",
   "scripts": {

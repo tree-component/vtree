@@ -7,7 +7,8 @@
   "editor.tabSize": 2,
   "files.eol": "\n",
   "editor.wordWrap": "on",
-  "terminal.integrated.shell.windows": "C:\\Program Files\\Git\\bin\\bash.exe",
+  // "terminal.integrated.shell.windows": "C:\\Program Files\\Git\\bin\\bash.exe",
+  // "terminal.integrated.shell.windows": "C:\\WINDOWS\\Sysnative\\WindowsPowerShell\\v1.0\\powershell.exe",
   "emmet.syntaxProfiles": {
     "vue-html": "html",
     "vue": "html"

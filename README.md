@@ -22,10 +22,6 @@ var app = new Vue({
 });
 ```
 
-## Demo
-
-[tree-xbcx](https://gitjcc.github.io/vtree/examples/tree-xbcx.html)
-
 ## features
 
 - [x] 多选：选中/半选/取消

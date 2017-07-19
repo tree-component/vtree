@@ -1191,10 +1191,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
   methods: {
     expandFn: function expandFn() {
-      if (this.childrenIf) {
-        this.model.expand = !this.model.expand;
-        this.options.onExpand(this.model);
-      }
+      this.model.expand = !this.model.expand;
+      this.options.onExpand(this.model);
     },
     checkFn: function checkFn() {
       this.fn.changeItem(this.model, !this.model.is_check);

@@ -272,10 +272,8 @@ export default {
 
   methods: {
     expandFn() {
-      if (this.childrenIf) {
         this.model.expand = !this.model.expand;
         this.options.onExpand(this.model);
-      }
     },
     checkFn() {
       this.fn.changeItem(this.model, !this.model.is_check);

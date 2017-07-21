@@ -94,7 +94,7 @@ function _arrayToTree(arrayIn, opt) {
     level: 0,
     expand: true,
     addition: null,
-    menu: null,
+    menu: [],
     textIcon: null,
     active: [],
     options: opt,
@@ -160,7 +160,7 @@ function newItem(arrayIn, originItem, parent, opt) {
   }
   result.parent = parent;
   result.addition = null;
-  result.menu = null;
+  result.menu = [];
   result.textIcon = null;
   result.class = null;
   result.style = null;

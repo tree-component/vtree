@@ -97,27 +97,27 @@
     textIcon: function name(item) {
       return item.is_node ? 'icon-yonghu color-red' : 'icon-yonghu color-blue';
     },
-    menuCustom: function (item) {
-      if (item.is_node) {
-        return [];
-      }
-      return [{
-          text: item.id,
-          callback: function name(params) {
-            console.log(params.id);
-          },
-        },
-        {
-          text: item.name,
-          callback: function name(params) {
-            console.log(params.name);
-          },
-        },
-      ];
-    },
+    // menuCustom: function (item) {
+    //   if (item.is_node) {
+    //     return [];
+    //   }
+    //   return [{
+    //       text: item.id,
+    //       callback: function name(params) {
+    //         console.log(params.id);
+    //       },
+    //     },
+    //     {
+    //       text: item.name,
+    //       callback: function name(params) {
+    //         console.log(params.name);
+    //       },
+    //     },
+    //   ];
+    // },
     custom: function (item) {
       var html = '<span>' + item.id + '</span><span>' + item.name + '</span><span>' + item.expand +
-        '</span>';
+        '</span>' + 666;
       return html
     },
     onExpand: function (item) {

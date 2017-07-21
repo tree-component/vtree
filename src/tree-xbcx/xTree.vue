@@ -107,7 +107,7 @@ export default {
       }
       item.expand = true;
       Fn._expandParent(item.parent, true);
-      this.activeItem(item)
+      this.activeItem(item);
       return item;
     },
     locateItems: function (ids) {

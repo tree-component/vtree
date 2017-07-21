@@ -272,8 +272,8 @@ export default {
 
   methods: {
     expandFn() {
-        this.model.expand = !this.model.expand;
-        this.options.onExpand(this.model);
+      this.model.expand = !this.model.expand;
+      this.options.onExpand(this.model);
     },
     checkFn() {
       this.fn.changeItem(this.model, !this.model.is_check);
@@ -324,16 +324,22 @@ export default {
       }
     },
     addChildFn() {
+      if (!this.model.is_node) {
+        this.model.is_node = true;
+        this.model.expand = true;
+      }
       const newChild = {
         id: '',
         name: '',
         nodeId: this.model.id,
         is_node: false,
-        is_check: false,
+        is_check: this.model.is_check,
+        checkState: this.model.is_check,
         expand: false,
         level: this.model.level + 1,
         parent: this.model,
         children: [],
+        menu: [],
       };
       this.options.onAddChild(newChild, this.addChildFnn);
       this.showMenu = false;

@@ -1241,16 +1241,22 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       }
     },
     addChildFn: function addChildFn() {
+      if (!this.model.is_node) {
+        this.model.is_node = true;
+        this.model.expand = true;
+      }
       var newChild = {
         id: '',
         name: '',
         nodeId: this.model.id,
         is_node: false,
-        is_check: false,
+        is_check: this.model.is_check,
+        checkState: this.model.is_check,
         expand: false,
         level: this.model.level + 1,
         parent: this.model,
-        children: []
+        children: [],
+        menu: []
       };
       this.options.onAddChild(newChild, this.addChildFnn);
       this.showMenu = false;
@@ -1415,7 +1421,7 @@ function _arrayToTree(arrayIn, opt) {
     level: 0,
     expand: true,
     addition: null,
-    menu: null,
+    menu: [],
     textIcon: null,
     active: [],
     options: opt,
@@ -1481,7 +1487,7 @@ function newItem(arrayIn, originItem, parent, opt) {
   }
   result.parent = parent;
   result.addition = null;
-  result.menu = null;
+  result.menu = [];
   result.textIcon = null;
   result.class = null;
   result.style = null;

@@ -6,7 +6,6 @@ const webpack = require('webpack');
 const config = {
   context: path.resolve(__dirname, '../'),
   entry: {
-    'tree-vue': './src/tree-vue/index.js',
     'tree-xbcx': './src/tree-xbcx/index.js',
   },
   output: {
